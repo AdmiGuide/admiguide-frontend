@@ -1,0 +1,314 @@
+<!-- ==================== HERO ==================== -->
+<section class="px-4 pb-4 md:px-8 lg:px-12">
+  <div
+    class="hero-background relative mx-auto max-w-6xl overflow-hidden
+           rounded-3xl p-1 md:p-10"
+  >
+    <!-- Panneau principal en glassmorphisme. -->
+    <div
+      class="relative rounded-3xl border border-white/90 bg-white/60
+             p-5 shadow-[0_16px_36px_rgba(38,43,39,0.08)]
+             backdrop-blur-[18px]
+             md:p-10"
+    >
+
+      <!-- Badge. -->
+      <div
+        class="inline-flex items-center gap-2 rounded-full bg-white/80
+               px-4 py-2 text-xs text-anthracite/70"
+      >
+        <span class="size-1.5 rounded-full bg-sage"></span>
+
+        Orientation administrative
+      </div>
+
+      <!-- Titre principal. -->
+      <h1
+        class="mt-5 max-w-3xl text-[40px] font-bold leading-[46px]
+               text-anthracite
+               md:text-5xl md:leading-[52px]
+               lg:text-[56px] lg:leading-[62px]"
+      >
+        Vos démarches,
+
+        <span class="block text-terracotta">
+          en toute clarté.
+        </span>
+      </h1>
+
+      <!-- Présentation du service. -->
+      <p
+        class="mt-6 max-w-2xl text-base leading-7 text-anthracite/80
+               md:text-lg"
+      >
+        Expliquez votre situation avec vos mots. Retrouvez les étapes,
+        les pièces à préparer et les sources officielles.
+      </p>
+
+      <!-- Exemple et bouton principal. -->
+      <div
+        class="mt-8 grid gap-5
+               lg:mt-10 lg:grid-cols-2 lg:items-center lg:gap-6"
+      >
+
+        <!-- Exemple de situation. -->
+        <article
+          class="rounded-2xl border border-white/90 bg-white/70
+                 p-5 backdrop-blur-[18px]"
+        >
+          <p class="text-xs font-bold uppercase text-anthracite/70">
+            Par exemple
+          </p>
+
+          <p class="mt-3 text-base leading-6 text-anthracite/80">
+            « J’ai perdu mon passeport. Par où commencer ? »
+          </p>
+
+          <a
+            routerLink="/orientation"
+            class="mt-3 inline-flex items-center gap-1
+                   text-sm font-semibold text-terracotta
+                   hover:underline"
+          >
+            Voir cet exemple
+
+            <svg
+              lucideArrowRight
+              class="size-4"
+              aria-hidden="true"
+            ></svg>
+          </a>
+        </article>
+
+        <!-- Action principale. -->
+        <div>
+          <a
+            routerLink="/orientation"
+            class="flex w-full items-center justify-between
+                   rounded-xl bg-terracotta px-5 py-4
+                   text-sm font-semibold text-white
+                   transition hover:opacity-90"
+          >
+            Décrire ma situation
+
+            <svg
+              lucideArrowRight
+              class="size-5"
+              aria-hidden="true"
+            ></svg>
+          </a>
+
+          <p class="mt-3 text-center text-xs text-anthracite/60">
+            Accessible sans création de compte
+          </p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ==================== SITUATIONS ==================== -->
+<section class="px-5 py-6 md:px-8 md:py-8 lg:px-12">
+  <div class="mx-auto max-w-6xl">
+
+    <h2
+      class="mb-6 text-2xl font-bold text-anthracite
+             md:text-[28px]"
+    >
+      Vous vous reconnaissez ?
+    </h2>
+
+    <!-- Deux colonnes sur mobile, quatre sur desktop. -->
+    <div class="grid grid-cols-2 gap-3 md:gap-4 lg:grid-cols-4">
+
+      <!-- Perte de passeport. -->
+      <a
+        routerLink="/orientation"
+        class="min-h-44 rounded-2xl border border-linen bg-white
+               p-4 transition
+               hover:-translate-y-1 hover:shadow-md
+               md:min-h-40 md:p-5"
+      >
+        <div
+          class="mb-4 flex size-9 items-center justify-center
+                 rounded-xl bg-cream text-anthracite/70"
+        >
+          <svg
+            lucideFileText
+            class="size-5"
+            aria-hidden="true"
+          ></svg>
+        </div>
+
+        <h3 class="font-bold leading-5 text-anthracite">
+          Perte de passeport
+        </h3>
+
+        <p class="mt-4 text-xs leading-5 text-anthracite/60">
+          Identité & voyage
+        </p>
+      </a>
+
+      <!-- Retour au Sénégal. -->
+      <a
+        routerLink="/orientation"
+        class="min-h-44 rounded-2xl border border-linen bg-white
+               p-4 transition
+               hover:-translate-y-1 hover:shadow-md
+               md:min-h-40 md:p-5"
+      >
+        <div
+          class="mb-4 flex size-9 items-center justify-center
+                 rounded-xl bg-cream text-anthracite/70"
+        >
+          <svg
+            lucideBriefcase
+            class="size-5"
+            aria-hidden="true"
+          ></svg>
+        </div>
+
+        <h3 class="font-bold leading-5 text-anthracite">
+          Retour au Sénégal
+        </h3>
+
+        <p class="mt-4 text-xs leading-5 text-anthracite/60">
+          Retour & installation
+        </p>
+      </a>
+
+      <!-- Naissance à l'étranger. -->
+      <a
+        routerLink="/orientation"
+        class="min-h-44 rounded-2xl border border-linen bg-white
+               p-4 transition
+               hover:-translate-y-1 hover:shadow-md
+               md:min-h-40 md:p-5"
+      >
+        <div
+          class="mb-4 flex size-9 items-center justify-center
+                 rounded-xl bg-cream text-anthracite/70"
+        >
+          <svg
+            lucideHeart
+            class="size-5"
+            aria-hidden="true"
+          ></svg>
+        </div>
+
+        <h3 class="font-bold leading-5 text-anthracite">
+          Naissance à l’étranger
+        </h3>
+
+        <p class="mt-4 text-xs leading-5 text-anthracite/60">
+          Famille & état civil
+        </p>
+      </a>
+
+      <!-- Droits après un décès. -->
+      <a
+        routerLink="/orientation"
+        class="min-h-44 rounded-2xl border border-linen bg-white
+               p-4 transition
+               hover:-translate-y-1 hover:shadow-md
+               md:min-h-40 md:p-5"
+      >
+        <div
+          class="mb-4 flex size-9 items-center justify-center
+                 rounded-xl bg-cream text-anthracite/70"
+        >
+          <svg
+            lucideShieldCheck
+            class="size-5"
+            aria-hidden="true"
+          ></svg>
+        </div>
+
+        <h3 class="font-bold leading-5 text-anthracite">
+          Droits après un décès
+        </h3>
+
+        <p class="mt-4 text-xs leading-5 text-anthracite/60">
+          Protection sociale
+        </p>
+      </a>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ==================== FONCTIONNEMENT ==================== -->
+<section class="px-5 py-6 md:px-8 md:py-8 lg:px-12">
+  <div
+    class="mx-auto grid max-w-6xl gap-7 pb-6
+           md:grid-cols-3 md:gap-8 md:pb-8"
+  >
+
+    <!-- Étape 1. -->
+    <article class="flex gap-4">
+      <span
+        class="flex size-7 shrink-0 items-center justify-center
+               rounded-full bg-linen
+               text-xs font-bold text-anthracite/70"
+      >
+        1
+      </span>
+
+      <div>
+        <h3 class="font-bold text-anthracite">
+          Décrivez votre situation
+        </h3>
+
+        <p class="mt-2 text-sm leading-6 text-anthracite/60">
+          Avec vos mots, sans vocabulaire administratif.
+        </p>
+      </div>
+    </article>
+
+    <!-- Étape 2. -->
+    <article class="flex gap-4">
+      <span
+        class="flex size-7 shrink-0 items-center justify-center
+               rounded-full bg-linen
+               text-xs font-bold text-anthracite/70"
+      >
+        2
+      </span>
+
+      <div>
+        <h3 class="font-bold text-anthracite">
+          Précisez votre besoin
+        </h3>
+
+        <p class="mt-2 text-sm leading-6 text-anthracite/60">
+          Quelques questions, si nécessaire.
+        </p>
+      </div>
+    </article>
+
+    <!-- Étape 3. -->
+    <article class="flex gap-4">
+      <span
+        class="flex size-7 shrink-0 items-center justify-center
+               rounded-full bg-linen
+               text-xs font-bold text-anthracite/70"
+      >
+        3
+      </span>
+
+      <div>
+        <h3 class="font-bold text-anthracite">
+          Retrouvez les étapes
+        </h3>
+
+        <p class="mt-2 text-sm leading-6 text-anthracite/60">
+          Une orientation et des sources à consulter.
+        </p>
+      </div>
+    </article>
+
+  </div>
+</section>
