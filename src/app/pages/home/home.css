@@ -1,7 +1,14 @@
-/* Décor du hero issu de la maquette Figma. */
+/* Background du hero sur mobile. */
 .hero-background {
-  background-image: url('/images/background-admiguide.png');
+  background-image: url('/images/background-admiguide-mobile.png');
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+/* Background du hero sur tablette et ordinateur. */
+@media (min-width: 768px) {
+  .hero-background {
+    background-image: url('/images/background-admiguide.png');
+  }
 }
