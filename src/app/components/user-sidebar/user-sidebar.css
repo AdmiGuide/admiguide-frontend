@@ -1,0 +1,5 @@
+/* Met en évidence la page active de l'espace utilisateur. */
+.active-space-link {
+  background-color: var(--color-linen);
+  font-weight: 600;
+}

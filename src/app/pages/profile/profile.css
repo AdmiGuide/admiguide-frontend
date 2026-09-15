@@ -1,0 +1,14 @@
+/* Background décoratif uniquement derrière la carte Profil. */
+.profile-background {
+  background-image: url('/images/background-admiguide-mobile.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Utilise la version horizontale sur desktop. */
+@media (min-width: 768px) {
+  .profile-background {
+    background-image: url('/images/background-admiguide.png');
+  }
+}

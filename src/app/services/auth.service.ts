@@ -45,6 +45,12 @@ interface RefreshResponse {
   refresh?: string;
 }
 
+// Champs que l'utilisateur peut modifier depuis son profil.
+interface UpdateProfileData {
+  nom_complet: string;
+  pays_residence: string;
+}
+
 @Service()
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -70,7 +76,7 @@ export class AuthService {
     );
   }
 
-  
+
   // Connecte l'utilisateur puis récupère son profil.
   login(credentials: LoginCredentials): Observable<User> {
     return this.http
@@ -190,6 +196,21 @@ export class AuthService {
       this.refreshTokenKey,
       tokens.refresh,
     );
+  }
+
+  // Met à jour les informations modifiables du profil.
+  updateProfile(data: UpdateProfileData): Observable<User> {
+    return this.http
+      .patch<User>(
+        `${environment.apiUrl}/auth/profile/`,
+        data,
+      )
+      .pipe(
+        // Met également à jour l'utilisateur actuellement stocké dans Angular.
+        tap((user) => {
+          this.currentUser.set(user);
+        }),
+      );
   }
 
   // Déconnecte l'utilisateur et invalide son refresh token.

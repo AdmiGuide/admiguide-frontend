@@ -1,1 +1,75 @@
-<p>user-sidebar works!</p>
+@if (mode === 'mobile') {
+
+<!-- Navigation adaptée aux petits écrans. -->
+<nav class="flex gap-2" aria-label="Navigation de l'espace utilisateur">
+    <!-- Historique. -->
+    <a routerLink="/espace" routerLinkActive="active-space-link" [routerLinkActiveOptions]="{ exact: true }" class="flex h-11 items-center gap-2 rounded-xl
+             bg-white px-4 text-sm text-anthracite
+             transition">
+        <svg lucideHistory class="size-4" aria-hidden="true"></svg>
+
+        Mon historique
+    </a>
+
+    <!-- Profil. -->
+    <a routerLink="/espace/profil" routerLinkActive="active-space-link" class="flex h-11 items-center gap-2 rounded-xl
+             bg-white px-4 text-sm text-anthracite
+             transition">
+        <svg lucideUserRound class="size-4" aria-hidden="true"></svg>
+
+        Mon profil
+    </a>
+</nav>
+
+} @else {
+
+<!-- Sidebar utilisée sur desktop. -->
+<aside>
+    <p class="mb-5 text-xs font-bold uppercase
+             text-anthracite/70">
+        Mon espace
+    </p>
+
+    <nav class="space-y-3" aria-label="Navigation de l'espace utilisateur">
+        <!-- Historique. -->
+        <a routerLink="/espace" routerLinkActive="active-space-link" [routerLinkActiveOptions]="{ exact: true }" class="flex h-12 items-center gap-4 rounded-xl
+               px-4 text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucideHistory class="size-5" aria-hidden="true"></svg>
+
+            Mon historique
+        </a>
+
+        <!-- Profil. -->
+        <a routerLink="/espace/profil" routerLinkActive="active-space-link" class="flex h-12 items-center gap-4 rounded-xl
+               px-4 text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucideUserRound class="size-5" aria-hidden="true"></svg>
+
+            Mon profil
+        </a>
+
+        <div class="h-4"></div>
+
+        <!-- Nouvelle orientation. -->
+        <a routerLink="/orientation" class="flex h-12 items-center gap-4 rounded-xl
+               px-4 text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucidePlus class="size-5" aria-hidden="true"></svg>
+
+            Nouvelle situation
+        </a>
+
+        <!-- Déconnexion. -->
+        <button type="button" class="flex h-12 w-full cursor-pointer items-center gap-4
+               rounded-xl px-4 text-left text-sm
+               text-anthracite/70 transition
+               hover:text-terracotta" (click)="logout()">
+            <svg lucideLogOut class="size-5" aria-hidden="true"></svg>
+
+            Se déconnecter
+        </button>
+    </nav>
+</aside>
+
+}

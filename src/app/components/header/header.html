@@ -47,7 +47,7 @@
       @if (authService.isAuthenticated()) {
 
       <!-- Lien vers l'espace utilisateur. -->
-      <a routerLink="/espace" class="transition hover:text-terracotta">
+      <a routerLink="/espace/profil" class="transition hover:text-terracotta">
         Mon espace
       </a>
 
@@ -94,12 +94,12 @@
       </a>
 
       <a routerLink="/orientation" class="transition hover:text-terracotta" (click)="closeMenu()">
-        M’orienter
+        M'orienter
       </a>
 
       @if (authService.isAuthenticated()) {
 
-      <a routerLink="/espace" class="transition hover:text-terracotta" (click)="closeMenu()">
+      <a routerLink="/espace/profil" class="transition hover:text-terracotta" (click)="closeMenu()">
         Mon espace
       </a>
 

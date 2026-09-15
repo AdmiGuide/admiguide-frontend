@@ -1,0 +1,325 @@
+<!-- ================= NAVIGATION MOBILE ================= -->
+<!--
+  Sur mobile, la sidebar verticale est remplacée
+  par une navigation horizontale plus compacte.
+-->
+<div class="px-5 pt-5 md:hidden">
+    <div class="mx-auto max-w-6xl">
+        <app-user-sidebar mode="mobile" />
+    </div>
+</div>
+
+
+<!-- ================= CONTENU PRINCIPAL ================= -->
+<main class="px-5 py-10 md:px-8 lg:px-12">
+
+    <!--
+    Sur desktop :
+    - colonne gauche = navigation utilisateur
+    - colonne droite = contenu de la page
+  -->
+    <div class="mx-auto grid max-w-6xl gap-10
+           md:grid-cols-[210px_1fr]
+           lg:gap-11">
+
+        <!-- ================= SIDEBAR DESKTOP ================= -->
+        <div class="hidden md:block">
+            <app-user-sidebar mode="desktop" />
+        </div>
+
+
+        <!-- ================= PROFIL ================= -->
+        <section>
+
+            <!--
+        En-tête de la page.
+        Il reste sur le fond normal de la page
+        et n'est pas inclus dans le background décoratif.
+      -->
+            <div>
+                <p class="text-xs font-bold uppercase
+                 text-anthracite/70">
+                    Mon espace
+                </p>
+
+                <h1 class="mt-1 text-3xl font-bold
+                 text-anthracite md:text-4xl">
+                    Mon profil
+                </h1>
+
+                <p class="mt-6 text-base
+                 text-anthracite/75">
+                    Gardez vos informations à jour.
+                </p>
+            </div>
+
+
+            <!-- ================= BACKGROUND DU FORMULAIRE ================= -->
+            <!--
+        L'image décorative commence uniquement ici.
+        Elle sert de fond à la carte glassmorphisme.
+      -->
+            <div class="profile-background mt-10
+               overflow-hidden rounded-3xl
+               p-3 md:p-4">
+
+                <!-- ================= CARTE GLASSMORPHISME ================= -->
+                <!--
+          bg-white/60 rend la carte semi-transparente.
+          backdrop-blur floute le décor situé derrière la carte.
+        -->
+                <div class="rounded-3xl
+                 border border-white/90
+                 bg-white/60 p-6
+                 shadow-[0_8px_0_rgba(38,43,39,0.05)]
+                 backdrop-blur-[18px]
+                 md:p-7">
+
+                    <!-- ================= IDENTITÉ UTILISATEUR ================= -->
+                    <div class="flex items-center gap-5">
+
+                        <!--
+              Les initiales sont calculées automatiquement
+              depuis le nom de l'utilisateur.
+            -->
+                        <div class="flex size-16 shrink-0
+                     items-center justify-center
+                     rounded-full bg-linen
+                     text-xl font-bold
+                     text-anthracite">
+                            {{ userInitials() }}
+                        </div>
+
+                        <div>
+                            <!--
+                Le nom provient du Signal currentUser
+                contenu dans AuthService.
+              -->
+                            <h2 class="text-lg font-bold
+                       text-anthracite">
+                                {{ authService.currentUser()?.nom_complet }}
+                            </h2>
+
+                            <p class="mt-1 text-xs
+                       text-anthracite/60">
+                                Compte utilisateur
+                            </p>
+                        </div>
+
+                    </div>
+
+
+                    <!-- ================= MESSAGE DE SUCCÈS ================= -->
+                    <!--
+            Ce message apparaît après une modification
+            réussie du profil.
+          -->
+                    @if (successMessage()) {
+                    <p class="mt-6 rounded-xl
+                     bg-sage/15 px-4 py-3
+                     text-sm text-anthracite" role="status">
+                        {{ successMessage() }}
+                    </p>
+                    }
+
+
+                    <!-- ================= MESSAGE D'ERREUR ================= -->
+                    <!--
+            Affiché lorsqu'une erreur est retournée
+            pendant la mise à jour du profil.
+          -->
+                    @if (errorMessage()) {
+                    <p class="mt-6 rounded-xl
+                     border border-terracotta/30
+                     bg-white/60 px-4 py-3
+                     text-sm text-terracotta" role="alert">
+                        {{ errorMessage() }}
+                    </p>
+                    }
+
+
+                    <!-- ================= FORMULAIRE PROFIL ================= -->
+                    <!--
+            profileForm est le Reactive Form
+            défini dans profile.ts.
+          -->
+                    <form class="mt-8 space-y-5" [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+
+                        <!-- ================= NOM COMPLET ================= -->
+                        <div>
+                            <label for="nom-complet" class="mb-2 block
+                       text-sm font-semibold
+                       text-anthracite">
+                                Nom complet
+                            </label>
+
+                            <input id="nom-complet" type="text" formControlName="nom_complet" autocomplete="name"
+                                maxlength="200" class="w-full rounded-xl
+                       border border-sage
+                       bg-white/90
+                       px-4 py-3
+                       text-base text-anthracite
+                       outline-none transition
+                       focus:border-terracotta
+                       focus:ring-1
+                       focus:ring-terracotta">
+
+                            <!-- Nom obligatoire. -->
+                            @if (
+                            profileForm.controls.nom_complet.touched &&
+                            profileForm.controls.nom_complet.hasError('required')
+                            ) {
+                            <p class="mt-2 text-xs text-terracotta">
+                                Le nom complet est requis.
+                            </p>
+                            }
+
+                            <!-- Nom trop court. -->
+                            @if (
+                            profileForm.controls.nom_complet.touched &&
+                            profileForm.controls.nom_complet.hasError('minlength')
+                            ) {
+                            <p class="mt-2 text-xs text-terracotta">
+                                Le nom doit contenir au moins 2 caractères.
+                            </p>
+                            }
+
+                            <!-- Format incorrect. -->
+                            @if (
+                            profileForm.controls.nom_complet.touched &&
+                            profileForm.controls.nom_complet.hasError('pattern')
+                            ) {
+                            <p class="mt-2 text-xs text-terracotta">
+                                Utilisez uniquement des lettres, espaces,
+                                apostrophes ou tirets.
+                            </p>
+                            }
+                        </div>
+
+
+                        <!-- ================= ADRESSE E-MAIL ================= -->
+                        <!--
+              L'e-mail est affiché mais non modifiable,
+              car le backend le considère actuellement
+              comme une donnée en lecture seule.
+            -->
+                        <div>
+                            <label for="email" class="mb-2 block
+                       text-sm font-semibold
+                       text-anthracite">
+                                Adresse e-mail
+                            </label>
+
+                            <input id="email" type="email" formControlName="email" autocomplete="email" readonly class="w-full cursor-default
+                       rounded-xl
+                       border border-sage
+                       bg-white/70
+                       px-4 py-3
+                       text-base
+                       text-anthracite/70
+                       outline-none">
+                        </div>
+
+
+                        <!-- ================= PAYS DE RÉSIDENCE ================= -->
+                        <div>
+                            <label for="pays-residence" class="mb-2 block
+                       text-sm font-semibold
+                       text-anthracite">
+                                Pays de résidence
+                            </label>
+
+                            <!--
+                La liste est générée depuis COUNTRIES
+                dans profile.ts.
+              -->
+                            <select id="pays-residence" formControlName="pays_residence" autocomplete="country-name"
+                                class="w-full rounded-xl
+                       border border-sage
+                       bg-white/90
+                       px-4 py-3
+                       text-base text-anthracite
+                       outline-none transition
+                       focus:border-terracotta
+                       focus:ring-1
+                       focus:ring-terracotta">
+                                @for (country of countries; track country) {
+                                <option [value]="country">
+                                    {{ country }}
+                                </option>
+                                }
+                            </select>
+
+                            <!-- Pays obligatoire. -->
+                            @if (
+                            profileForm.controls.pays_residence.touched &&
+                            profileForm.controls.pays_residence.hasError('required')
+                            ) {
+                            <p class="mt-2 text-xs text-terracotta">
+                                Sélectionnez votre pays de résidence.
+                            </p>
+                            }
+                        </div>
+
+
+                        <!-- ================= INFORMATION ================= -->
+                        <div class="rounded-xl
+                     bg-sage/10
+                     px-5 py-4
+                     text-sm leading-6
+                     text-anthracite/70">
+                            Ces informations peuvent aider à contextualiser
+                            vos prochaines situations.
+                        </div>
+
+
+                        <!-- ================= ACTIONS ================= -->
+                        <div class="flex flex-col gap-4 pt-3
+                     md:flex-row
+                     md:items-center
+                     md:justify-between">
+
+                            <!-- Déconnexion. -->
+                            <button type="button" class="order-2 w-fit
+                       cursor-pointer
+                       text-sm text-terracotta
+                       transition
+                       hover:underline
+                       md:order-1" (click)="logout()">
+                                Se déconnecter
+                            </button>
+
+
+                            <!-- Enregistrement du profil. -->
+                            <button type="submit" [disabled]="isSaving()" class="order-1 w-full
+                       cursor-pointer
+                       rounded-xl
+                       bg-terracotta
+                       px-5 py-3.5
+                       text-sm font-semibold
+                       text-white transition
+                       hover:opacity-90
+                       disabled:cursor-not-allowed
+                       disabled:opacity-60
+                       md:order-2
+                       md:w-auto">
+                                {{
+                                isSaving()
+                                ? 'Enregistrement...'
+                                : 'Enregistrer les modifications'
+                                }}
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
