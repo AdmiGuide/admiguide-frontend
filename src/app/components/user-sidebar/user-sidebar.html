@@ -3,19 +3,23 @@
 <!-- Navigation adaptée aux petits écrans. -->
 <nav class="flex gap-2" aria-label="Navigation de l'espace utilisateur">
     <!-- Historique. -->
-    <a routerLink="/espace" routerLinkActive="active-space-link" [routerLinkActiveOptions]="{ exact: true }" class="flex h-11 items-center gap-2 rounded-xl
-             bg-white px-4 text-sm text-anthracite
-             transition">
-        <svg lucideHistory class="size-4" aria-hidden="true"></svg>
+    <a routerLink="/espace/historique" routerLinkActive="active-space-link" [routerLinkActiveOptions]="{ exact: true }"
+        class="flex h-12 items-center gap-4
+         rounded-xl px-4
+         text-sm text-anthracite/80
+         transition hover:bg-linen/50">
+        <svg lucideHistory class="size-5" aria-hidden="true"></svg>
 
         Mon historique
     </a>
 
     <!-- Profil. -->
-    <a routerLink="/espace/profil" routerLinkActive="active-space-link" class="flex h-11 items-center gap-2 rounded-xl
-             bg-white px-4 text-sm text-anthracite
-             transition">
-        <svg lucideUserRound class="size-4" aria-hidden="true"></svg>
+    <a routerLink="/espace/profil" routerLinkActive="active-space-link" [routerLinkActiveOptions]="{ exact: true }"
+        class="flex h-12 items-center gap-4
+         rounded-xl px-4
+         text-sm text-anthracite/80
+         transition hover:bg-linen/50">
+        <svg lucideUserRound class="size-5" aria-hidden="true"></svg>
 
         Mon profil
     </a>
@@ -32,9 +36,11 @@
 
     <nav class="space-y-3" aria-label="Navigation de l'espace utilisateur">
         <!-- Historique. -->
-        <a routerLink="/espace" routerLinkActive="active-space-link" [routerLinkActiveOptions]="{ exact: true }" class="flex h-12 items-center gap-4 rounded-xl
-               px-4 text-sm text-anthracite/80
-               transition hover:bg-linen/50">
+        <a routerLink="/espace/historique" routerLinkActive="active-space-link"
+            [routerLinkActiveOptions]="{ exact: true }" class="flex h-12 items-center gap-4
+         rounded-xl px-4
+         text-sm text-anthracite/80
+         transition hover:bg-linen/50">
             <svg lucideHistory class="size-5" aria-hidden="true"></svg>
 
             Mon historique

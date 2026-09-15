@@ -53,6 +53,7 @@ interface UpdateProfileData {
 
 @Service()
 export class AuthService {
+  // Permet d'effectuer les appels HTTP vers Django.
   private readonly http = inject(HttpClient);
 
   // Clés utilisées dans le localStorage.

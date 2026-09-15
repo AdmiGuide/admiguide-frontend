@@ -1,0 +1,260 @@
+<!-- ================= NAVIGATION MOBILE ================= -->
+<div class="px-5 pt-5 md:hidden">
+    <div class="mx-auto max-w-6xl">
+        <app-user-sidebar mode="mobile" />
+    </div>
+</div>
+
+
+<!-- ================= CONTENU PRINCIPAL ================= -->
+<main class="px-5 py-10 md:px-8 lg:px-12">
+
+    <div class="mx-auto grid max-w-6xl gap-10
+           md:grid-cols-[210px_1fr]
+           lg:gap-11">
+
+        <!-- ================= SIDEBAR DESKTOP ================= -->
+        <div class="hidden md:block">
+            <app-user-sidebar mode="desktop" />
+        </div>
+
+
+        <!-- ================= HISTORIQUE ================= -->
+        <section>
+
+            <!-- En-tête de la page. -->
+            <div class="flex flex-col gap-6
+               md:flex-row md:items-end
+               md:justify-between">
+
+                <div>
+                    <p class="text-xs font-bold uppercase
+                   text-anthracite/70">
+                        Mon espace
+                    </p>
+
+                    <!--
+            Le prénom vient du profil réel
+            de l'utilisateur connecté.
+          -->
+                    <h1 class="mt-1 text-3xl font-bold
+                   text-anthracite md:text-4xl">
+                        Bonjour {{ firstName() }}.
+                    </h1>
+
+                    <p class="mt-6 text-base leading-6
+                   text-anthracite/75">
+                        Retrouvez vos situations et les orientations obtenues.
+                    </p>
+                </div>
+
+
+                <!-- Nouvelle situation. -->
+                <a routerLink="/orientation" class="flex w-fit cursor-pointer
+                 items-center gap-5 rounded-xl
+                 bg-terracotta px-5 py-4
+                 text-sm font-semibold text-white
+                 transition hover:opacity-90">
+                    Nouvelle situation
+
+                    <svg lucidePlus class="size-5" aria-hidden="true"></svg>
+                </a>
+
+            </div>
+
+
+            <!-- ================= RECHERCHE ================= -->
+            <div class="mt-10">
+
+                <div class="relative max-w-sm">
+
+                    <label for="recherche" class="sr-only">
+                        Rechercher une consultation
+                    </label>
+
+                    <!-- Icône de recherche. -->
+                    <svg lucideSearch class="pointer-events-none absolute
+                   left-4 top-1/2 size-5
+                   -translate-y-1/2
+                   text-anthracite/60" aria-hidden="true"></svg>
+
+                    <input id="recherche" type="search" placeholder="Rechercher une consultation..." class="w-full rounded-xl
+                   border border-sage
+                   bg-white px-12 py-3.5
+                   text-sm text-anthracite
+                   outline-none transition
+                   focus:border-terracotta
+                   focus:ring-1
+                   focus:ring-terracotta" (input)="updateSearch($event)">
+
+                </div>
+
+
+                <!-- ================= FILTRES ================= -->
+                <div class="mt-3 flex w-fit
+                 items-center gap-1
+                 rounded-2xl bg-sage/10 p-1">
+
+                    <!-- Toutes les situations. -->
+                    <button type="button" class="cursor-pointer rounded-xl
+                   px-4 py-2.5 text-xs
+                   transition" [class.bg-white]="selectedFilter() === 'all'"
+                        [class.text-anthracite]="selectedFilter() === 'all'"
+                        [class.text-anthracite/60]="selectedFilter() !== 'all'" (click)="setFilter('all')">
+                        Tous
+                    </button>
+
+
+                    <!-- Situations associées au Sénégal. -->
+                    <button type="button" class="cursor-pointer rounded-xl
+                   px-4 py-2.5 text-xs
+                   transition" [class.bg-white]="selectedFilter() === 'senegal'"
+                        [class.text-anthracite]="selectedFilter() === 'senegal'"
+                        [class.text-anthracite/60]="selectedFilter() !== 'senegal'" (click)="setFilter('senegal')">
+                        Au Sénégal
+                    </button>
+
+
+                    <!-- Situations associées à l'étranger. -->
+                    <button type="button" class="cursor-pointer rounded-xl
+                   px-4 py-2.5 text-xs
+                   transition" [class.bg-white]="selectedFilter() === 'abroad'"
+                        [class.text-anthracite]="selectedFilter() === 'abroad'"
+                        [class.text-anthracite/60]="selectedFilter() !== 'abroad'" (click)="setFilter('abroad')">
+                        À l'étranger
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= CHARGEMENT ================= -->
+            @if (isLoading()) {
+            <p class="mt-8 text-sm text-anthracite/60" role="status">
+                Chargement de votre historique...
+            </p>
+            }
+
+
+            <!-- ================= ERREUR ================= -->
+            @if (errorMessage()) {
+            <p class="mt-8 rounded-xl
+                 border border-terracotta/30
+                 bg-white px-4 py-3
+                 text-sm text-terracotta" role="alert">
+                {{ errorMessage() }}
+            </p>
+            }
+
+
+            <!-- ================= LISTE ================= -->
+            @if (!isLoading() && !errorMessage()) {
+
+            <div class="mt-4 space-y-4">
+
+                @for (
+                situation of filteredSituations();
+                track situation.public_id
+                ) {
+
+                <!-- Une situation de l'historique. -->
+                <article class="flex flex-col gap-5
+                     rounded-3xl border border-linen
+                     bg-white p-5
+                     md:flex-row md:items-center
+                     md:justify-between">
+
+                    <div class="flex items-start gap-4">
+
+                        <!-- Icône de document. -->
+                        <div class="flex size-10 shrink-0
+                         items-center justify-center
+                         rounded-xl bg-sage/10
+                         text-anthracite/65">
+                            <svg lucideFileText class="size-5" aria-hidden="true"></svg>
+                        </div>
+
+
+                        <div>
+                            <h2 class="text-base font-bold
+                           text-anthracite
+                           md:text-lg">
+                                {{ situation.titre }}
+                            </h2>
+
+                            <!-- Pays et date. -->
+                            <p class="mt-2 text-xs
+                           text-anthracite/60">
+                                @if (situation.pays_residence) {
+                                {{ situation.pays_residence }} ·
+                                }
+
+                                {{ formatDate(situation.date_creation) }}
+                            </p>
+
+
+                            <!-- État de l'orientation. -->
+                            <span class="mt-3 inline-block
+                           rounded-full bg-sage/15
+                           px-4 py-2 text-xs
+                           text-anthracite/70">
+                                {{
+                                situation.orientation_disponible
+                                ? 'Orientation disponible'
+                                : 'Orientation non disponible'
+                                }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!--
+                Le détail sera réellement disponible
+                lorsque nous intégrerons l'écran résultat.
+              -->
+                    @if (situation.orientation_disponible) {
+                    <a [routerLink]="[
+                    '/orientation/resultat',
+                    situation.public_id
+                  ]" class="ml-14 flex w-fit
+                         cursor-pointer items-center
+                         gap-3 rounded-xl
+                         border border-linen
+                         bg-white px-5 py-3.5
+                         text-sm font-semibold
+                         text-anthracite transition
+                         hover:border-terracotta
+                         hover:text-terracotta
+                         md:ml-0">
+                        Consulter
+
+                        <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
+                    </a>
+                    }
+
+                </article>
+
+                } @empty {
+
+                <!-- Aucun résultat après recherche ou filtrage. -->
+                <div class="rounded-3xl border border-linen
+                     bg-white p-8 text-center">
+                    <p class="text-sm text-anthracite/60">
+                        Aucune situation ne correspond à votre recherche.
+                    </p>
+                </div>
+
+                }
+
+            </div>
+
+            }
+
+        </section>
+
+    </div>
+
+</main>
