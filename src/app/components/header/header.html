@@ -1,82 +1,82 @@
 <header class="relative z-50 px-5 py-5 md:px-8 lg:px-12">
   <div class="mx-auto flex max-w-6xl items-center justify-between">
 
-    <!-- Identité visuelle AdmiGuide. -->
-    <a
-      routerLink="/"
-      class="flex items-center gap-3"
-      aria-label="Accueil AdmiGuide"
-      (click)="closeMenu()"
-    >
-      <!-- Monogramme. -->
-      <img
-        src="/images/logo.png"
-        alt=""
-        class="h-10 w-10 object-contain md:h-11 md:w-11"
-      >
+    <!-- Zone identité visuelle. -->
+    <div class="flex items-center gap-12 lg:gap-16">
 
-      <!-- Nom et signature. -->
-      <div>
-        <p
-          class="text-2xl font-bold leading-none text-anthracite
-                 md:text-[28px]"
-        >
-          Admi<span class="text-terracotta">Guide</span>
-        </p>
+      <!-- Logo + nom AdmiGuide. -->
+      <a routerLink="/" class="flex items-center gap-3 rounded-lg
+           focus-visible:outline-none
+           focus-visible:ring-2
+           focus-visible:ring-terracotta
+           focus-visible:ring-offset-2" aria-label="Accueil AdmiGuide" (click)="closeMenu()">
+        <img src="/images/logo.png" alt="" class="h-10 w-10 object-contain md:h-11 md:w-11">
 
-        <p
-          class="mt-1 text-[8px] font-bold uppercase tracking-tight
-                 text-anthracite md:text-[9px]"
-        >
-          Sénégal & diaspora
-        </p>
-      </div>
-    </a>
+        <div>
+          <p class="text-2xl font-bold leading-none text-anthracite
+               md:text-[28px]">
+            Admi<span class="text-terracotta">Guide</span>
+          </p>
+
+          <!-- Signature sous le logo uniquement sur mobile. -->
+          <p class="mt-1 text-[8px] font-bold uppercase tracking-tight
+               text-anthracite md:hidden">
+            Sénégal & diaspora
+          </p>
+        </div>
+      </a>
+
+      <!-- Signature alignée avec la navigation sur desktop. -->
+      <p class="hidden text-[9px] font-bold uppercase
+           tracking-tight text-anthracite md:block">
+        Sénégal & diaspora
+      </p>
+
+    </div>
 
     <!-- Navigation desktop. -->
-    <nav
-      class="hidden items-center gap-8 text-sm text-anthracite md:flex"
-      aria-label="Navigation principale"
-    >
-      <a
-        routerLink="/"
-        class="transition hover:text-terracotta"
-      >
+    <nav class="hidden items-center gap-8 text-sm text-anthracite md:flex" aria-label="Navigation principale">
+      <a routerLink="/" class="transition hover:text-terracotta">
         Accueil
       </a>
 
-      <a
-        routerLink="/orientation"
-        class="transition hover:text-terracotta"
-      >
-        M’orienter
+      <a routerLink="/orientation" class="transition hover:text-terracotta">
+        M'orienter
       </a>
 
-      <a
-        routerLink="/connexion"
-        class="transition hover:text-terracotta"
-      >
+      @if (authService.isAuthenticated()) {
+
+      <!-- Lien vers l'espace utilisateur. -->
+      <a routerLink="/espace" class="transition hover:text-terracotta">
+        Mon espace
+      </a>
+
+      <!-- Initiales de l'utilisateur connecté. -->
+      <div class="flex size-11 items-center justify-center
+                 rounded-full bg-linen
+                 text-sm font-semibold text-anthracite" [title]="authService.currentUser()?.nom_complet">
+        {{ userInitials() }}
+      </div>
+
+      } @else {
+
+      <!-- Utilisateur non connecté. -->
+      <a routerLink="/connexion" class="transition hover:text-terracotta">
         Se connecter
       </a>
 
-      <a
-        routerLink="/inscription"
-        class="rounded-xl border border-linen bg-white px-5 py-3
-               font-semibold transition hover:bg-cream"
-      >
+      <a routerLink="/inscription" class="rounded-xl border border-linen bg-white px-5 py-3
+                 font-semibold transition hover:bg-cream">
         Créer un compte
       </a>
+
+      }
     </nav>
 
     <!-- Bouton hamburger mobile. -->
-    <button
-      type="button"
-      class="flex size-11 flex-col items-center justify-center gap-1.5
-             rounded-xl border border-linen bg-white md:hidden"
-      aria-label="Ouvrir le menu"
-      [attr.aria-expanded]="isMenuOpen"
-      (click)="toggleMenu()"
-    >
+    <button type="button" class="flex size-11 flex-col items-center justify-center gap-1.5
+             rounded-xl border border-linen bg-white md:hidden" aria-label="Ouvrir le menu"
+      [attr.aria-expanded]="isMenuOpen" (click)="toggleMenu()">
       <span class="h-px w-5 bg-anthracite"></span>
       <span class="h-px w-5 bg-anthracite"></span>
       <span class="h-px w-5 bg-anthracite"></span>
@@ -85,48 +85,52 @@
 
   <!-- Navigation mobile. -->
   @if (isMenuOpen) {
-    <nav
-      class="absolute left-5 right-5 top-full mt-2 rounded-2xl
-             border border-linen bg-white p-5 shadow-lg md:hidden"
-      aria-label="Navigation mobile"
-    >
-      <div class="flex flex-col gap-4 text-sm text-anthracite">
+  <nav class="absolute left-5 right-5 top-full mt-2 rounded-2xl
+             border border-linen bg-white p-5 shadow-lg md:hidden" aria-label="Navigation mobile">
+    <div class="flex flex-col gap-4 text-sm text-anthracite">
 
-        <a
-          routerLink="/"
-          class="transition hover:text-terracotta"
-          (click)="closeMenu()"
-        >
-          Accueil
-        </a>
+      <a routerLink="/" class="transition hover:text-terracotta" (click)="closeMenu()">
+        Accueil
+      </a>
 
-        <a
-          routerLink="/orientation"
-          class="transition hover:text-terracotta"
-          (click)="closeMenu()"
-        >
-          M’orienter
-        </a>
+      <a routerLink="/orientation" class="transition hover:text-terracotta" (click)="closeMenu()">
+        M’orienter
+      </a>
 
-        <a
-          routerLink="/connexion"
-          class="transition hover:text-terracotta"
-          (click)="closeMenu()"
-        >
-          Se connecter
-        </a>
+      @if (authService.isAuthenticated()) {
 
-        <a
-          routerLink="/inscription"
-          class="rounded-xl bg-terracotta px-5 py-3 text-center
-                 font-semibold text-white transition
-                 hover:opacity-90"
-          (click)="closeMenu()"
-        >
-          Créer un compte
-        </a>
+      <a routerLink="/espace" class="transition hover:text-terracotta" (click)="closeMenu()">
+        Mon espace
+      </a>
 
+      <!-- Utilisateur connecté. -->
+      <div class="flex items-center gap-3 border-t border-linen pt-4">
+        <div class="flex size-10 items-center justify-center
+                     rounded-full bg-linen
+                     text-sm font-semibold text-anthracite">
+          {{ userInitials() }}
+        </div>
+
+        <span class="font-medium">
+          {{ authService.currentUser()?.nom_complet }}
+        </span>
       </div>
-    </nav>
+
+      } @else {
+
+      <a routerLink="/connexion" class="transition hover:text-terracotta" (click)="closeMenu()">
+        Se connecter
+      </a>
+
+      <a routerLink="/inscription" class="rounded-xl bg-terracotta px-5 py-3
+                   text-center font-semibold text-white
+                   transition hover:opacity-90" (click)="closeMenu()">
+        Créer un compte
+      </a>
+
+      }
+
+    </div>
+  </nav>
   }
 </header>

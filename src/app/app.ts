@@ -1,5 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -8,5 +10,10 @@ import { RouterOutlet } from '@angular/router';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('admiguide-frontend');
+  private readonly authService = inject(AuthService);
+
+  constructor() {
+    // Restaure la session utilisateur au démarrage de l'application.
+    this.authService.restoreSession().subscribe();
+  }
 }

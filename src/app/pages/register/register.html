@@ -1,0 +1,314 @@
+<main class="px-4 pb-8 md:px-8 lg:px-12">
+    <section class="auth-background relative mx-auto max-w-5xl overflow-hidden
+           rounded-3xl p-3 md:p-4">
+        <!-- Carte principale en glassmorphisme. -->
+        <div class="relative grid gap-12 rounded-3xl border border-white/90
+             bg-white/60 px-6 py-8
+             shadow-[0_16px_36px_rgba(38,43,39,0.08)]
+             backdrop-blur-[18px]
+             md:grid-cols-2 md:gap-16 md:px-10 md:py-12">
+
+            <!-- ================= PRÉSENTATION ================= -->
+            <!-- Sur mobile cette section passe sous le formulaire. -->
+            <section class="order-2 flex flex-col justify-center md:order-1">
+                <span class="mb-6 w-fit rounded-full bg-white/80
+                 px-4 py-2 text-xs text-anthracite/70">
+                    Un espace pour vous
+                </span>
+
+                <h2 class="text-3xl font-bold leading-tight
+                 text-anthracite md:text-4xl">
+                    Vos orientations,
+                    <span class="block">
+                        à portée de main.
+                    </span>
+                </h2>
+
+                <p class="mt-8 max-w-md text-sm leading-6
+                 text-anthracite/70 md:text-base">
+                    Retrouvez vos situations et les informations utiles,
+                    au même endroit.
+                </p>
+
+                <!-- Avantages affichés uniquement sur desktop. -->
+                <ul class="mt-10 hidden space-y-6
+                 text-sm text-anthracite/70 md:block">
+                    <li class="flex items-center gap-4">
+                        <svg lucideHistory class="size-5 text-anthracite/60" aria-hidden="true"></svg>
+
+                        Votre historique de consultations
+                    </li>
+
+                    <li class="flex items-center gap-4">
+                        <svg lucideFileText class="size-5 text-anthracite/60" aria-hidden="true"></svg>
+
+                        Vos orientations consultables
+                    </li>
+
+                    <li class="flex items-center gap-4">
+                        <svg lucideUserRound class="size-5 text-anthracite/60" aria-hidden="true"></svg>
+
+                        Votre profil à jour
+                    </li>
+                </ul>
+            </section>
+
+
+            <!-- ================= INSCRIPTION ================= -->
+            <!-- Sur mobile le formulaire apparaît en premier. -->
+            <section class="order-1 md:order-2">
+                <h1 class="text-3xl font-bold leading-tight text-anthracite">
+                    Créer mon compte
+                </h1>
+
+                <p class="mt-6 text-sm text-anthracite/60">
+                    L’orientation reste accessible sans compte.
+                </p>
+
+
+                <!-- Message global retourné par le backend. -->
+                @if (errorMessage()) {
+                <p class="mt-5 rounded-xl border border-terracotta/30
+                   bg-white/60 px-4 py-3
+                   text-sm text-terracotta" role="alert">
+                    {{ errorMessage() }}
+                </p>
+                }
+
+
+                <!-- Formulaire réactif Angular. -->
+                <form class="mt-7 space-y-5" [formGroup]="registerForm" (ngSubmit)="register()">
+
+                    <!-- ================= NOM COMPLET ================= -->
+                    <div>
+                        <label for="nom-complet" class="mb-2 block text-sm font-semibold
+                     text-anthracite">
+                            Nom complet
+                        </label>
+
+                        <input id="nom-complet" type="text" formControlName="nom_complet" placeholder="Prénom et nom"
+                            autocomplete="name" maxlength="200" class="w-full rounded-xl border border-sage
+                     bg-white/90 px-4 py-3 text-base
+                     text-anthracite outline-none transition
+                     focus:border-terracotta
+                     focus:ring-1 focus:ring-terracotta">
+
+                        <!-- Champ vide. -->
+                        @if (
+                        registerForm.controls.nom_complet.touched &&
+                        registerForm.controls.nom_complet.hasError('required')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Le nom complet est requis.
+                        </p>
+                        }
+
+                        <!-- Nom trop court. -->
+                        @if (
+                        registerForm.controls.nom_complet.touched &&
+                        registerForm.controls.nom_complet.hasError('minlength')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Le nom doit contenir au moins 2 caractères.
+                        </p>
+                        }
+
+                        <!-- Format incorrect. -->
+                        @if (
+                        registerForm.controls.nom_complet.touched &&
+                        registerForm.controls.nom_complet.hasError('pattern')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Utilisez uniquement des lettres, espaces,
+                            apostrophes ou tirets.
+                        </p>
+                        }
+                    </div>
+
+
+                    <!-- ================= EMAIL ================= -->
+                    <div>
+                        <label for="email" class="mb-2 block text-sm font-semibold
+                     text-anthracite">
+                            Adresse e-mail
+                        </label>
+
+                        <input id="email" type="email" formControlName="email" placeholder="vous@exemple.com"
+                            autocomplete="email" maxlength="254" class="w-full rounded-xl border border-sage
+                     bg-white/90 px-4 py-3 text-base
+                     text-anthracite outline-none transition
+                     focus:border-terracotta
+                     focus:ring-1 focus:ring-terracotta">
+
+                        <!-- Email absent. -->
+                        @if (
+                        registerForm.controls.email.touched &&
+                        registerForm.controls.email.hasError('required')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            L’adresse e-mail est requise.
+                        </p>
+                        }
+
+                        <!-- Format email invalide. -->
+                        @if (
+                        registerForm.controls.email.touched &&
+                        registerForm.controls.email.hasError('email')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Saisissez une adresse e-mail valide.
+                        </p>
+                        }
+                    </div>
+
+
+                    <!-- ================= PAYS ================= -->
+                    <div>
+                        <label for="pays-residence" class="mb-2 block text-sm font-semibold
+                     text-anthracite">
+                            Pays de résidence
+                        </label>
+
+                        <!--
+              Le select limite les saisies incohérentes
+              et normalise les valeurs envoyées au backend.
+            -->
+                        <select id="pays-residence" formControlName="pays_residence" autocomplete="country-name" class="w-full rounded-xl border border-sage
+                     bg-white/90 px-4 py-3 text-base
+                     text-anthracite outline-none transition
+                     focus:border-terracotta
+                     focus:ring-1 focus:ring-terracotta">
+                            <option value="" disabled>
+                                Sélectionnez votre pays
+                            </option>
+
+                            <!-- Génère une option pour chaque pays. -->
+                            @for (country of countries; track country) {
+                            <option [value]="country">
+                                {{ country }}
+                            </option>
+                            }
+                        </select>
+
+                        @if (
+                        registerForm.controls.pays_residence.touched &&
+                        registerForm.controls.pays_residence.hasError('required')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Sélectionnez votre pays de résidence.
+                        </p>
+                        }
+                    </div>
+
+
+                    <!-- ================= MOT DE PASSE ================= -->
+                    <div>
+                        <label for="password" class="mb-2 block text-sm font-semibold
+                     text-anthracite">
+                            Mot de passe
+                        </label>
+
+                        <input id="password" type="password" formControlName="password" placeholder="Votre mot de passe"
+                            autocomplete="new-password" class="w-full rounded-xl border border-sage
+                     bg-white/90 px-4 py-3 text-base
+                     text-anthracite outline-none transition
+                     focus:border-terracotta
+                     focus:ring-1 focus:ring-terracotta">
+
+                        <!-- Mot de passe absent. -->
+                        @if (
+                        registerForm.controls.password.touched &&
+                        registerForm.controls.password.hasError('required')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Le mot de passe est requis.
+                        </p>
+                        }
+
+                        <!-- Mot de passe trop court. -->
+                        @if (
+                        registerForm.controls.password.touched &&
+                        registerForm.controls.password.hasError('minlength')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Le mot de passe doit contenir au moins
+                            8 caractères.
+                        </p>
+                        }
+
+                        <!-- Mot de passe composé uniquement de chiffres. -->
+                        @if (
+                        registerForm.controls.password.touched &&
+                        registerForm.controls.password.hasError('pattern') &&
+                        !registerForm.controls.password.hasError('minlength')
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Le mot de passe ne peut pas contenir
+                            uniquement des chiffres.
+                        </p>
+                        }
+
+                        <!-- Information sur les contrôles supplémentaires Django. -->
+                        <p class="mt-2 text-xs leading-5 text-anthracite/55">
+                            Utilisez au moins 8 caractères et évitez
+                            un mot de passe trop simple ou courant.
+                        </p>
+                    </div>
+
+
+                    <!-- ================= CONDITIONS ================= -->
+                    <div>
+                        <label for="conditions" class="flex cursor-pointer items-start gap-3
+                     text-sm leading-5 text-anthracite/70">
+                            <input id="conditions" type="checkbox" formControlName="conditions" class="mt-1 size-4 shrink-0
+                       accent-terracotta">
+
+                            <span>
+                                J’accepte les conditions d’utilisation.
+                            </span>
+                        </label>
+
+                        @if (
+                        registerForm.controls.conditions.touched &&
+                        registerForm.controls.conditions.invalid
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Vous devez accepter les conditions d’utilisation.
+                        </p>
+                        }
+                    </div>
+
+
+                    <!-- ================= BOUTON ================= -->
+                    <button type="submit" [disabled]="isLoading()" class="flex w-full items-center justify-between
+                   rounded-xl bg-terracotta px-5 py-4
+                   text-sm font-semibold text-white transition
+                   hover:opacity-90
+                   disabled:cursor-not-allowed
+                   disabled:opacity-60">
+                        <span>
+                            {{
+                            isLoading()
+                            ? 'Création en cours...'
+                            : 'Créer mon compte'
+                            }}
+                        </span>
+
+                        <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
+                    </button>
+                </form>
+
+
+                <!-- Lien vers la connexion. -->
+                <p class="mt-5 text-sm text-anthracite/60">
+                    Déjà un compte ?
+
+                    <a routerLink="/connexion" class="font-medium text-terracotta hover:underline">
+                        Se connecter
+                    </a>
+                </p>
+            </section>
+
+        </div>
+    </section>
+</main>
