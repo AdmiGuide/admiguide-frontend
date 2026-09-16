@@ -1,0 +1,441 @@
+<main class="px-5 py-8 md:px-8 lg:px-12">
+
+    <div class="mx-auto max-w-6xl">
+
+        <!-- Chargement -->
+        @if (isLoading()) {
+        <div class="py-20 text-center">
+            <p class="text-sm text-anthracite/60">
+                Chargement de votre orientation...
+            </p>
+        </div>
+        }
+
+        <!-- Erreur -->
+        @if (!isLoading() && errorMessage()) {
+        <section class="mx-auto max-w-2xl rounded-3xl
+               border border-linen bg-white
+               p-7 text-center">
+            <p class="text-sm text-anthracite">
+                {{ errorMessage() }}
+            </p>
+
+            <a routerLink="/orientation" class="mt-6 inline-flex rounded-xl
+                 bg-terracotta px-5 py-3
+                 text-sm font-semibold text-white">
+                Nouvelle situation
+            </a>
+        </section>
+        }
+
+        @if (!isLoading() && result(); as data) {
+
+        <!-- ================= EN-TÊTE ================= -->
+        <section class="flex flex-col gap-6
+               md:flex-row md:items-end
+               md:justify-between">
+
+            <div>
+                <p class="text-xs font-bold uppercase
+                   text-anthracite/65">
+                    Votre orientation
+                </p>
+
+                <h1 class="mt-2 max-w-2xl
+                   text-3xl font-bold leading-tight
+                   text-anthracite md:text-4xl">
+                    Voici par où commencer.
+                </h1>
+
+                <p class="mt-5 text-base leading-7
+                   text-anthracite/70">
+                    Une vue d'ensemble pour avancer,
+                    étape par étape.
+                </p>
+            </div>
+
+            <!-- Visible uniquement sur desktop -->
+            <a routerLink="/orientation" class="hidden items-center gap-4
+                 rounded-xl border border-linen
+                 bg-white px-5 py-3.5
+                 text-sm font-semibold
+                 text-anthracite
+                 transition
+                 hover:border-terracotta
+                 hover:text-terracotta
+                 md:flex">
+                Nouvelle situation
+
+                <svg lucidePlus class="size-5" aria-hidden="true"></svg>
+            </a>
+
+        </section>
+
+
+        <!-- ================= GRILLE ================= -->
+        <div class="mt-10 grid gap-7
+               lg:grid-cols-[minmax(0,1fr)_320px]">
+
+            <!-- ================= COLONNE GAUCHE ================= -->
+            <div class="space-y-7">
+
+
+                <!-- Démarche suggérée -->
+                <section class="rounded-3xl border
+                   border-linen bg-white
+                   p-5 md:p-6">
+
+                    <span class="inline-flex rounded-full
+                     bg-sage/20 px-4 py-2
+                     text-xs text-anthracite/65">
+                        Démarche suggérée
+                    </span>
+
+                    @if (data.demarche) {
+                    <h2 class="mt-4 text-2xl font-bold
+                       leading-snug text-anthracite">
+                        {{ data.demarche.intitule }}
+                    </h2>
+                    }
+
+                    @if (data.resume) {
+                    <p class="mt-4 text-sm leading-6
+                       text-anthracite/65">
+                        {{ data.resume }}
+                    </p>
+                    } @else {
+                    <p class="mt-4 text-sm leading-6
+                       text-anthracite/65">
+                        {{ data.description_initiale }}
+                    </p>
+                    }
+
+                </section>
+
+
+                <!-- Étapes -->
+                <section class="rounded-3xl border
+                   border-linen bg-white
+                   p-5 md:p-6">
+
+                    <div class="flex items-center gap-4">
+
+                        <div class="flex size-9 shrink-0
+                       items-center justify-center
+                       rounded-xl bg-sage/20">
+                            <svg lucideFileText class="size-5 text-anthracite/65" aria-hidden="true"></svg>
+                        </div>
+
+                        <h2 class="text-xl font-bold
+                       text-anthracite md:text-2xl">
+                            Les étapes à suivre
+                        </h2>
+
+                    </div>
+
+                    <div class="mt-7 space-y-7">
+
+                        @for (
+                        etape of data.etapes;
+                        track etape.id
+                        ) {
+
+                        <article class="flex gap-4">
+
+                            <span class="flex size-7 shrink-0
+                           items-center justify-center
+                           rounded-full bg-linen
+                           text-xs font-bold
+                           text-anthracite">
+                                {{ etape.ordre }}
+                            </span>
+
+                            <p class="text-sm font-semibold
+                           leading-6 text-anthracite">
+                                {{ etape.description }}
+                            </p>
+
+                        </article>
+
+                        } @empty {
+
+                        <p class="text-sm text-anthracite/60">
+                            Aucune étape n'est disponible.
+                        </p>
+
+                        }
+
+                    </div>
+
+                </section>
+
+
+                <!-- Informations à préparer -->
+                <section class="rounded-3xl border
+                   border-linen bg-white
+                   p-5 md:p-6">
+
+                    <h2 class="text-xl font-bold
+                     text-anthracite md:text-2xl">
+                        Les informations à préparer
+                    </h2>
+
+                    <ul class="mt-7 space-y-5">
+
+                        @for (
+                        piece of data.pieces_a_preparer;
+                        track piece.libelle
+                        ) {
+
+                        <li class="flex gap-4">
+
+                            <svg lucideCheck class="mt-0.5 size-5 shrink-0
+                           text-sage" aria-hidden="true"></svg>
+
+                            <div>
+                                <p class="text-sm leading-6
+                             text-anthracite/75">
+                                    {{ piece.libelle }}
+                                </p>
+
+                                @if (!piece.obligatoire) {
+                                <span class="mt-1 block text-xs
+                               text-anthracite/50">
+                                    Selon votre situation
+                                </span>
+                                }
+                            </div>
+
+                        </li>
+
+                        } @empty {
+
+                        <li class="text-sm text-anthracite/60">
+                            Aucune information supplémentaire
+                            n'est indiquée.
+                        </li>
+
+                        }
+
+                    </ul>
+
+                    <p class="mt-6 text-xs
+                     text-anthracite/55">
+                        Liste à confirmer auprès du service.
+                    </p>
+
+                </section>
+
+
+                <!-- Sources -->
+                <section class="rounded-3xl border
+                   border-linen bg-white
+                   p-5 md:p-6">
+
+                    <div class="flex items-center gap-4">
+
+                        <div class="flex size-9 shrink-0
+                       items-center justify-center
+                       rounded-xl bg-sage/20">
+                            <svg lucideGlobe class="size-5 text-anthracite/65" aria-hidden="true"></svg>
+                        </div>
+
+                        <h2 class="text-xl font-bold
+                       text-anthracite md:text-2xl">
+                            Les sources à consulter
+                        </h2>
+
+                    </div>
+
+                    <div class="mt-6 space-y-4">
+
+                        @for (
+                        source of data.sources;
+                        track source.url
+                        ) {
+
+                        <div class="flex items-center
+                         justify-between gap-5">
+
+                            <div>
+                                <h3 class="text-sm font-bold
+                             text-anthracite">
+                                    {{ source.titre }}
+                                </h3>
+                            </div>
+
+                            <a [href]="source.url" target="_blank" rel="noopener noreferrer"
+                                aria-label="Consulter la source officielle" class="flex size-10 shrink-0
+                           items-center justify-center
+                           rounded-xl
+                           text-terracotta
+                           transition
+                           hover:bg-sage/10">
+                                <svg lucideExternalLink class="size-5" aria-hidden="true"></svg>
+                            </a>
+
+                        </div>
+
+                        } @empty {
+
+                        <p class="text-sm text-anthracite/60">
+                            Aucune source n'est disponible.
+                        </p>
+
+                        }
+
+                    </div>
+
+                </section>
+
+            </div>
+
+
+            <!-- ================= COLONNE DROITE ================= -->
+            <aside class="space-y-7">
+
+
+                <!-- En résumé -->
+                <section class="rounded-3xl border
+                    border-linen bg-white p-6
+                    lg:sticky lg:top-6 lg:z-10">
+
+                    <h2 class="text-2xl font-bold
+                     text-anthracite">
+                        En résumé
+                    </h2>
+
+                    <dl class="mt-7">
+
+                        @if (data.pays_application; as country) {
+
+                        <div class="border-b border-linen pb-5">
+                            <dt class="text-xs text-anthracite/55">
+                                Pays de la démarche
+                            </dt>
+
+                            <dd class="mt-2 text-sm text-anthracite">
+                                {{ formatCountry(country) }}
+                            </dd>
+                        </div>
+
+                        }
+
+                        @if (mainService(); as service) {
+
+                        <div class="border-b border-linen py-5">
+                            <dt class="text-xs
+                           text-anthracite/55">
+                                Service à identifier
+                            </dt>
+
+                            <dd class="mt-2 text-sm
+                           leading-6 text-anthracite">
+                                {{ service.nom }}
+                            </dd>
+
+                            @if (service.administration) {
+                            <dd class="mt-1 text-xs
+                             text-anthracite/55">
+                                {{ service.administration }}
+                            </dd>
+                            }
+
+                        </div>
+
+                        }
+
+                        <div class="border-b border-linen py-5">
+                            <dt class="text-xs
+                         text-anthracite/55">
+                                Coût
+                            </dt>
+
+                            <dd class="mt-2 text-sm
+                         text-anthracite">
+                                {{
+                                displayValue(
+                                data.demarche?.cout_indicatif
+                                )
+                                }}
+                            </dd>
+                        </div>
+
+                        <div class="pt-5">
+
+                            <dt class="text-xs
+                         text-anthracite/55">
+                                Délai
+                            </dt>
+
+                            <dd class="mt-2 text-sm
+                         text-anthracite">
+                                {{
+                                displayValue(
+                                data.demarche?.delai_indicatif
+                                )
+                                }}
+                            </dd>
+
+                        </div>
+
+                    </dl>
+
+                </section>
+
+
+                <!-- Création de compte pour visiteur -->
+                @if (!authService.isAuthenticated()) {
+
+                <section class="rounded-3xl
+                     bg-sage/10 p-6">
+
+                    <h2 class="text-lg font-bold
+                       leading-6 text-anthracite">
+                        Gardez une trace de vos démarches
+                    </h2>
+
+                    <p class="mt-5 text-sm
+                       leading-6 text-anthracite/65">
+                        Retrouvez vos prochaines orientations
+                        dans votre espace.
+                    </p>
+
+                    <a routerLink="/inscription" class="mt-6 flex w-full
+                       items-center justify-center
+                       rounded-xl border border-linen
+                       bg-white px-5 py-3.5
+                       text-sm font-semibold
+                       text-anthracite
+                       transition
+                       hover:border-terracotta">
+                        Créer mon compte
+                    </a>
+
+                </section>
+
+                }
+
+
+                <!-- Signalement -->
+                <button type="button" class="flex cursor-pointer
+                   items-center gap-3
+                   text-sm font-semibold
+                   text-terracotta
+                   transition hover:underline">
+
+                    <svg lucideFlag class="size-5" aria-hidden="true"></svg>
+
+                    Signaler une information
+
+                </button>
+
+            </aside>
+
+        </div>
+
+        }
+
+    </div>
+
+</main>

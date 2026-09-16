@@ -9,6 +9,7 @@ import { Profile } from './pages/profile/profile';
 import { History } from './pages/history/history';
 
 import { authGuard } from './guards/auth-guard';
+import { OrientationResult } from './pages/orientation-result/orientation-result';
 
 export const routes: Routes = [
   {
@@ -32,6 +33,12 @@ export const routes: Routes = [
         component: Register,
       },
 
+      // Résultat d'une orientation.
+      {
+        path: 'orientation/resultat/:publicId',
+        component: OrientationResult,
+      },
+
       // Redirige l'entrée de l'espace utilisateur
       // vers sa page principale : l'historique.
       {
@@ -53,6 +60,8 @@ export const routes: Routes = [
         component: Profile,
         canActivate: [authGuard],
       },
+
+
     ],
   },
 ];

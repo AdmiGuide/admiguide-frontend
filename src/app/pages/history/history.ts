@@ -5,7 +5,9 @@ import {
   OnInit,
   signal,
 } from '@angular/core';
+
 import { RouterLink } from '@angular/router';
+
 import {
   LucideArrowRight,
   LucideFileText,
@@ -15,14 +17,19 @@ import {
 
 import { AuthService } from '../../services/auth.service';
 import { OrientationService } from '../../services/orientation.service';
+
 import { SituationHistory } from '../../models/situation-history.model';
+
 import { UserSidebar } from '../../components/user-sidebar/user-sidebar';
+
 
 // Filtres disponibles sur l'écran Historique.
 type HistoryFilter = 'all' | 'senegal' | 'abroad';
 
+
 @Component({
   selector: 'app-history',
+
   imports: [
     RouterLink,
     UserSidebar,
@@ -31,122 +38,243 @@ type HistoryFilter = 'all' | 'senegal' | 'abroad';
     LucidePlus,
     LucideSearch,
   ],
+
   templateUrl: './history.html',
   styleUrl: './history.css',
 })
 export class History implements OnInit {
-  // Donne accès à l'utilisateur actuellement connecté.
+
+  // Service utilisé pour récupérer l'utilisateur connecté.
   readonly authService = inject(AuthService);
 
-  // Récupère les situations depuis l'API Django.
-  private readonly orientationService = inject(OrientationService);
+  // Service utilisé pour récupérer les situations depuis Django.
+  private readonly orientationService = inject(
+    OrientationService,
+  );
 
-  // États de la page.
+
+  // ================= ÉTATS DE LA PAGE =================
+
+  // Liste complète des situations retournées par l'API.
   readonly situations = signal<SituationHistory[]>([]);
+
+  // Indique si l'historique est en cours de chargement.
   readonly isLoading = signal(false);
+
+  // Contient un éventuel message d'erreur.
   readonly errorMessage = signal('');
 
-  // États de recherche et de filtrage.
+
+  // ================= RECHERCHE ET FILTRES =================
+
+  // Texte saisi dans le champ de recherche.
   readonly searchTerm = signal('');
+
+  // Filtre actuellement sélectionné.
   readonly selectedFilter = signal<HistoryFilter>('all');
 
-  // Récupère uniquement le prénom pour le message de bienvenue.
+
+  // ================= DONNÉES CALCULÉES =================
+
+  // Récupère uniquement le prénom de l'utilisateur connecté.
   readonly firstName = computed(() => {
-    const fullName = this.authService.currentUser()?.nom_complet;
+    const fullName =
+      this.authService.currentUser()?.nom_complet;
 
     if (!fullName) {
       return '';
     }
 
-    return fullName.trim().split(/\s+/)[0];
+    return fullName
+      .trim()
+      .split(/\s+/)[0];
   });
 
-  // Liste affichée après application de la recherche et du filtre.
+
+  // Retourne les situations après application
+  // de la recherche et du filtre géographique.
   readonly filteredSituations = computed(() => {
+
     const search = this.searchTerm()
       .trim()
       .toLocaleLowerCase('fr');
 
     const filter = this.selectedFilter();
 
+
     return this.situations().filter((situation) => {
-      // Recherche dans le titre de la situation.
+
+      // Vérifie si le titre correspond
+      // au texte recherché.
       const matchesSearch =
         !search ||
         situation.titre
           .toLocaleLowerCase('fr')
           .includes(search);
 
+
       // Aucun filtre géographique.
       if (filter === 'all') {
         return matchesSearch;
       }
 
-      const country = situation.pays_residence
-        ?.trim()
-        .toLocaleLowerCase('fr');
 
+      /*
+       * Le filtre utilise pays_application
+       * et non pays_residence.
+       *
+       * pays_residence :
+       * pays où habite l'utilisateur.
+       *
+       * pays_application :
+       * pays où la démarche doit être effectuée.
+       */
+      const country =
+        situation.pays_application
+          ?.trim()
+          .toLocaleLowerCase('fr');
+
+
+      // Reconnaît le Sénégal même si l'API
+      // renvoie un code pays ou un libellé.
       const isSenegal =
+        country === 'sn' ||
         country === 'sénégal' ||
         country === 'senegal';
 
-      // Situation associée à une résidence au Sénégal.
+
+      // Démarches à effectuer au Sénégal.
       if (filter === 'senegal') {
         return matchesSearch && isSenegal;
       }
 
-      // Résidence située hors du Sénégal.
-      return matchesSearch && !!country && !isSenegal;
+
+      // Démarches à effectuer à l'étranger.
+      return (
+        matchesSearch &&
+        !!country &&
+        !isSenegal
+      );
     });
   });
+
+
+  // ================= INITIALISATION =================
 
   ngOnInit(): void {
     this.loadHistory();
   }
 
-  // Charge l'historique depuis Django.
+
+  // ================= CHARGEMENT DES DONNÉES =================
+
+  // Récupère l'historique de l'utilisateur depuis Django.
   private loadHistory(): void {
+
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-    this.orientationService.getHistory().subscribe({
-      next: (situations) => {
-        this.situations.set(situations);
-        this.isLoading.set(false);
-      },
 
-      error: (error) => {
-        console.error(
-          'Erreur chargement historique :',
-          error,
-        );
+    this.orientationService
+      .getHistory()
+      .subscribe({
 
-        this.errorMessage.set(
-          'Impossible de charger votre historique.',
-        );
+        next: (situations) => {
 
-        this.isLoading.set(false);
-      },
-    });
+          // Enregistre les données reçues
+          // dans le signal Angular.
+          this.situations.set(situations);
+
+          this.isLoading.set(false);
+        },
+
+
+        error: (error) => {
+
+          console.error(
+            'Erreur chargement historique :',
+            error,
+          );
+
+          this.errorMessage.set(
+            'Impossible de charger votre historique.',
+          );
+
+          this.isLoading.set(false);
+        },
+      });
   }
 
-  // Met à jour la recherche lors de la saisie.
+
+  // ================= RECHERCHE =================
+
+  // Met à jour le texte recherché
+  // lorsque l'utilisateur saisit dans le champ.
   updateSearch(event: Event): void {
-    const input = event.target as HTMLInputElement;
+
+    const input =
+      event.target as HTMLInputElement;
+
     this.searchTerm.set(input.value);
   }
 
+
+  // ================= FILTRAGE =================
+
   // Active le filtre sélectionné.
   setFilter(filter: HistoryFilter): void {
+
     this.selectedFilter.set(filter);
   }
 
-  // Formate la date Django pour l'affichage français.
+
+  // ================= FORMATAGE =================
+
+  // Transforme les codes pays utilisés par l'API
+  // en libellés lisibles dans l'interface.
+  formatApplicationCountry(
+    country: string | null,
+  ): string {
+
+    if (!country) {
+      return '';
+    }
+
+
+    const normalizedCountry =
+      country
+        .trim()
+        .toUpperCase();
+
+
+    if (normalizedCountry === 'SN') {
+      return 'Sénégal';
+    }
+
+
+    if (normalizedCountry === 'FR') {
+      return 'France';
+    }
+
+
+    // Si le backend renvoie déjà un nom de pays,
+    // on l'affiche tel quel.
+    return country;
+  }
+
+
+  // Formate la date Django dans un format français.
   formatDate(date: string): string {
-    return new Intl.DateTimeFormat('fr-FR', {
-      day: 'numeric',
-      month: 'short',
-      year: 'numeric',
-    }).format(new Date(date));
+
+    return new Intl.DateTimeFormat(
+      'fr-FR',
+      {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric',
+      },
+    ).format(
+      new Date(date),
+    );
   }
 }

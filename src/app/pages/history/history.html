@@ -186,10 +186,9 @@
                             <!-- Pays et date. -->
                             <p class="mt-2 text-xs
                            text-anthracite/60">
-                                @if (situation.pays_residence) {
-                                {{ situation.pays_residence }} ·
+                                @if (situation.pays_application) {
+                                {{ formatApplicationCountry(situation.pays_application) }} ·
                                 }
-
                                 {{ formatDate(situation.date_creation) }}
                             </p>
 
