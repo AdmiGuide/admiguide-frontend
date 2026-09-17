@@ -13,6 +13,7 @@ import { OrientationResult } from './pages/orientation-result/orientation-result
 import { Orientation } from './pages/orientation/orientation';
 import { OrientationPrecisions } from './pages/orientation-precisions/orientation-precisions';
 import { OrientationSourcesInsuffisantes } from './pages/orientation-sources-insuffisantes/orientation-sources-insuffisantes';
+import { FollowUp } from './pages/follow-up/follow-up';
 
 export const routes: Routes = [
   {
@@ -56,6 +57,11 @@ export const routes: Routes = [
       {
         path: 'orientation/resultat/:publicId',
         component: OrientationResult,
+      },
+
+      {
+        path: 'orientation/suivi/:publicId',
+        component: FollowUp,
       },
 
       // Redirige l'entrée de l'espace utilisateur

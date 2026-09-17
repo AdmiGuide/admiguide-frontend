@@ -5,7 +5,13 @@ import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 import { SituationHistory } from '../models/situation-history.model';
-import { OrientationResultData } from '../models/orientation-result.model';
+
+import {
+  OrientationResultData,
+  UpdateStepRequest,
+  UpdateStepResponse,
+} from '../models/orientation-result.model';
+
 import { CreateSituationRequest, CreateSituationResponse, OrientationQuestion, SubmitAnswersRequest, SubmitAnswersResponse } from '../models/orientation-request.model';
 
 
@@ -65,4 +71,18 @@ export class OrientationService {
       data,
     );
   }
+
+  // Coche ou décoche une étape
+// de la feuille de route.
+updateStep(
+  publicId: string,
+  etapeId: number,
+  data: UpdateStepRequest,
+): Observable<UpdateStepResponse> {
+
+  return this.http.patch<UpdateStepResponse>(
+    `${environment.apiUrl}/orientations/situations/${publicId}/etapes/${etapeId}/`,
+    data,
+  );
+}
 }
