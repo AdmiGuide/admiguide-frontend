@@ -83,3 +83,33 @@ export interface OrientationResultData {
 
   sources: OrientationSource[];
 }
+
+// Données envoyées pour cocher
+// ou décocher une étape.
+export interface UpdateStepRequest {
+  terminee: boolean;
+}
+
+
+// Réponse retournée après
+// la mise à jour d'une étape.
+export interface UpdateStepResponse {
+  etape_id: number;
+  terminee: boolean;
+  progression: OrientationProgression;
+}
+
+// // Données envoyées pour cocher
+// // ou décocher une étape.
+// export interface UpdateOrientationStepRequest {
+//   terminee: boolean;
+// }
+
+
+// // Réponse retournée après
+// // la mise à jour d'une étape.
+// export interface UpdateOrientationStepResponse {
+//   etape_id: number;
+//   terminee: boolean;
+//   progression: OrientationProgression;
+// }

@@ -210,28 +210,51 @@
                     </div>
 
 
-                    <!--
-                Le détail sera réellement disponible
-                lorsque nous intégrerons l'écran résultat.
-              -->
                     @if (situation.orientation_disponible) {
-                    <a [routerLink]="[
-                    '/orientation/resultat',
-                    situation.public_id
-                  ]" class="ml-14 flex w-fit
-                         cursor-pointer items-center
-                         gap-3 rounded-xl
-                         border border-linen
-                         bg-white px-5 py-3.5
-                         text-sm font-semibold
-                         text-anthracite transition
-                         hover:border-terracotta
-                         hover:text-terracotta
-                         md:ml-0">
-                        Consulter
 
-                        <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
-                    </a>
+                    <div class="ml-14 flex flex-col gap-3
+           sm:flex-row sm:items-center
+           md:ml-0">
+
+                        <!-- Suivre ma démarche -->
+                        <a [routerLink]="[
+        '/orientation/suivi',
+        situation.public_id
+      ]" class="flex w-fit
+             cursor-pointer items-center
+             justify-center
+             rounded-xl
+             bg-terracotta
+             px-5 py-3.5
+             text-sm font-semibold
+             text-white
+             transition
+             hover:opacity-90">
+                            Suivre ma démarche
+                        </a>
+
+
+                        <!-- Consulter -->
+                        <a [routerLink]="[
+                            '/orientation/resultat',
+                            situation.public_id
+                            ]" class="flex w-fit
+                                cursor-pointer items-center
+                                gap-3 rounded-xl
+                                border border-linen
+                                bg-white px-5 py-3.5
+                                text-sm font-semibold
+                                text-anthracite
+                                transition
+                                hover:border-terracotta
+                                hover:text-terracotta">
+                            Consulter
+
+                            <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
+                        </a>
+
+                    </div>
+
                     }
 
                 </article>

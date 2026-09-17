@@ -1,0 +1,321 @@
+<!-- ==================== CHARGEMENT ==================== -->
+@if (isLoading()) {
+
+<main class="px-5 py-10 md:px-8 lg:px-12">
+    <div class="mx-auto max-w-4xl py-20
+             text-center text-sm text-anthracite/60">
+        Chargement de votre feuille de route...
+    </div>
+</main>
+
+}
+
+<!-- ==================== ERREUR ==================== -->
+@else if (errorMessage() && !result()) {
+
+<main class="px-5 py-10 md:px-8 lg:px-12">
+
+    <div class="mx-auto max-w-xl
+             rounded-2xl border border-linen
+             bg-white p-8 text-center">
+
+        <p class="text-sm font-medium text-terracotta">
+            {{ errorMessage() }}
+        </p>
+
+        <button type="button" (click)="retry()" class="mt-6 cursor-pointer
+               rounded-xl bg-terracotta
+               px-5 py-3
+               text-sm font-bold text-white
+               transition hover:opacity-90">
+            Réessayer
+        </button>
+
+    </div>
+
+</main>
+
+}
+
+<!-- ==================== SUIVI ==================== -->
+@else if (result(); as followUp) {
+
+<main class="px-5 py-8 md:px-8 lg:px-12">
+
+    <div class="mx-auto max-w-4xl">
+
+        <!-- ==================== EN-TÊTE ==================== -->
+        <section>
+
+            <p class="text-xs font-semibold
+                 tracking-[0.14em]
+                 text-anthracite/70">
+                MON ESPACE
+            </p>
+
+            <h1 class="mt-3 text-3xl font-bold
+                 leading-tight text-anthracite
+                 md:text-4xl">
+                Suivi de ma démarche
+            </h1>
+
+            <p class="mt-3 text-base
+                 text-anthracite/70">
+                Avancez à votre rythme, étape par étape.
+            </p>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- RÉSUMÉ DE LA DÉMARCHE -->
+        <!-- ================================================= -->
+        <section class="follow-up-background
+               relative mt-8 overflow-hidden
+               rounded-3xl
+               p-3
+               shadow-[0_8px_24px_rgba(38,43,39,0.06)]
+               md:p-4">
+
+            <!-- Glassmorphisme -->
+            <div class="relative rounded-3xl
+                 border border-white/90
+                 bg-white/55
+                 p-6
+                 backdrop-blur-[8px]
+                 md:p-8">
+
+                <h2 class="max-w-3xl
+                   text-xl font-bold
+                   leading-8 text-anthracite
+                   md:text-2xl">
+                    {{ followUp.demarche?.intitule }}
+                </h2>
+
+
+                <!-- ==================== PROGRESSION ==================== -->
+                <div class="mt-5">
+
+                    <div class="flex items-center
+                     justify-between gap-4">
+
+                        <span class="text-sm font-semibold
+                       text-anthracite">
+                            Progression
+                        </span>
+
+                        <span class="text-lg font-bold
+                       text-terracotta">
+                            {{ followUp.progression.pourcentage }} %
+                        </span>
+
+                    </div>
+
+
+                    <!-- Barre de progression -->
+                    <div class="mt-3 h-2.5
+                     overflow-hidden rounded-full
+                     bg-linen" role="progressbar" [attr.aria-valuenow]="
+                followUp.progression.pourcentage
+              " aria-valuemin="0" aria-valuemax="100">
+
+                        <div class="h-full rounded-full
+                       bg-terracotta
+                       transition-all
+                       duration-300" [style.width.%]="
+                  followUp.progression.pourcentage
+                "></div>
+
+                    </div>
+
+
+                    <p class="mt-3 text-sm
+                     text-anthracite/70">
+                        {{ followUp.progression.terminees }}
+                        étapes sur
+                        {{ followUp.progression.total }}
+                        terminées
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- FEUILLE DE ROUTE -->
+        <!-- ================================================= -->
+        <section class="mt-8">
+
+            <!-- Titre -->
+            <div class="flex items-center gap-3">
+
+                <div class="flex size-9
+                   items-center justify-center
+                   rounded-xl bg-linen">
+                    <svg lucideListChecks class="size-5 text-sage" aria-hidden="true"></svg>
+                </div>
+
+
+                <h2 class="text-xl font-bold
+                   text-anthracite
+                   md:text-2xl">
+                    Ma feuille de route
+                </h2>
+
+            </div>
+
+
+            <p class="mt-4 text-sm leading-6
+                 text-anthracite/70">
+                Cochez les étapes réalisées.
+                Vous pouvez les décocher à tout moment.
+            </p>
+
+
+            <!-- ==================== MESSAGE ERREUR ==================== -->
+            @if (errorMessage()) {
+
+            <p class="mt-4 text-sm font-medium
+                   text-terracotta" aria-live="polite">
+                {{ errorMessage() }}
+            </p>
+
+            }
+
+
+            <!-- ==================== ÉTAPES ==================== -->
+            <div class="mt-4 space-y-3">
+
+                @for (
+                etape of followUp.etapes;
+                track etape.id
+                ) {
+
+                <button type="button" role="checkbox" [attr.aria-checked]="etape.terminee" [disabled]="
+                isUpdatingStep(etape.id)
+              " (click)="
+                toggleStep(
+                  etape.id,
+                  etape.terminee
+                )
+              " [class]="
+                etape.terminee
+                  ? 'flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-linen bg-linen/80 p-4 text-left transition disabled:cursor-wait disabled:opacity-60'
+                  : 'flex w-full cursor-pointer items-center gap-4 rounded-2xl border border-linen bg-white p-4 text-left transition hover:bg-cream/60 disabled:cursor-wait disabled:opacity-60'
+              ">
+
+                    <!-- Checkbox visuelle -->
+                    <span [class]="
+                  etape.terminee
+                    ? 'flex size-6 shrink-0 items-center justify-center rounded-lg border border-terracotta bg-terracotta text-white'
+                    : 'flex size-6 shrink-0 items-center justify-center rounded-lg border border-sage bg-white'
+                ">
+
+                        @if (etape.terminee) {
+
+                        <svg lucideCheck class="size-4" aria-hidden="true"></svg>
+
+                        }
+
+                    </span>
+
+
+                    <!-- Texte étape -->
+                    <span class="flex-1">
+
+                        <span class="block font-semibold
+                         text-anthracite">
+                            {{ etape.description }}
+                        </span>
+
+                        <span class="mt-1 block text-xs
+                         text-anthracite/65">
+                            @if (isUpdatingStep(etape.id)) {
+
+                            Mise à jour...
+
+                            } @else if (etape.terminee) {
+
+                            Terminée
+
+                            } @else {
+
+                            À faire
+
+                            }
+                        </span>
+
+                    </span>
+
+                </button>
+
+                }
+
+            </div>
+
+        </section>
+
+
+        <!-- ================================================= -->
+        <!-- NAVIGATION BAS -->
+        <!-- ================================================= -->
+        <div class="mt-8 flex flex-col gap-3
+               md:flex-row
+               md:items-center
+               md:justify-between">
+
+            <!-- Retour résultat -->
+            <a [routerLink]="[
+            '/orientation/resultat',
+            followUp.public_id
+          ]" class="group flex h-12 w-full
+                 items-center justify-center
+                 gap-3 rounded-xl
+                 border border-linen
+                 bg-white
+                 px-5
+                 text-sm font-semibold
+                 text-anthracite/80
+                 transition
+                 hover:bg-cream/60
+                 md:w-52">
+
+                <svg lucideArrowLeft class="size-5
+                   transition-transform
+                   duration-200
+                   group-hover:-translate-x-1" aria-hidden="true"></svg>
+
+                Votre orientation
+
+            </a>
+
+
+            <!-- Historique -->
+            <a routerLink="/espace/historique" class="flex h-12 w-full
+                 items-center justify-center
+                 gap-3 rounded-xl
+                 border border-linen
+                 bg-white
+                 px-5
+                 text-sm font-semibold
+                 text-anthracite/80
+                 transition
+                 hover:bg-cream/60
+                 md:w-52">
+
+                <svg lucideHistory class="size-5" aria-hidden="true"></svg>
+
+                Mon historique
+
+            </a>
+
+        </div>
+
+    </div>
+
+</main>
+
+}
