@@ -6,6 +6,7 @@ import { environment } from '../../environments/environment';
 
 import { SituationHistory } from '../models/situation-history.model';
 import { OrientationResultData } from '../models/orientation-result.model';
+import { CreateSituationRequest, CreateSituationResponse, OrientationQuestion, SubmitAnswersRequest, SubmitAnswersResponse } from '../models/orientation-request.model';
 
 
 @Service()
@@ -28,6 +29,40 @@ export class OrientationService {
   getHistory(): Observable<SituationHistory[]> {
     return this.http.get<SituationHistory[]>(
       `${environment.apiUrl}/orientations/historique/`,
+    );
+  }
+
+  // Crée une situation et lance son analyse.
+  createSituation(
+    data: CreateSituationRequest,
+  ): Observable<CreateSituationResponse> {
+
+    return this.http.post<CreateSituationResponse>(
+      `${environment.apiUrl}/orientations/situations/`,
+      data,
+    );
+  }
+
+  // Récupère les questions encore sans réponse.
+  getQuestions(
+    publicId: string,
+  ): Observable<OrientationQuestion[]> {
+
+    return this.http.get<OrientationQuestion[]>(
+      `${environment.apiUrl}/orientations/situations/${publicId}/questions/`,
+    );
+  }
+
+
+// Enregistre les réponses puis relance l'analyse.
+  submitAnswers(
+    publicId: string,
+    data: SubmitAnswersRequest,
+  ): Observable<SubmitAnswersResponse> {
+
+    return this.http.post<SubmitAnswersResponse>(
+      `${environment.apiUrl}/orientations/situations/${publicId}/reponses/`,
+      data,
     );
   }
 }

@@ -10,6 +10,9 @@ import { History } from './pages/history/history';
 
 import { authGuard } from './guards/auth-guard';
 import { OrientationResult } from './pages/orientation-result/orientation-result';
+import { Orientation } from './pages/orientation/orientation';
+import { OrientationPrecisions } from './pages/orientation-precisions/orientation-precisions';
+import { OrientationSourcesInsuffisantes } from './pages/orientation-sources-insuffisantes/orientation-sources-insuffisantes';
 
 export const routes: Routes = [
   {
@@ -31,6 +34,22 @@ export const routes: Routes = [
       {
         path: 'inscription',
         component: Register,
+      },
+
+      // Décrire une situation administrative.
+      {
+        path: 'orientation',
+        component: Orientation,
+      },
+
+      {
+        path: 'orientation/precisions/:publicId',
+        component: OrientationPrecisions,
+      },
+
+      {
+        path: 'orientation/sources-insuffisantes/:publicId',
+        component: OrientationSourcesInsuffisantes,
       },
 
       // Résultat d'une orientation.

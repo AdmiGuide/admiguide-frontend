@@ -1,0 +1,85 @@
+<!-- ==================== CONTENU ==================== -->
+<main class="px-4 py-8 md:px-8 lg:px-12">
+
+    <!--
+    L'image d'arrière-plan est définie
+    dans le CSS du composant.
+  -->
+    <section class="insufficient-background
+           relative mx-auto max-w-3xl
+           overflow-hidden rounded-3xl
+           p-3 md:p-4">
+
+        <!-- ==================== CARTE GLASS ==================== -->
+        <div class="relative rounded-3xl
+             border border-white/90
+             bg-white/50
+             px-7 py-10
+             shadow-[0_16px_36px_rgba(38,43,39,0.06)]
+             backdrop-blur-[8px]
+             md:px-10 md:py-10">
+
+            <!-- Icône -->
+            <div class="mx-auto flex size-14
+               items-center justify-center
+               rounded-full bg-linen
+               text-sage">
+                <svg lucideSearch class="size-6" aria-hidden="true"></svg>
+            </div>
+
+
+            <!-- ==================== MESSAGE ==================== -->
+            <div class="mt-5">
+
+                <h1 class="max-w-xl
+                 text-3xl font-bold
+                 leading-tight text-anthracite
+                 md:text-4xl">
+                    Nous manquons d'informations fiables.
+                </h1>
+
+
+                <p class="mt-7 max-w-2xl
+                 text-base leading-7
+                 text-anthracite/70">
+                    Vous pouvez préciser votre situation ou reformuler votre demande.
+                    Nous ne présentons pas une réponse incertaine comme une information
+                    confirmée.
+                </p>
+
+            </div>
+
+
+            <!-- ==================== ACTION PRINCIPALE ==================== -->
+            <a routerLink="/orientation" class="group mt-10 flex w-full
+               items-center justify-between
+               rounded-xl
+               bg-terracotta
+               px-5 py-4
+               text-sm font-bold text-white
+               transition
+               hover:opacity-90">
+                Préciser ma situation
+
+                <svg lucideArrowRight class="size-4
+                 transition-transform
+                 duration-200
+                 group-hover:translate-x-1" aria-hidden="true"></svg>
+            </a>
+
+
+            <!-- ==================== RETOUR ACCUEIL ==================== -->
+            <a routerLink="/" class="mt-5 inline-block
+               rounded-xl
+               px-1 py-2
+               text-sm text-terracotta
+               transition
+               hover:underline">
+                Revenir à l'accueil
+            </a>
+
+        </div>
+
+    </section>
+
+</main>

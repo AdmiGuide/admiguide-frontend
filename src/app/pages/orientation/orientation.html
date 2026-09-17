@@ -1,0 +1,329 @@
+@if (isLoading()) {
+
+<!-- ==================== ÉTAT CHARGEMENT ==================== -->
+<app-orientation-loading (cancel)="cancelAnalysis()" />
+
+} @else if (hasTechnicalError()) {
+
+<!-- ==================== ERREUR TECHNIQUE ==================== -->
+<app-orientation-error (retry)="retryAnalysis()" />
+
+} @else {
+
+<!-- ==================== ÉTAPES ==================== -->
+<section class="px-5 pt-5 md:px-8 lg:px-12">
+    <div class="mx-auto max-w-3xl">
+
+        <div class="grid grid-cols-[auto_1fr_auto_1fr_auto]
+               items-start gap-x-2
+               md:items-center md:gap-x-3">
+
+            <!-- Étape 1 -->
+            <div class="flex flex-col items-center gap-2
+                 md:flex-row md:gap-2">
+                <span class="flex size-5 shrink-0 items-center justify-center
+                   rounded-full bg-terracotta
+                   text-xs font-bold text-white">
+                    1
+                </span>
+
+                <span class="whitespace-nowrap text-[10px]
+                   font-bold text-terracotta
+                   md:text-xs">
+                    Votre situation
+                </span>
+            </div>
+
+
+            <!-- Trait -->
+            <div class="mt-2.5 h-px bg-linen md:mt-0"></div>
+
+
+            <!-- Étape 2 -->
+            <div class="flex flex-col items-center gap-2
+                 md:flex-row md:gap-2">
+                <span class="flex size-5 shrink-0 items-center justify-center
+                   rounded-full border border-linen
+                   bg-white text-xs font-bold text-sage">
+                    2
+                </span>
+
+                <span class="whitespace-nowrap text-[10px]
+                   text-anthracite/60
+                   md:text-xs">
+                    <span class="md:hidden">
+                        Précisions
+                    </span>
+
+                    <span class="hidden md:inline">
+                        Quelques précisions
+                    </span>
+                </span>
+            </div>
+
+
+            <!-- Trait -->
+            <div class="mt-2.5 h-px bg-linen md:mt-0"></div>
+
+
+            <!-- Étape 3 -->
+            <div class="flex flex-col items-center gap-2
+                 md:flex-row md:gap-2">
+                <span class="flex size-5 shrink-0 items-center justify-center
+                   rounded-full border border-linen
+                   bg-white text-xs font-bold text-sage">
+                    3
+                </span>
+
+                <span class="whitespace-nowrap text-[10px]
+                   text-anthracite/60
+                   md:text-xs">
+                    <span class="md:hidden">
+                        Orientation
+                    </span>
+
+                    <span class="hidden md:inline">
+                        Votre orientation
+                    </span>
+                </span>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- ==================== CONTENU ==================== -->
+<main class="px-4 py-7 md:px-8 lg:px-12">
+
+    <section class="orientation-background
+             relative mx-auto max-w-5xl
+             overflow-hidden rounded-3xl
+             p-3 md:p-4">
+
+        <!-- ==================== GLASS PRINCIPAL ==================== -->
+        <div class="relative rounded-3xl
+               border border-white/90
+               bg-white/50
+               px-6 py-7
+               shadow-[0_16px_36px_rgba(38,43,39,0.06)]
+               backdrop-blur-[8px]
+               md:px-8 md:py-8">
+
+            <!-- Badge -->
+            <span class="inline-block rounded-full
+                 bg-white/75 px-4 py-2
+                 text-xs text-anthracite/70">
+                Orientation administrative
+            </span>
+
+
+            <!-- ==================== GRILLE ==================== -->
+            <div class="mt-4 grid gap-8
+                 lg:grid-cols-[minmax(0,1fr)_300px]
+                 lg:items-start">
+
+                <!-- ==================== FORMULAIRE ==================== -->
+                <div>
+
+                    <h1 class="text-3xl font-bold leading-tight
+                     text-anthracite
+                     md:text-4xl">
+                        Qu'est-ce qui vous amène ?
+                    </h1>
+
+
+                    <p class="mt-6 max-w-xl
+                     text-base leading-6
+                     text-anthracite/75">
+                        Décrivez votre situation. Nous vous aiderons à identifier
+                        les prochaines étapes.
+                    </p>
+
+
+                    <form class="mt-8" (submit)="$event.preventDefault(); submitSituation()">
+
+                        <!-- Situation -->
+                        <div>
+
+                            <label for="situation" class="mb-3 block text-sm font-bold
+                         text-anthracite">
+                                Votre situation
+                            </label>
+
+
+                            <textarea id="situation" name="situation" rows="7" [maxLength]="maxLength"
+                                [value]="situation()" (input)="onSituationInput($event)"
+                                [attr.aria-invalid]="errorMessage() ? 'true' : null"
+                                aria-describedby="situation-help situation-error"
+                                placeholder="Par exemple : j'ai perdu mon passeport sénégalais et je ne sais pas comment le remplacer."
+                                class="min-h-[190px] w-full resize-none
+                         rounded-xl border border-sage
+                         bg-white/85
+                         px-4 py-3
+                         text-base leading-6
+                         text-anthracite
+                         outline-none transition
+                         placeholder:text-anthracite/45
+                         focus:border-terracotta
+                         focus:ring-1
+                         focus:ring-terracotta"></textarea>
+
+
+                            <!-- Aide + compteur -->
+                            <div class="mt-2 flex items-center
+                         justify-between gap-3">
+
+                                <p id="situation-help" class="text-xs text-anthracite/55">
+                                    Évitez les numéros de pièces d’identité.
+                                </p>
+
+                                <p class="shrink-0 text-xs
+                           text-anthracite/55">
+                                    {{ situation().length }} / 1 500
+                                </p>
+
+                            </div>
+
+
+                            <!-- Erreur de saisie -->
+                            @if (errorMessage()) {
+
+                            <p id="situation-error" class="mt-2 text-sm font-medium
+                           text-terracotta" aria-live="polite">
+                                {{ errorMessage() }}
+                            </p>
+
+                            }
+
+                        </div>
+
+
+                        <!-- Information -->
+                        <div class="mt-5 flex items-start gap-3
+                       rounded-xl
+                       bg-cream/80
+                       px-5 py-4">
+
+                            <svg lucideInfo class="mt-0.5 size-5 shrink-0
+                         text-anthracite/65" aria-hidden="true"></svg>
+
+                            <p class="text-sm leading-6
+                         text-anthracite/70">
+                                Aucun compte n'est nécessaire pour obtenir une orientation.
+                            </p>
+
+                        </div>
+
+
+                        <!-- Actions -->
+                        <div class="mt-9 flex items-center
+                       justify-between gap-4">
+
+                            <!-- Retour -->
+                            <a routerLink="/" class="group inline-flex
+                         items-center gap-3
+                         rounded-2xl
+                         px-4 py-3
+                         text-sm font-bold
+                         text-terracotta
+                         transition-all duration-200
+                         hover:bg-terracotta/10">
+                                Retour
+
+                                <svg lucideArrowLeft class="size-5
+                           transition-transform duration-200
+                           group-hover:-translate-x-1" aria-hidden="true"></svg>
+                            </a>
+
+
+                            <!-- Continuer -->
+                            <button type="submit" class="inline-flex cursor-pointer
+                         items-center gap-8
+                         rounded-xl
+                         bg-terracotta
+                         px-5 py-4
+                         text-sm font-bold
+                         text-white
+                         transition
+                         hover:opacity-90">
+                                Continuer
+
+                                <svg lucideArrowRight class="size-4" aria-hidden="true"></svg>
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+
+                <!-- ==================== DÉTAILS UTILES ==================== -->
+                <aside class="rounded-2xl
+                   border border-white/90
+                   bg-white/55
+                   p-5
+                   backdrop-blur-[8px]">
+
+                    <svg lucideFileText class="size-6 text-sage" aria-hidden="true"></svg>
+
+
+                    <h2 class="mt-4 text-base font-bold
+                     text-anthracite">
+                        Les détails utiles
+                    </h2>
+
+
+                    <p class="mt-4 text-sm leading-6
+                     text-anthracite/70">
+                        Quelques précisions peuvent nous aider à mieux comprendre :
+                    </p>
+
+
+                    <ul class="mt-3 list-disc space-y-1
+                     pl-5 text-sm leading-5
+                     text-anthracite/70">
+                        <li>Ce qui s'est passé</li>
+                        <li>Le pays où vous résidez</li>
+                        <li>Ce que vous avez déjà fait</li>
+                    </ul>
+
+
+                    <!-- Exemple desktop -->
+                    <div class="mt-7 hidden
+                     border-t border-linen
+                     pt-5 md:block">
+
+                        <p class="text-xs font-bold uppercase
+                       text-anthracite/60">
+                            Par exemple
+                        </p>
+
+
+                        <p class="mt-4 text-sm leading-6
+                       text-anthracite/70">
+                            « Je vis en France et mon enfant vient de naître. »
+                        </p>
+
+
+                        <button type="button" (click)="useExample()" class="mt-7 cursor-pointer
+                       text-left text-xs font-bold
+                       text-terracotta
+                       hover:underline">
+                            Utiliser cet exemple
+                        </button>
+
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+}

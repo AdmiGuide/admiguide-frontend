@@ -1,0 +1,15 @@
+/* Background mobile. */
+.precisions-background {
+  background-image: url('/images/background-admiguide-mobile.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+
+/* Background desktop. */
+@media (min-width: 768px) {
+  .precisions-background {
+    background-image: url('/images/background-admiguide.png');
+  }
+}

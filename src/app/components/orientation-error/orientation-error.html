@@ -1,0 +1,76 @@
+<!-- ==================== ÉTAT ERREUR TECHNIQUE ==================== -->
+<main class="px-4 py-8 md:px-8 lg:px-12">
+
+    <section class="error-background
+           relative mx-auto max-w-3xl
+           overflow-hidden rounded-3xl
+           p-3 md:p-4">
+
+        <!-- Carte glassmorphisme -->
+        <div class="relative rounded-3xl
+             border border-white/90
+             bg-white/50
+             px-7 py-10
+             shadow-[0_16px_36px_rgba(38,43,39,0.06)]
+             backdrop-blur-[8px]
+             md:px-10 md:py-10" role="alert" aria-live="assertive">
+
+            <!-- Icône -->
+            <div class="mx-auto flex size-14
+               items-center justify-center
+               rounded-full bg-linen">
+                <svg lucideFileText class="size-6 text-sage" aria-hidden="true"></svg>
+            </div>
+
+
+            <!-- Message -->
+            <div class="mt-5">
+
+                <h1 class="text-3xl font-bold
+                 leading-tight text-anthracite
+                 md:text-4xl">
+                    L'analyse n'a pas pu aboutir.
+                </h1>
+
+                <p class="mt-7 max-w-2xl
+                 text-base leading-7
+                 text-anthracite/70">
+                    Un problème a interrompu la recherche.
+                    Votre description est conservée ;
+                    vous pouvez réessayer.
+                </p>
+
+            </div>
+
+
+            <!-- Réessayer -->
+            <button type="button" (click)="retryAnalysis()" class="mt-9 flex w-full
+               cursor-pointer
+               items-center justify-between
+               rounded-xl
+               bg-terracotta
+               px-5 py-4
+               text-sm font-bold
+               text-white
+               transition
+               hover:opacity-90">
+                Réessayer
+
+                <svg lucideArrowRight class="size-5" aria-hidden="true"></svg>
+            </button>
+
+
+            <!-- Retour accueil -->
+            <a routerLink="/" class="mt-6 inline-block
+               text-sm font-medium
+               text-terracotta
+               transition
+               hover:underline">
+                Revenir à l'accueil
+            </a>
+
+        </div>
+
+    </section>
+
+</main>

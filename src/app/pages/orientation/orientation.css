@@ -1,0 +1,14 @@
+/* Background mobile de la zone d'orientation. */
+.orientation-background {
+  background-image: url('/images/background-admiguide-mobile.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Background desktop. */
+@media (min-width: 768px) {
+  .orientation-background {
+    background-image: url('/images/background-admiguide.png');
+  }
+}
