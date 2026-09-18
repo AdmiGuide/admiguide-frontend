@@ -14,6 +14,10 @@ import { Orientation } from './pages/orientation/orientation';
 import { OrientationPrecisions } from './pages/orientation-precisions/orientation-precisions';
 import { OrientationSourcesInsuffisantes } from './pages/orientation-sources-insuffisantes/orientation-sources-insuffisantes';
 import { FollowUp } from './pages/follow-up/follow-up';
+import { AdminLayout } from './layouts/admin-layout/admin-layout';
+import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
+import { adminGuard } from './guards/admin-guard';
+import { AdminUsers } from './pages/admin-users/admin-users';
 
 export const routes: Routes = [
   {
@@ -87,6 +91,24 @@ export const routes: Routes = [
       },
 
 
+    ],
+  },
+
+  {
+    path: 'admin',
+    component: AdminLayout,
+    canActivate: [adminGuard],
+
+    children: [
+      {
+        path: '',
+        component: AdminDashboard,
+      },
+
+      {
+        path: 'utilisateurs',
+        component: AdminUsers,
+      },
     ],
   },
 ];

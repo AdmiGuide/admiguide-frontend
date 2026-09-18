@@ -1,1 +1,47 @@
-<p>admin-layout works!</p>
+<div class="flex min-h-screen flex-col">
+
+    <!-- Header commun à AdmiGuide -->
+    <app-header />
+
+
+    <!-- Zone principale de l'administration -->
+    <main class="flex-1 px-5 py-8
+           md:px-8
+           lg:px-12 lg:py-10">
+        <div class="mx-auto max-w-6xl">
+
+            <!-- Navigation admin mobile -->
+            <div class="mb-10 lg:hidden">
+                <app-admin-sidebar mode="mobile" />
+            </div>
+
+
+            <!-- Structure desktop -->
+            <div class="grid gap-8
+               lg:grid-cols-[216px_minmax(0,1fr)]
+               lg:gap-10">
+
+                <!-- Sidebar admin desktop -->
+                <div class="hidden lg:block">
+                    <app-admin-sidebar mode="desktop" />
+                </div>
+
+
+                <!--
+          Les pages admin seront affichées ici :
+          dashboard, utilisateurs, sources, signalements...
+        -->
+                <section class="min-w-0">
+                    <router-outlet />
+                </section>
+
+            </div>
+
+        </div>
+    </main>
+
+
+    <!-- Footer commun -->
+    <app-footer />
+
+</div>

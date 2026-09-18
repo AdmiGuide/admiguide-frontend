@@ -68,6 +68,10 @@ export class AuthService {
     () => this.currentUser() !== null,
   );
 
+  // Indique si l'utilisateur connecté est administrateur.
+  readonly isAdmin = computed(
+    () => this.currentUser()?.role === 'admin',
+  );
 
   // Crée un nouveau compte utilisateur.
   register(credentials: RegisterCredentials): Observable<User> {

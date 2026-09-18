@@ -4,4 +4,5 @@ export interface User {
   nom_complet: string;
   email: string;
   pays_residence: string;
+  role: 'user' | 'admin';
 }

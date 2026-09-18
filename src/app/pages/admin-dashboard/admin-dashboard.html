@@ -1,0 +1,196 @@
+<!-- En-tête -->
+<section>
+    <p class="text-xs font-bold uppercase text-anthracite/70">
+        Administration
+    </p>
+
+    <h1 class="mt-2 text-3xl font-bold text-anthracite md:text-4xl">
+        Vue d'ensemble
+    </h1>
+
+    <p class="mt-5 max-w-2xl text-base leading-7 text-anthracite/75">
+        Supervisez les utilisateurs, les sources et les signalements.
+    </p>
+</section>
+
+
+<!-- Statistiques -->
+<section class="mt-10 grid grid-cols-3 gap-2 sm:gap-4">
+    <!-- Utilisateurs -->
+    <article class="flex min-h-32 flex-col rounded-2xl
+           border border-linen bg-white p-3
+           sm:p-4 lg:min-h-40">
+        <p class="text-[11px] text-anthracite/65 sm:text-sm">
+            Utilisateurs
+        </p>
+
+        <p class="mt-4 text-3xl font-bold text-anthracite md:text-4xl">
+            4
+        </p>
+
+        <p class="mt-auto text-[10px] text-anthracite/60 sm:text-xs">
+            3 comptes actifs
+        </p>
+    </article>
+
+
+    <!-- Sources -->
+    <article class="flex min-h-32 flex-col rounded-2xl
+           border border-linen bg-white p-3
+           sm:p-4 lg:min-h-40">
+        <p class="text-[11px] text-anthracite/65 sm:text-sm">
+            Sources intégrées
+        </p>
+
+        <p class="mt-4 text-3xl font-bold text-anthracite md:text-4xl">
+            3
+        </p>
+
+        <p class="mt-auto text-[10px] text-anthracite/60 sm:text-xs">
+            1 à vérifier
+        </p>
+    </article>
+
+
+    <!-- Signalements -->
+    <article class="flex min-h-32 flex-col rounded-2xl
+           border border-linen bg-white p-3
+           sm:p-4 lg:min-h-40">
+        <p class="text-[11px] text-anthracite/65 sm:text-sm">
+            Nouveaux signalements
+        </p>
+
+        <p class="mt-4 text-3xl font-bold text-anthracite md:text-4xl">
+            1
+        </p>
+
+        <p class="mt-auto text-[10px] text-anthracite/60 sm:text-xs">
+            À examiner
+        </p>
+    </article>
+</section>
+
+
+<!-- Cartes principales -->
+<section class="mt-7 grid gap-5 xl:grid-cols-2">
+
+    <!-- Signalements à examiner -->
+    <article class="flex min-h-[400px] flex-col rounded-2xl
+           border border-linen bg-white p-6">
+        <h2 class="text-2xl font-bold text-anthracite">
+            À examiner
+        </h2>
+
+
+        <!-- Signalement 1 -->
+        <div class="mt-7">
+            <h3 class="font-bold text-anthracite">
+                Un lien vers la source ne fonctionne plus
+            </h3>
+
+            <p class="mt-3 text-sm text-anthracite/60">
+                Perte de passeport
+            </p>
+
+            <span class="mt-3 inline-flex rounded-full
+               bg-terracotta/15 px-4 py-2
+               text-xs font-medium text-terracotta">
+                Nouveau
+            </span>
+        </div>
+
+
+        <!-- Signalement 2 -->
+        <div class="mt-6">
+            <h3 class="font-bold text-anthracite">
+                Une précision manque dans les pièces
+            </h3>
+
+            <p class="mt-3 text-sm text-anthracite/60">
+                Naissance à l'étranger
+            </p>
+
+            <span class="mt-3 inline-flex rounded-full
+               bg-sage/20 px-4 py-2
+               text-xs font-medium text-anthracite/75">
+                En cours
+            </span>
+        </div>
+
+
+        <a routerLink="/admin/signalements" class="mt-auto pt-8 text-sm font-semibold
+             text-terracotta transition hover:opacity-75">
+            Voir les signalements →
+        </a>
+    </article>
+
+
+    <!-- État des sources -->
+    <article class="flex min-h-[400px] flex-col rounded-2xl
+           border border-linen bg-white p-6">
+        <h2 class="text-2xl font-bold text-anthracite">
+            État des sources
+        </h2>
+
+
+        <!-- Source 1 -->
+        <div class="mt-7">
+            <h3 class="font-bold text-anthracite">
+                Ministère de l'Intérieur
+            </h3>
+
+            <p class="mt-2 text-sm text-anthracite/60">
+                Identité
+            </p>
+
+            <span class="mt-3 inline-flex rounded-full
+               bg-sage/20 px-4 py-2
+               text-xs font-medium text-anthracite/75">
+                Disponible
+            </span>
+        </div>
+
+
+        <!-- Source 2 -->
+        <div class="mt-5">
+            <h3 class="font-bold text-anthracite">
+                Consulat du Sénégal à Paris
+            </h3>
+
+            <p class="mt-2 text-sm text-anthracite/60">
+                État civil
+            </p>
+
+            <span class="mt-3 inline-flex rounded-full
+               bg-terracotta/15 px-4 py-2
+               text-xs font-medium text-terracotta">
+                À vérifier
+            </span>
+        </div>
+
+
+        <!-- Source 3 -->
+        <div class="mt-5">
+            <h3 class="font-bold text-anthracite">
+                Douanes sénégalaises
+            </h3>
+
+            <p class="mt-2 text-sm text-anthracite/60">
+                Retour
+            </p>
+
+            <span class="mt-3 inline-flex rounded-full
+               bg-sage/20 px-4 py-2
+               text-xs font-medium text-anthracite/75">
+                Disponible
+            </span>
+        </div>
+
+
+        <a routerLink="/admin/sources" class="mt-auto pt-8 text-sm font-semibold
+             text-terracotta transition hover:opacity-75">
+            Superviser les sources →
+        </a>
+    </article>
+
+</section>

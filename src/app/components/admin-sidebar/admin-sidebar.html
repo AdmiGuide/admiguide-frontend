@@ -1,1 +1,156 @@
-<p>admin-sidebar works!</p>
+@if (mode === 'mobile') {
+
+<!-- Navigation administrateur mobile -->
+<nav class="grid grid-cols-2 gap-2" aria-label="Navigation administration">
+    <!-- Vue d'ensemble -->
+    <a routerLink="/admin" [routerLinkActive]="[
+        'bg-linen',
+        'text-anthracite',
+        'font-semibold'
+      ]" [routerLinkActiveOptions]="{ exact: true }" class="flex min-h-11 items-center gap-3
+             rounded-xl bg-white px-3
+             text-xs text-anthracite/80
+             transition hover:bg-linen/50">
+        <svg lucideLayoutDashboard class="size-4 shrink-0" aria-hidden="true"></svg>
+
+        <span>Vue d'ensemble</span>
+    </a>
+
+    <!-- Utilisateurs -->
+    <a routerLink="/admin/utilisateurs" [routerLinkActive]="[
+        'bg-linen',
+        'text-anthracite',
+        'font-semibold'
+      ]" class="flex min-h-11 items-center gap-3
+             rounded-xl bg-white px-3
+             text-xs text-anthracite/80
+             transition hover:bg-linen/50">
+        <svg lucideUsers class="size-4 shrink-0" aria-hidden="true"></svg>
+
+        <span>Utilisateurs</span>
+    </a>
+
+    <!-- Sources -->
+    <a routerLink="/admin/sources" [routerLinkActive]="[
+        'bg-linen',
+        'text-anthracite',
+        'font-semibold'
+      ]" class="flex min-h-11 items-center gap-3
+             rounded-xl bg-white px-3
+             text-xs text-anthracite/80
+             transition hover:bg-linen/50">
+        <svg lucideGlobe class="size-4 shrink-0" aria-hidden="true"></svg>
+
+        <span>Sources</span>
+    </a>
+
+    <!-- Signalements -->
+    <a routerLink="/admin/signalements" [routerLinkActive]="[
+        'bg-linen',
+        'text-anthracite',
+        'font-semibold'
+      ]" class="flex min-h-11 items-center gap-3
+             rounded-xl bg-white px-3
+             text-xs text-anthracite/80
+             transition hover:bg-linen/50">
+        <svg lucideFlag class="size-4 shrink-0" aria-hidden="true"></svg>
+
+        <span>Signalements</span>
+    </a>
+</nav>
+
+} @else {
+
+<!-- Sidebar administrateur desktop -->
+<aside>
+    <p class="mb-5 text-xs font-bold
+             uppercase text-anthracite/70">
+        Administration
+    </p>
+
+    <nav class="space-y-3" aria-label="Navigation administration">
+        <!-- Vue d'ensemble -->
+        <a routerLink="/admin" [routerLinkActive]="[
+          'bg-linen',
+          'text-anthracite',
+          'font-semibold'
+        ]" [routerLinkActiveOptions]="{ exact: true }" class="flex h-12 items-center gap-4
+               rounded-xl px-4
+               text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucideLayoutDashboard class="size-5 shrink-0" aria-hidden="true"></svg>
+
+            <span>Vue d’ensemble</span>
+        </a>
+
+        <!-- Utilisateurs -->
+        <a routerLink="/admin/utilisateurs" [routerLinkActive]="[
+          'bg-linen',
+          'text-anthracite',
+          'font-semibold'
+        ]" class="flex h-12 items-center gap-4
+               rounded-xl px-4
+               text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucideUsers class="size-5 shrink-0" aria-hidden="true"></svg>
+
+            <span>Utilisateurs</span>
+        </a>
+
+        <!-- Sources -->
+        <a routerLink="/admin/sources" [routerLinkActive]="[
+          'bg-linen',
+          'text-anthracite',
+          'font-semibold'
+        ]" class="flex h-12 items-center gap-4
+               rounded-xl px-4
+               text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucideGlobe class="size-5 shrink-0" aria-hidden="true"></svg>
+
+            <span>Sources</span>
+        </a>
+
+        <!-- Signalements -->
+        <a routerLink="/admin/signalements" [routerLinkActive]="[
+          'bg-linen',
+          'text-anthracite',
+          'font-semibold'
+        ]" class="flex h-12 items-center gap-4
+               rounded-xl px-4
+               text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucideFlag class="size-5 shrink-0" aria-hidden="true"></svg>
+
+            <span>Signalements</span>
+        </a>
+
+        <!-- Séparation -->
+        <div class="h-4"></div>
+
+        <!-- Nouvelle situation -->
+        <a routerLink="/orientation" class="flex h-12 items-center gap-4
+               rounded-xl px-4
+               text-sm text-anthracite/80
+               transition hover:bg-linen/50">
+            <svg lucidePlus class="size-5 shrink-0" aria-hidden="true"></svg>
+
+            <span>Nouvelle situation</span>
+        </a>
+
+        <!-- Déconnexion -->
+        <button type="button" class="flex h-12 w-full cursor-pointer
+               items-center gap-4 rounded-xl
+               px-4 text-left text-sm
+               text-anthracite/70
+               transition
+               hover:bg-linen/50
+               hover:text-terracotta" (click)="logout()">
+            <svg lucideLogOut class="size-5 shrink-0" aria-hidden="true"></svg>
+
+            <span>Se déconnecter</span>
+        </button>
+    </nav>
+</aside>
+
+}

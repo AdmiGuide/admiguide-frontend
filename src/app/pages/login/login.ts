@@ -54,9 +54,16 @@ export class Login {
     this.errorMessage.set('');
 
     this.authService.login(this.loginForm.getRawValue()).subscribe({
-      next: () => {
-        this.router.navigate(['/']);
-      },
+      next: (user) => {
+      // L'administrateur accède directement à son espace.
+      if (user.role === 'admin') {
+        this.router.navigate(['/admin']);
+        return;
+      }
+
+      // L'utilisateur normal accède à son historique.
+      this.router.navigate(['/espace/historique']);
+    },
 
       error: (error: HttpErrorResponse) => {
         console.error('Erreur de connexion :', error);
