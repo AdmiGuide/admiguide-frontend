@@ -7,21 +7,23 @@ import { map } from 'rxjs';
 
 import { AuthService } from '../services/auth.service';
 
-// Vérifie qu'un utilisateur est connecté
-// avant d'autoriser l'accès à une route privée.
+// Autorise uniquement un utilisateur classique
+// à accéder à son espace personnel.
 export const authGuard: CanActivateFn = () => {
-  // Accès aux informations d'authentification.
   const authService = inject(AuthService);
-
-  // Permet de rediriger l'utilisateur si nécessaire.
   const router = inject(Router);
 
   // L'utilisateur est déjà chargé en mémoire.
   if (authService.isAuthenticated()) {
+    // Un administrateur reste dans l'espace admin.
+    if (authService.isAdmin()) {
+      return router.createUrlTree(['/admin']);
+    }
+
     return true;
   }
 
-  // Aucun token disponible : l'utilisateur n'est pas connecté.
+  // Aucun token : l'utilisateur doit se connecter.
   if (
     !authService.getAccessToken() &&
     !authService.getRefreshToken()
@@ -29,16 +31,20 @@ export const authGuard: CanActivateFn = () => {
     return router.createUrlTree(['/connexion']);
   }
 
-  // Un token existe : on tente de restaurer la session.
+  // Un token existe : on restaure la session.
   return authService.restoreSession().pipe(
     map((user) => {
-      // Session restaurée avec succès.
-      if (user) {
-        return true;
+      if (!user) {
+        return router.createUrlTree(['/connexion']);
       }
 
-      // Session invalide ou expirée.
-      return router.createUrlTree(['/connexion']);
+      // Un administrateur ne doit pas accéder
+      // à l'espace personnel utilisateur.
+      if (user.role === 'admin') {
+        return router.createUrlTree(['/admin']);
+      }
+
+      return true;
     }),
   );
 };

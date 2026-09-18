@@ -1,0 +1,352 @@
+<section class="w-full">
+
+    <!-- ================= EN-TÊTE ================= -->
+    <div>
+        <p class="text-xs font-bold uppercase
+             tracking-wide text-anthracite/70">
+            Administration
+        </p>
+
+        <h1 class="mt-1 text-3xl font-bold
+             text-anthracite lg:text-4xl">
+            Sources officielles
+        </h1>
+
+        <p class="mt-6 text-sm text-anthracite/75
+             sm:text-base">
+            Supervisez les sources intégrées à l'orientation.
+        </p>
+    </div>
+
+
+    <!-- ================= RECHERCHE ================= -->
+    <div class="mt-10">
+
+        <div class="flex h-12 w-full items-center gap-3
+             rounded-xl border border-sage/60
+             bg-white px-4 sm:max-w-96">
+            <svg lucideSearch class="size-5 shrink-0 text-anthracite/65" aria-hidden="true"></svg>
+
+            <input type="search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
+                placeholder="Rechercher une source..." class="w-full bg-transparent
+               text-sm text-anthracite
+               outline-none
+               placeholder:text-anthracite/50" aria-label="Rechercher une source">
+        </div>
+
+
+        <!-- ================= FILTRES ================= -->
+        <div class="mt-3 inline-flex items-center
+             rounded-2xl bg-linen/40 p-1">
+
+            <button type="button" (click)="selectStatus('tous')" [class.bg-white]="selectedStatus === 'tous'"
+                [class.text-anthracite]="selectedStatus === 'tous'" class="cursor-pointer rounded-xl
+               px-4 py-2 text-xs
+               text-anthracite/60 transition">
+                Tous
+            </button>
+
+
+            <button type="button" (click)="selectStatus('DISPONIBLE')"
+                [class.bg-white]="selectedStatus === 'DISPONIBLE'"
+                [class.text-anthracite]="selectedStatus === 'DISPONIBLE'" class="cursor-pointer rounded-xl
+               px-4 py-2 text-xs
+               text-anthracite/60 transition">
+                Disponible
+            </button>
+
+
+            <button type="button" (click)="selectStatus('A_VERIFIER')"
+                [class.bg-white]="selectedStatus === 'A_VERIFIER'"
+                [class.text-anthracite]="selectedStatus === 'A_VERIFIER'" class="cursor-pointer rounded-xl
+               px-4 py-2 text-xs
+               text-anthracite/60 transition">
+                À vérifier
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= CHARGEMENT ================= -->
+    @if (loading()) {
+
+    <div class="mt-8 rounded-2xl border border-linen
+             bg-white px-5 py-10
+             text-center text-sm
+             text-anthracite/60">
+        Chargement des sources...
+    </div>
+
+    }
+
+
+    <!-- ================= ERREUR ================= -->
+    @if (!loading() && errorMessage()) {
+
+    <div class="mt-8 rounded-2xl
+             bg-terracotta/10 px-5 py-4
+             text-sm text-terracotta">
+        {{ errorMessage() }}
+    </div>
+
+    }
+
+
+    <!-- ================= DONNÉES ================= -->
+    @if (!loading() && !errorMessage()) {
+
+    <!-- =========================================
+         VERSION DESKTOP
+    ========================================== -->
+    <div class="mt-4 hidden overflow-hidden
+             rounded-2xl border border-linen
+             bg-white md:block">
+
+        <!-- En-tête du tableau -->
+        <div class="grid grid-cols-[2fr_1fr_1fr_132px]
+               items-center gap-4
+               border-b border-linen
+               px-5 py-4
+               text-xs text-anthracite/60">
+            <span>Source</span>
+            <span>Type</span>
+            <span>Statut</span>
+            <span>Action</span>
+        </div>
+
+
+        <!-- Sources -->
+        @for (source of sources(); track source.id) {
+
+        <div class="grid grid-cols-[2fr_1fr_1fr_132px]
+                 items-center gap-4
+                 border-b border-linen
+                 px-5 py-5
+                 last:border-b-0">
+
+            <!-- Source -->
+            <div class="min-w-0">
+                <p class="truncate font-bold
+                     text-anthracite">
+                    {{ source.titre }}
+                </p>
+
+                <p class="mt-2 text-xs
+                     text-anthracite/60">
+                    {{ formatDate(source.date_consultation) }}
+                </p>
+            </div>
+
+
+            <!-- Type -->
+            <p class="text-xs text-anthracite/80">
+                {{ source.type_label }}
+            </p>
+
+
+            <!-- Statut -->
+            <div>
+
+                @if (source.statut === 'DISPONIBLE') {
+
+                <span class="inline-flex min-w-20
+                       justify-center rounded-full
+                       bg-sage/15 px-3 py-2
+                       text-xs text-anthracite/75">
+                    {{ source.statut_label }}
+                </span>
+
+                } @else if (source.statut === 'A_VERIFIER') {
+
+                <span class="inline-flex min-w-20
+                       justify-center rounded-full
+                       bg-terracotta/15 px-3 py-2
+                       text-xs text-terracotta">
+                    {{ source.statut_label }}
+                </span>
+
+                } @else {
+
+                <span class="inline-flex min-w-20
+                       justify-center rounded-full
+                       bg-linen px-3 py-2
+                       text-xs text-anthracite/70">
+                    {{ source.statut_label }}
+                </span>
+
+                }
+
+            </div>
+
+
+            <!-- Action -->
+            <button type="button" class="inline-flex h-12 items-center
+                   justify-center rounded-xl
+                   border border-linen bg-white
+                   text-sm font-bold
+                   text-anthracite transition
+                   hover:bg-linen/40">
+                Examiner
+            </button>
+
+        </div>
+
+        } @empty {
+
+        <p class="px-5 py-10 text-center
+                 text-sm text-anthracite/60">
+            Aucune source trouvée.
+        </p>
+
+        }
+
+    </div>
+
+
+    <!-- =========================================
+         VERSION MOBILE
+    ========================================== -->
+    <div class="mt-4 space-y-4 md:hidden">
+
+        @for (source of sources(); track source.id) {
+
+        <article class="rounded-2xl border border-linen
+                 bg-white p-5">
+
+            <!-- Source -->
+            <div>
+                <h2 class="font-bold text-anthracite">
+                    {{ source.titre }}
+                </h2>
+
+                <p class="mt-2 text-xs
+                     text-anthracite/60">
+                    {{ source.type_label }}
+                </p>
+            </div>
+
+
+            <div class="my-4 h-px bg-linen"></div>
+
+
+            <!-- Statut -->
+            <div class="flex items-center
+                   justify-between gap-4">
+                <span class="text-xs text-anthracite/60">
+                    Statut
+                </span>
+
+
+                @if (source.statut === 'DISPONIBLE') {
+
+                <span class="inline-flex min-w-20
+                       justify-center rounded-full
+                       bg-sage/15 px-3 py-2
+                       text-xs text-anthracite/75">
+                    {{ source.statut_label }}
+                </span>
+
+                } @else if (source.statut === 'A_VERIFIER') {
+
+                <span class="inline-flex min-w-20
+                       justify-center rounded-full
+                       bg-terracotta/15 px-3 py-2
+                       text-xs text-terracotta">
+                    {{ source.statut_label }}
+                </span>
+
+                } @else {
+
+                <span class="inline-flex min-w-20
+                       justify-center rounded-full
+                       bg-linen px-3 py-2
+                       text-xs text-anthracite/70">
+                    {{ source.statut_label }}
+                </span>
+
+                }
+
+            </div>
+
+
+            <!-- Dernier contrôle -->
+            <div class="mt-5 flex items-center
+                   justify-between gap-4">
+                <span class="text-xs text-anthracite/60">
+                    Dernier contrôle
+                </span>
+
+                <span class="text-xs text-anthracite/80">
+                    {{ formatDate(source.date_consultation) }}
+                </span>
+            </div>
+
+
+            <!-- Action -->
+            <div class="mt-7 flex justify-end">
+                <button type="button" class="inline-flex h-12 min-w-32
+                     items-center justify-center
+                     rounded-xl border border-linen
+                     bg-white px-5
+                     text-sm font-bold
+                     text-anthracite transition
+                     hover:bg-linen/40">
+                    Examiner
+                </button>
+            </div>
+
+        </article>
+
+        } @empty {
+
+        <div class="rounded-2xl border border-linen
+                 bg-white px-5 py-10
+                 text-center text-sm
+                 text-anthracite/60">
+            Aucune source trouvée.
+        </div>
+
+        }
+
+    </div>
+
+
+    <!-- ================= PAGINATION ================= -->
+    @if (totalPages > 1) {
+
+    <nav class="mt-8 flex items-center
+               justify-center gap-4" aria-label="Pagination des sources">
+
+        <button type="button" (click)="previousPage()" [disabled]="!hasPreviousPage()" class="rounded-xl border border-linen
+                 bg-white px-4 py-2
+                 text-sm text-anthracite
+                 transition hover:bg-linen/40
+                 disabled:cursor-not-allowed
+                 disabled:opacity-40">
+            Précédent
+        </button>
+
+
+        <span class="text-sm text-anthracite/70">
+            Page {{ currentPage }} sur {{ totalPages }}
+        </span>
+
+
+        <button type="button" (click)="nextPage()" [disabled]="!hasNextPage()" class="rounded-xl border border-linen
+                 bg-white px-4 py-2
+                 text-sm text-anthracite
+                 transition hover:bg-linen/40
+                 disabled:cursor-not-allowed
+                 disabled:opacity-40">
+            Suivant
+        </button>
+
+    </nav>
+
+    }
+
+    }
+
+</section>

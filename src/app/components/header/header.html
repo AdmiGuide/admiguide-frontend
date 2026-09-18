@@ -43,20 +43,14 @@
     <nav class="hidden items-center gap-8
              text-sm text-anthracite md:flex" aria-label="Navigation principale">
 
-      <!--
-        exact: true évite que Accueil soit actif
-        sur toutes les autres routes.
-      -->
+      <!-- Accueil -->
       <a routerLink="/" routerLinkActive="text-terracotta font-semibold" [routerLinkActiveOptions]="{ exact: true }"
         class="transition hover:text-terracotta">
         Accueil
       </a>
 
 
-      <!--
-        M'orienter reste actif également
-        sur les sous-pages de /orientation.
-      -->
+      <!-- Orientation -->
       <a routerLink="/orientation" routerLinkActive="text-terracotta font-semibold"
         class="transition hover:text-terracotta">
         M'orienter
@@ -66,10 +60,11 @@
       @if (authService.isAuthenticated()) {
 
       <!--
-          /espace redirige vers l'historique.
-          Le lien reste actif sur toutes les pages /espace/...
+          Le texte reste "Mon espace".
+          La destination dépend du rôle.
         -->
-      <a routerLink="/espace" routerLinkActive="text-terracotta font-semibold" class="transition hover:text-terracotta">
+      <a [routerLink]="authService.isAdmin() ? '/admin' : '/espace'" routerLinkActive="text-terracotta font-semibold"
+        class="transition hover:text-terracotta">
         Mon espace
       </a>
 
@@ -101,7 +96,7 @@
     </nav>
 
 
-    <!-- ================= BOUTON MOBILE ================= -->
+    <!-- ================= BOUTON HAMBURGER MOBILE ================= -->
     <button type="button" class="flex size-11 cursor-pointer
              flex-col items-center justify-center
              gap-1.5 rounded-xl border
@@ -115,69 +110,211 @@
   </div>
 
 
-  <!-- ================= NAVIGATION MOBILE ================= -->
+  <!-- =====================================================
+       MENU HAMBURGER MOBILE
+  ====================================================== -->
   @if (isMenuOpen) {
-  <nav class="absolute left-5 right-5 top-full
-             mt-2 rounded-2xl border
-             border-linen bg-white
-             p-5 shadow-lg md:hidden" aria-label="Navigation mobile">
 
-    <div class="flex flex-col gap-4 text-sm text-anthracite">
+  <!-- Fond assombri -->
+  <div class="fixed inset-0 z-[100]
+             bg-anthracite/65
+             px-4 pt-28 md:hidden" (click)="closeMenu()">
 
-      <a routerLink="/" routerLinkActive="text-terracotta font-semibold" [routerLinkActiveOptions]="{ exact: true }"
-        class="transition hover:text-terracotta" (click)="closeMenu()">
-        Accueil
-      </a>
+    <!-- Fenêtre du menu -->
+    <div class="mx-auto w-full max-w-sm
+               rounded-3xl bg-white
+               px-5 pb-5 pt-7 shadow-xl" role="dialog" aria-modal="true" aria-label="Navigation mobile"
+      (click)="$event.stopPropagation()">
+
+      <!-- ================= TITRE + FERMETURE ================= -->
+      <div class="flex items-center justify-between gap-4">
+
+        @if (!authService.isAuthenticated()) {
+        <h2 class="text-xl font-bold text-anthracite">
+          Menu
+        </h2>
+        } @else if (authService.isAdmin()) {
+        <h2 class="text-xl font-bold text-anthracite">
+          Administration
+        </h2>
+        } @else {
+        <h2 class="text-xl font-bold text-anthracite">
+          Mon espace
+        </h2>
+        }
 
 
-      <a routerLink="/orientation" routerLinkActive="text-terracotta font-semibold"
-        class="transition hover:text-terracotta" (click)="closeMenu()">
-        M'orienter
-      </a>
+        <button type="button" class="flex size-9 items-center
+                   justify-center rounded-full
+                   text-3xl font-light
+                   leading-none text-anthracite/70
+                   transition hover:bg-linen/40" aria-label="Fermer le menu" (click)="closeMenu()">
+          &times;
+        </button>
 
-
-      @if (authService.isAuthenticated()) {
-
-      <a routerLink="/espace" routerLinkActive="text-terracotta font-semibold" class="transition hover:text-terracotta"
-        (click)="closeMenu()">
-        Mon espace
-      </a>
-
-
-      <!-- Utilisateur connecté. -->
-      <div class="flex items-center gap-3
-                   border-t border-linen pt-4">
-        <div class="flex size-10 items-center
-                     justify-center rounded-full
-                     bg-linen text-sm font-semibold
-                     text-anthracite">
-          {{ userInitials() }}
-        </div>
-
-        <span class="font-medium">
-          {{ authService.currentUser()?.nom_complet }}
-        </span>
       </div>
 
-      } @else {
 
-      <a routerLink="/connexion" routerLinkActive="text-terracotta font-semibold"
-        class="transition hover:text-terracotta" (click)="closeMenu()">
-        Se connecter
-      </a>
+      <!-- =====================================================
+             VISITEUR NON CONNECTÉ
+        ====================================================== -->
+      @if (!authService.isAuthenticated()) {
 
-      <a routerLink="/inscription" class="rounded-xl bg-terracotta
-                   px-5 py-3 text-center
-                   font-semibold text-white
-                   transition hover:opacity-90" (click)="closeMenu()">
-        Créer un compte
-      </a>
+      <nav class="mt-10 space-y-2.5" aria-label="Menu principal">
+
+        <a routerLink="/" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Accueil
+        </a>
+
+
+        <a routerLink="/orientation" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          M'orienter
+        </a>
+
+
+        <a routerLink="/connexion" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Se connecter
+        </a>
+
+
+        <a routerLink="/inscription" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Créer un compte
+        </a>
+
+      </nav>
+
+      }
+
+
+      <!-- =====================================================
+             UTILISATEUR CONNECTÉ
+        ====================================================== -->
+      @if (
+      authService.isAuthenticated() &&
+      !authService.isAdmin()
+      ) {
+
+      <nav class="mt-10 space-y-2.5" aria-label="Mon espace">
+
+        <a routerLink="/" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Accueil
+        </a>
+
+
+        <a routerLink="/espace/historique" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Mon historique
+        </a>
+
+
+        <a routerLink="/espace/profil" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Mon profil
+        </a>
+
+
+        <button type="button" class="flex min-h-11 w-full
+                     cursor-pointer items-center
+                     rounded-xl bg-terracotta
+                     px-4 text-left
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="logout()">
+          Se déconnecter
+        </button>
+
+      </nav>
+
+      }
+
+
+      <!-- =====================================================
+             ADMINISTRATEUR
+        ====================================================== -->
+      @if (
+      authService.isAuthenticated() &&
+      authService.isAdmin()
+      ) {
+
+      <nav class="mt-10 space-y-2.5" aria-label="Administration">
+
+        <a routerLink="/admin" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Vue d'ensemble
+        </a>
+
+
+        <a routerLink="/admin/utilisateurs" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Utilisateurs
+        </a>
+
+
+        <a routerLink="/admin/sources" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Sources
+        </a>
+
+
+        <a routerLink="/admin/signalements" class="flex min-h-11 w-full
+                     items-center rounded-xl
+                     bg-terracotta px-4
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="closeMenu()">
+          Signalements
+        </a>
+
+
+        <button type="button" class="flex min-h-11 w-full
+                     cursor-pointer items-center
+                     rounded-xl bg-terracotta
+                     px-4 text-left
+                     text-sm font-semibold text-white
+                     transition hover:opacity-90" (click)="logout()">
+          Se déconnecter
+        </button>
+
+      </nav>
 
       }
 
     </div>
+  </div>
 
-  </nav>
   }
 
 </header>

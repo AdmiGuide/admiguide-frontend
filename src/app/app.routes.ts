@@ -18,6 +18,8 @@ import { AdminLayout } from './layouts/admin-layout/admin-layout';
 import { AdminDashboard } from './pages/admin-dashboard/admin-dashboard';
 import { adminGuard } from './guards/admin-guard';
 import { AdminUsers } from './pages/admin-users/admin-users';
+import { AdminSources } from './pages/admin-sources/admin-sources';
+import { AdminSignalements } from './pages/admin-signalements/admin-signalements';
 
 export const routes: Routes = [
   {
@@ -108,6 +110,16 @@ export const routes: Routes = [
       {
         path: 'utilisateurs',
         component: AdminUsers,
+      },
+
+      {
+        path: 'sources',
+        component: AdminSources,
+      },
+
+      {
+        path: 'signalements',
+        component: AdminSignalements,
       },
     ],
   },

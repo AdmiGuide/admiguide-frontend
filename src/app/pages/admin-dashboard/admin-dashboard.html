@@ -1,196 +1,345 @@
-<!-- En-tête -->
-<section>
-    <p class="text-xs font-bold uppercase text-anthracite/70">
-        Administration
-    </p>
+<section class="w-full">
 
-    <h1 class="mt-2 text-3xl font-bold text-anthracite md:text-4xl">
-        Vue d'ensemble
-    </h1>
-
-    <p class="mt-5 max-w-2xl text-base leading-7 text-anthracite/75">
-        Supervisez les utilisateurs, les sources et les signalements.
-    </p>
-</section>
-
-
-<!-- Statistiques -->
-<section class="mt-10 grid grid-cols-3 gap-2 sm:gap-4">
-    <!-- Utilisateurs -->
-    <article class="flex min-h-32 flex-col rounded-2xl
-           border border-linen bg-white p-3
-           sm:p-4 lg:min-h-40">
-        <p class="text-[11px] text-anthracite/65 sm:text-sm">
-            Utilisateurs
+    <!-- ================= EN-TÊTE ================= -->
+    <div>
+        <p class="text-xs font-bold uppercase
+                  tracking-wide text-anthracite/70">
+            Administration
         </p>
 
-        <p class="mt-4 text-3xl font-bold text-anthracite md:text-4xl">
-            4
+        <h1 class="mt-1 text-3xl font-bold
+                   text-anthracite lg:text-4xl">
+            Vue d'ensemble
+        </h1>
+
+        <p class="mt-6 text-sm leading-6
+                  text-anthracite/75 sm:text-base">
+            Supervisez les utilisateurs, les sources et les signalements.
         </p>
-
-        <p class="mt-auto text-[10px] text-anthracite/60 sm:text-xs">
-            3 comptes actifs
-        </p>
-    </article>
+    </div>
 
 
-    <!-- Sources -->
-    <article class="flex min-h-32 flex-col rounded-2xl
-           border border-linen bg-white p-3
-           sm:p-4 lg:min-h-40">
-        <p class="text-[11px] text-anthracite/65 sm:text-sm">
-            Sources intégrées
-        </p>
+    <!-- ================= CHARGEMENT ================= -->
+    @if (loading()) {
 
-        <p class="mt-4 text-3xl font-bold text-anthracite md:text-4xl">
-            3
-        </p>
+    <div class="mt-10 rounded-2xl
+                border border-linen
+                bg-white px-5 py-10
+                text-center text-sm
+                text-anthracite/60">
+        Chargement des données...
+    </div>
 
-        <p class="mt-auto text-[10px] text-anthracite/60 sm:text-xs">
-            1 à vérifier
-        </p>
-    </article>
+    }
 
 
-    <!-- Signalements -->
-    <article class="flex min-h-32 flex-col rounded-2xl
-           border border-linen bg-white p-3
-           sm:p-4 lg:min-h-40">
-        <p class="text-[11px] text-anthracite/65 sm:text-sm">
-            Nouveaux signalements
-        </p>
+    <!-- ================= ERREUR ================= -->
+    @if (!loading() && errorMessage()) {
 
-        <p class="mt-4 text-3xl font-bold text-anthracite md:text-4xl">
-            1
-        </p>
+    <div class="mt-10 rounded-2xl
+                bg-terracotta/10 px-5 py-4
+                text-sm text-terracotta">
+        {{ errorMessage() }}
+    </div>
 
-        <p class="mt-auto text-[10px] text-anthracite/60 sm:text-xs">
-            À examiner
-        </p>
-    </article>
-</section>
+    }
 
 
-<!-- Cartes principales -->
-<section class="mt-7 grid gap-5 xl:grid-cols-2">
+    @if (!loading() && !errorMessage()) {
 
-    <!-- Signalements à examiner -->
-    <article class="flex min-h-[400px] flex-col rounded-2xl
-           border border-linen bg-white p-6">
-        <h2 class="text-2xl font-bold text-anthracite">
-            À examiner
-        </h2>
+    <!-- ================= STATISTIQUES ================= -->
+    <section class="mt-10 grid grid-cols-3
+                    gap-2 sm:gap-4">
 
+        <!-- Utilisateurs -->
+        <article class="flex min-h-32 flex-col
+                        rounded-2xl border border-linen
+                        bg-white p-3
+                        sm:p-4 lg:min-h-40">
 
-        <!-- Signalement 1 -->
-        <div class="mt-7">
-            <h3 class="font-bold text-anthracite">
-                Un lien vers la source ne fonctionne plus
-            </h3>
-
-            <p class="mt-3 text-sm text-anthracite/60">
-                Perte de passeport
+            <p class="text-[11px] leading-4
+                      text-anthracite/60
+                      sm:text-sm">
+                Utilisateurs
             </p>
 
-            <span class="mt-3 inline-flex rounded-full
-               bg-terracotta/15 px-4 py-2
-               text-xs font-medium text-terracotta">
-                Nouveau
-            </span>
-        </div>
-
-
-        <!-- Signalement 2 -->
-        <div class="mt-6">
-            <h3 class="font-bold text-anthracite">
-                Une précision manque dans les pièces
-            </h3>
-
-            <p class="mt-3 text-sm text-anthracite/60">
-                Naissance à l'étranger
+            <p class="mt-5 text-3xl font-bold
+                      text-anthracite lg:text-4xl">
+                {{ totalUsers() }}
             </p>
 
-            <span class="mt-3 inline-flex rounded-full
-               bg-sage/20 px-4 py-2
-               text-xs font-medium text-anthracite/75">
-                En cours
-            </span>
-        </div>
-
-
-        <a routerLink="/admin/signalements" class="mt-auto pt-8 text-sm font-semibold
-             text-terracotta transition hover:opacity-75">
-            Voir les signalements →
-        </a>
-    </article>
-
-
-    <!-- État des sources -->
-    <article class="flex min-h-[400px] flex-col rounded-2xl
-           border border-linen bg-white p-6">
-        <h2 class="text-2xl font-bold text-anthracite">
-            État des sources
-        </h2>
-
-
-        <!-- Source 1 -->
-        <div class="mt-7">
-            <h3 class="font-bold text-anthracite">
-                Ministère de l'Intérieur
-            </h3>
-
-            <p class="mt-2 text-sm text-anthracite/60">
-                Identité
+            <p class="mt-auto text-[10px]
+                      text-anthracite/60
+                      sm:text-xs">
+                {{ activeUsers() }} comptes actifs
             </p>
 
-            <span class="mt-3 inline-flex rounded-full
-               bg-sage/20 px-4 py-2
-               text-xs font-medium text-anthracite/75">
-                Disponible
-            </span>
-        </div>
+        </article>
 
 
-        <!-- Source 2 -->
-        <div class="mt-5">
-            <h3 class="font-bold text-anthracite">
-                Consulat du Sénégal à Paris
-            </h3>
+        <!-- Sources -->
+        <article class="flex min-h-32 flex-col
+                        rounded-2xl border border-linen
+                        bg-white p-3
+                        sm:p-4 lg:min-h-40">
 
-            <p class="mt-2 text-sm text-anthracite/60">
-                État civil
+            <p class="text-[11px] leading-4
+                      text-anthracite/60
+                      sm:text-sm">
+                Sources intégrées
             </p>
 
-            <span class="mt-3 inline-flex rounded-full
-               bg-terracotta/15 px-4 py-2
-               text-xs font-medium text-terracotta">
-                À vérifier
-            </span>
-        </div>
-
-
-        <!-- Source 3 -->
-        <div class="mt-5">
-            <h3 class="font-bold text-anthracite">
-                Douanes sénégalaises
-            </h3>
-
-            <p class="mt-2 text-sm text-anthracite/60">
-                Retour
+            <p class="mt-5 text-3xl font-bold
+                      text-anthracite lg:text-4xl">
+                {{ totalSources() }}
             </p>
 
-            <span class="mt-3 inline-flex rounded-full
-               bg-sage/20 px-4 py-2
-               text-xs font-medium text-anthracite/75">
-                Disponible
-            </span>
-        </div>
+            <p class="mt-auto text-[10px]
+                      text-anthracite/60
+                      sm:text-xs">
+                {{ sourcesToVerify() }} à vérifier
+            </p>
+
+        </article>
 
 
-        <a routerLink="/admin/sources" class="mt-auto pt-8 text-sm font-semibold
-             text-terracotta transition hover:opacity-75">
-            Superviser les sources →
-        </a>
-    </article>
+        <!-- Signalements -->
+        <article class="flex min-h-32 flex-col
+                        rounded-2xl border border-linen
+                        bg-white p-3
+                        sm:p-4 lg:min-h-40">
+
+            <p class="text-[11px] leading-4
+                      text-anthracite/60
+                      sm:text-sm">
+                Nouveaux signalements
+            </p>
+
+            <p class="mt-5 text-3xl font-bold
+                      text-anthracite lg:text-4xl">
+                {{ newSignalements() }}
+            </p>
+
+            <p class="mt-auto text-[10px]
+                      text-anthracite/60
+                      sm:text-xs">
+                À examiner
+            </p>
+
+        </article>
+
+    </section>
+
+
+    <!-- ================= CARTES PRINCIPALES ================= -->
+    <section class="mt-8 grid grid-cols-1
+                    gap-5 xl:grid-cols-2">
+
+
+        <!-- ================= À EXAMINER ================= -->
+        <article class="flex flex-col
+                        rounded-2xl border border-linen
+                        bg-white p-6">
+
+            <h2 class="text-2xl font-bold
+                       text-anthracite">
+                À examiner
+            </h2>
+
+
+            <div class="mt-6 flex-1 space-y-6">
+
+                @for (
+                signalement of recentSignalements();
+                track signalement.id
+                ) {
+
+                <div>
+
+                    <!-- Titre du problème signalé -->
+                    <h3 class="text-base font-bold
+                               leading-6 text-anthracite">
+                        {{ signalement.commentaire }}
+                    </h3>
+
+
+                    <!-- Démarche concernée -->
+                    <p class="mt-3 text-sm
+                              text-anthracite/60">
+                        {{ signalement.demarche }}
+                    </p>
+
+
+                    <!-- Statut -->
+                    @if (signalement.statut === 'NOUVEAU') {
+
+                    <span class="mt-3 inline-flex
+                                 rounded-full
+                                 bg-terracotta/15
+                                 px-4 py-2
+                                 text-xs text-terracotta">
+                        {{ signalement.statut_label }}
+                    </span>
+
+                    } @else if (
+                    signalement.statut === 'EN_COURS'
+                    ) {
+
+                    <span class="mt-3 inline-flex
+                                 rounded-full
+                                 bg-linen px-4 py-2
+                                 text-xs
+                                 text-anthracite/70">
+                        {{ signalement.statut_label }}
+                    </span>
+
+                    } @else {
+
+                    <span class="mt-3 inline-flex
+                                 rounded-full
+                                 bg-sage/15 px-4 py-2
+                                 text-xs
+                                 text-anthracite/70">
+                        {{ signalement.statut_label }}
+                    </span>
+
+                    }
+
+                </div>
+
+                } @empty {
+
+                <div class="flex min-h-32
+                            items-center justify-center">
+
+                    <p class="max-w-xs text-center
+                              text-sm leading-6
+                              text-anthracite/60">
+                        Aucun signalement à examiner.
+                    </p>
+
+                </div>
+
+                }
+
+            </div>
+
+
+            <a routerLink="/admin/signalements" class="mt-8 inline-flex
+                       text-sm font-bold
+                       text-terracotta
+                       transition hover:underline">
+
+                Voir les signalements →
+
+            </a>
+
+        </article>
+
+
+        <!-- ================= ÉTAT DES SOURCES ================= -->
+        <article class="flex flex-col
+                        rounded-2xl border border-linen
+                        bg-white p-6">
+
+            <h2 class="text-2xl font-bold
+                       text-anthracite">
+                État des sources
+            </h2>
+
+
+            <div class="mt-6 flex-1 space-y-5">
+
+                @for (
+                source of recentSources();
+                track source.id
+                ) {
+
+                <div>
+
+                    <h3 class="text-base font-bold
+                               leading-6 text-anthracite">
+                        {{ source.titre }}
+                    </h3>
+
+                    <p class="mt-2 text-xs
+                              text-anthracite/60">
+                        {{ source.type_label }}
+                    </p>
+
+
+                    @if (source.statut === 'DISPONIBLE') {
+
+                    <span class="mt-3 inline-flex
+                                 min-w-20 justify-center
+                                 rounded-full
+                                 bg-sage/15
+                                 px-3 py-2
+                                 text-xs
+                                 text-anthracite/75">
+                        {{ source.statut_label }}
+                    </span>
+
+                    } @else if (
+                    source.statut === 'A_VERIFIER'
+                    ) {
+
+                    <span class="mt-3 inline-flex
+                                 min-w-20 justify-center
+                                 rounded-full
+                                 bg-terracotta/15
+                                 px-3 py-2
+                                 text-xs
+                                 text-terracotta">
+                        {{ source.statut_label }}
+                    </span>
+
+                    } @else {
+
+                    <span class="mt-3 inline-flex
+                                 min-w-20 justify-center
+                                 rounded-full
+                                 bg-linen
+                                 px-3 py-2
+                                 text-xs
+                                 text-anthracite/70">
+                        {{ source.statut_label }}
+                    </span>
+
+                    }
+
+                </div>
+
+                } @empty {
+
+                <div class="flex min-h-32
+                            items-center justify-center">
+
+                    <p class="text-center text-sm
+                              text-anthracite/60">
+                        Aucune source disponible.
+                    </p>
+
+                </div>
+
+                }
+
+            </div>
+
+
+            <a routerLink="/admin/sources" class="mt-8 inline-flex
+                       text-sm font-bold
+                       text-terracotta
+                       transition hover:underline">
+
+                Superviser les sources →
+
+            </a>
+
+        </article>
+
+    </section>
+
+    }
 
 </section>

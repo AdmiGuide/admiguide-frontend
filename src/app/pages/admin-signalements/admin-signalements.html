@@ -1,0 +1,393 @@
+<section class="w-full">
+
+    <!-- ================= EN-TÊTE ================= -->
+    <div>
+        <p class="text-xs font-bold uppercase
+                  tracking-wide text-anthracite/70">
+            Administration
+        </p>
+
+        <h1 class="mt-2 text-3xl font-bold
+                   text-anthracite lg:text-4xl">
+            Signalements
+        </h1>
+
+        <p class="mt-6 text-sm leading-6
+                  text-anthracite/75 sm:text-base">
+            Examinez les informations signalées par les usagers.
+        </p>
+    </div>
+
+
+    <!-- ================= FILTRES ================= -->
+    <div class="mt-10 inline-flex items-center
+                rounded-2xl bg-linen/40 p-1">
+
+        <button type="button" (click)="selectStatus('tous')" [class.bg-white]="selectedStatus === 'tous'"
+            [class.text-anthracite]="selectedStatus === 'tous'" class="cursor-pointer rounded-xl
+                   px-4 py-3 text-xs
+                   text-anthracite/60 transition">
+            Tous
+        </button>
+
+        <button type="button" (click)="selectStatus('NOUVEAU')" [class.bg-white]="selectedStatus === 'NOUVEAU'"
+            [class.text-anthracite]="selectedStatus === 'NOUVEAU'" class="cursor-pointer rounded-xl
+                   px-4 py-3 text-xs
+                   text-anthracite/60 transition">
+            Nouveau
+        </button>
+
+        <button type="button" (click)="selectStatus('EN_COURS')" [class.bg-white]="selectedStatus === 'EN_COURS'"
+            [class.text-anthracite]="selectedStatus === 'EN_COURS'" class="cursor-pointer rounded-xl
+                   px-4 py-3 text-xs
+                   text-anthracite/60 transition">
+            En cours
+        </button>
+
+        <button type="button" (click)="selectStatus('TRAITE')" [class.bg-white]="selectedStatus === 'TRAITE'"
+            [class.text-anthracite]="selectedStatus === 'TRAITE'" class="cursor-pointer rounded-xl
+                   px-4 py-3 text-xs
+                   text-anthracite/60 transition">
+            Traité
+        </button>
+
+    </div>
+
+
+    <!-- ================= CHARGEMENT ================= -->
+    @if (loading()) {
+
+    <div class="mt-6 rounded-2xl
+                border border-linen bg-white
+                px-5 py-10 text-center
+                text-sm text-anthracite/60">
+        Chargement des signalements...
+    </div>
+
+    }
+
+
+    <!-- ================= ERREUR ================= -->
+    @if (!loading() && errorMessage()) {
+
+    <div class="mt-6 rounded-2xl
+                bg-terracotta/10
+                px-5 py-4
+                text-sm text-terracotta">
+        {{ errorMessage() }}
+    </div>
+
+    }
+
+
+    <!-- ================= LISTE ================= -->
+    @if (!loading() && !errorMessage()) {
+
+    <div class="mt-6 space-y-4">
+
+        @for (
+        signalement of signalements();
+        track signalement.id
+        ) {
+
+        <article class="rounded-2xl border border-linen
+                   bg-white p-5
+                   sm:p-6">
+
+            <div class="flex flex-col gap-6
+                        md:flex-row
+                        md:items-center
+                        md:justify-between">
+
+                <!-- Informations -->
+                <div class="min-w-0 flex-1">
+
+                    <!-- Statut + date -->
+                    <div class="flex flex-wrap
+                                items-center gap-5">
+
+                        @if (
+                        signalement.statut === 'NOUVEAU'
+                        ) {
+
+                        <span class="inline-flex rounded-full
+                                   bg-terracotta/15
+                                   px-4 py-2
+                                   text-xs
+                                   text-terracotta">
+                            {{ signalement.statut_label }}
+                        </span>
+
+                        } @else if (
+                        signalement.statut === 'EN_COURS'
+                        ) {
+
+                        <span class="inline-flex rounded-full
+                                   bg-linen px-4 py-2
+                                   text-xs
+                                   text-anthracite/70">
+                            {{ signalement.statut_label }}
+                        </span>
+
+                        } @else {
+
+                        <span class="inline-flex rounded-full
+                                   bg-sage/15
+                                   px-4 py-2
+                                   text-xs
+                                   text-anthracite/70">
+                            {{ signalement.statut_label }}
+                        </span>
+
+                        }
+
+                        <span class="text-xs
+                                   text-anthracite/60">
+                            {{
+                            formatDate(
+                            signalement.date_creation
+                            )
+                            }}
+                        </span>
+
+                    </div>
+
+
+                    <!-- Problème signalé -->
+                    <h2 class="mt-6 max-w-2xl
+                               text-lg font-bold
+                               leading-6
+                               text-anthracite">
+                        {{ signalement.commentaire }}
+                    </h2>
+
+
+                    <!-- Démarche -->
+                    <p class="mt-4 text-sm
+                               text-anthracite/65">
+                        {{ signalement.demarche }}
+                    </p>
+
+                </div>
+
+
+                <!-- Action -->
+                <div class="flex justify-end
+                            md:shrink-0">
+
+                    <button type="button" (click)="openSignalement(signalement)" class="inline-flex h-12
+                               items-center
+                               justify-center gap-3
+                               rounded-xl
+                               border border-linen
+                               bg-white px-5
+                               text-sm font-bold
+                               text-anthracite
+                               transition
+                               hover:bg-linen/30">
+
+                        Examiner
+
+                        <svg lucideArrowRight class="size-5" aria-hidden="true">
+                        </svg>
+
+                    </button>
+
+                </div>
+
+            </div>
+
+        </article>
+
+        } @empty {
+
+        <div class="rounded-2xl
+                   border border-linen
+                   bg-white px-5 py-12
+                   text-center
+                   text-sm
+                   text-anthracite/60">
+            Aucun signalement dans cette catégorie.
+        </div>
+
+        }
+
+    </div>
+
+
+    <!-- ================= PAGINATION ================= -->
+    @if (totalPages > 1) {
+
+    <nav class="mt-8 flex items-center
+               justify-center gap-4" aria-label="Pagination des signalements">
+
+        <button type="button" (click)="previousPage()" [disabled]="!hasPreviousPage()" class="rounded-xl
+                   border border-linen
+                   bg-white px-4 py-2
+                   text-sm text-anthracite
+                   transition
+                   hover:bg-linen/30
+                   disabled:cursor-not-allowed
+                   disabled:opacity-40">
+            Précédent
+        </button>
+
+        <span class="text-sm
+                   text-anthracite/60">
+            {{ currentPage }} / {{ totalPages }}
+        </span>
+
+        <button type="button" (click)="nextPage()" [disabled]="!hasNextPage()" class="rounded-xl
+                   border border-linen
+                   bg-white px-4 py-2
+                   text-sm text-anthracite
+                   transition
+                   hover:bg-linen/30
+                   disabled:cursor-not-allowed
+                   disabled:opacity-40">
+            Suivant
+        </button>
+
+    </nav>
+
+    }
+
+    }
+
+</section>
+
+
+<!-- ================= MODALE EXAMINER ================= -->
+@if (selectedSignalement(); as signalement) {
+
+<div class="fixed inset-0 z-50
+           flex items-center
+           justify-center
+           bg-anthracite/90
+           p-4">
+
+    <section class="relative w-full max-w-lg
+               rounded-3xl bg-white
+               p-7 shadow-xl
+               sm:p-8" role="dialog" aria-modal="true" aria-labelledby="signalement-title">
+
+        <!-- Fermer -->
+        <button type="button" (click)="closeSignalement()" [disabled]="actionLoading()" aria-label="Fermer" class="absolute right-6 top-6
+                   flex size-9
+                   items-center justify-center
+                   text-anthracite/65
+                   transition
+                   hover:text-anthracite
+                   disabled:opacity-40">
+
+            <svg lucideX class="size-6" aria-hidden="true">
+            </svg>
+
+        </button>
+
+
+        <!-- Titre -->
+        <h2 id="signalement-title" class="pr-10 text-2xl
+                   font-bold leading-8
+                   text-anthracite">
+            Examiner le signalement
+        </h2>
+
+
+        @if (signalement.statut === 'TRAITE') {
+
+        <p class="mt-7 max-w-sm
+           text-sm leading-6
+           text-anthracite/75">
+            Ce signalement a déjà été traité.
+        </p>
+
+        } @else {
+
+        <p class="mt-7 max-w-sm
+           text-sm leading-6
+           text-anthracite/75">
+            Choisissez le statut à afficher dans ce parcours de démonstration.
+        </p>
+
+        }
+
+
+        <!-- Erreur -->
+        @if (actionError()) {
+
+        <p class="mt-6 rounded-xl
+                   bg-terracotta/10
+                   px-4 py-3
+                   text-sm text-terracotta">
+            {{ actionError() }}
+        </p>
+
+        }
+
+
+        <!-- Actions -->
+        <div class="mt-8 space-y-3">
+
+            @if (signalement.statut === 'NOUVEAU') {
+
+            <button type="button" (click)="takeInCharge()" [disabled]="actionLoading()" class="h-12 w-full
+                       rounded-xl bg-terracotta
+                       px-5 text-left
+                       text-sm font-bold
+                       text-white transition
+                       hover:opacity-90
+                       disabled:cursor-not-allowed
+                       disabled:opacity-50">
+
+                {{
+                actionLoading()
+                ? 'Mise à jour...'
+                : 'Marquer en cours'
+                }}
+
+            </button>
+
+            }
+
+
+            @if (signalement.statut !== 'TRAITE') {
+
+            <button type="button" (click)="completeTreatment()" [disabled]="actionLoading()" class="h-12 w-full
+                       rounded-xl bg-terracotta
+                       px-5 text-left
+                       text-sm font-bold
+                       text-white transition
+                       hover:opacity-90
+                       disabled:cursor-not-allowed
+                       disabled:opacity-50">
+
+                {{
+                actionLoading()
+                ? 'Mise à jour...'
+                : 'Marquer comme traité'
+                }}
+
+            </button>
+
+            }
+
+
+            <button type="button" (click)="closeSignalement()" [disabled]="actionLoading()" class="h-12 w-full
+                       rounded-xl bg-linen/60
+                       px-5 text-left
+                       text-sm font-bold
+                       text-anthracite
+                       transition
+                       hover:bg-linen
+                       disabled:opacity-50">
+                Fermer
+            </button>
+
+        </div>
+
+    </section>
+
+</div>
+
+}

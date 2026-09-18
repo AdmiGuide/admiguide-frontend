@@ -12,6 +12,7 @@ import {
 } from '@angular/router';
 
 import { HttpErrorResponse } from '@angular/common/http';
+import { FormsModule } from '@angular/forms';
 
 import {
   LucideCheck,
@@ -20,27 +21,31 @@ import {
   LucideFlag,
   LucideGlobe,
   LucidePlus,
+  LucideX,
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
 import { AuthService } from '../../services/auth.service';
+import { SignalementService } from '../../services/signalement.service';
 
 import { OrientationResultData } from '../../models/orientation-result.model';
+import { SignalementType } from '../../models/signalement.model';
 
 
 @Component({
   selector: 'app-orientation-result',
 
   imports: [
-    RouterLink,
-    LucideCheck,
-    LucideExternalLink,
-    LucideFileText,
-    LucideFlag,
-    LucideGlobe,
-    LucidePlus,
-  ],
-
+  FormsModule,
+  RouterLink,
+  LucideCheck,
+  LucideExternalLink,
+  LucideFileText,
+  LucideFlag,
+  LucideGlobe,
+  LucidePlus,
+  LucideX,
+],
   templateUrl: './orientation-result.html',
   styleUrl: './orientation-result.css',
 })
@@ -56,6 +61,10 @@ export class OrientationResult implements OnInit {
   // Permet de connaître l'état de connexion de l'utilisateur.
   readonly authService = inject(AuthService);
 
+  // Service utilisé pour envoyer un signalement.
+  private readonly signalementService =
+    inject(SignalementService);
+
 
   // ================= ÉTATS DE LA PAGE =================
 
@@ -68,6 +77,15 @@ export class OrientationResult implements OnInit {
 
   // Contient un éventuel message d'erreur.
   readonly errorMessage = signal('');
+
+  // États de la modale de signalement.
+  readonly reportOpen = signal(false);
+  readonly reportSubmitting = signal(false);
+  readonly reportSuccess = signal(false);
+  readonly reportError = signal('');
+
+  reportType: SignalementType = 'INFORMATION_INCORRECTE';
+  reportComment = '';
 
 
   // ================= DONNÉES CALCULÉES =================
@@ -204,5 +222,69 @@ export class OrientationResult implements OnInit {
 
 
     return country;
+  }
+
+
+  // ================= SIGNALEMENT =================
+
+  openReport(): void {
+    this.reportType = 'INFORMATION_INCORRECTE';
+    this.reportComment = '';
+    this.reportError.set('');
+    this.reportSuccess.set(false);
+    this.reportOpen.set(true);
+  }
+
+
+  closeReport(): void {
+    if (this.reportSubmitting()) {
+      return;
+    }
+
+    this.reportOpen.set(false);
+  }
+
+
+  submitReport(): void {
+    const result = this.result();
+
+    if (!result) {
+      return;
+    }
+
+    const commentaire = this.reportComment.trim();
+
+    if (!commentaire) {
+      this.reportError.set(
+        'Décrivez brièvement le problème rencontré.',
+      );
+      return;
+    }
+
+    this.reportSubmitting.set(true);
+    this.reportError.set('');
+
+    this.signalementService
+      .create(
+        result.public_id,
+        {
+          type_probleme: this.reportType,
+          commentaire,
+        },
+      )
+      .subscribe({
+        next: () => {
+          this.reportSubmitting.set(false);
+          this.reportSuccess.set(true);
+          this.reportComment = '';
+        },
+
+        error: () => {
+          this.reportSubmitting.set(false);
+          this.reportError.set(
+            "Impossible d'envoyer le signalement pour le moment.",
+          );
+        },
+      });
   }
 }

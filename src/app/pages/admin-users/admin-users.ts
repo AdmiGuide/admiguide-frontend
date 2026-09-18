@@ -6,7 +6,6 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   debounceTime,
@@ -23,7 +22,6 @@ import { AdminService } from '../../services/admin.service';
   selector: 'app-admin-users',
   imports: [
     FormsModule,
-    RouterLink,
     LucideSearch,
     LucideX
   ],
