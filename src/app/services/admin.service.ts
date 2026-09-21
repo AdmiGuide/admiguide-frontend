@@ -62,10 +62,10 @@ export class AdminService {
 
     // Récupère les sources officielles avec recherche et filtres.
     getSources(
-    page = 1,
-    search = '',
-    statut = '',
-    type = '',
+      page = 1,
+      search = '',
+      statut = '',
+      type = '',
     ): Observable<PaginatedResponse<AdminSource>> {
     let params = new HttpParams().set(
         'page',
@@ -98,6 +98,18 @@ export class AdminService {
         { params },
     );
     }
+
+    
+  // Enregistre le contrôle manuel d'une source.
+  updateSourceStatus(
+    sourceId: number,
+    statut: string,
+  ): Observable<AdminSource> {
+    return this.http.patch<AdminSource>(
+      `${environment.apiUrl}/referentiel/admin/sources/${sourceId}/control/`,
+      { statut },
+    );
+  }
 
   // Récupère les signalements avec recherche et filtre de statut.
   getSignalements(

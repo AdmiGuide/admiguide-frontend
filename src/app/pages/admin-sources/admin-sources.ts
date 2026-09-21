@@ -13,28 +13,41 @@ import {
   Subject,
 } from 'rxjs';
 
-import { LucideSearch } from '@lucide/angular';
+import {
+  LucideExternalLink,
+  LucideSearch,
+  LucideX,
+} from '@lucide/angular';
 
 import { AdminSource } from '../../models/admin-source.model';
 import { AdminService } from '../../services/admin.service';
 
+type SourceStatus =
+  | 'DISPONIBLE'
+  | 'INDISPONIBLE'
+  | 'A_VERIFIER';
+
 type SourceStatusFilter =
   | 'tous'
-  | 'DISPONIBLE'
-  | 'A_VERIFIER';
+  | SourceStatus;
 
 @Component({
   selector: 'app-admin-sources',
   imports: [
-    FormsModule,
-    LucideSearch,
-  ],
+  FormsModule,
+  LucideSearch,
+  LucideX,
+  LucideExternalLink,
+],
   templateUrl: './admin-sources.html',
   styleUrl: './admin-sources.css',
 })
 export class AdminSources implements OnInit {
   private readonly adminService = inject(AdminService);
   private readonly destroyRef = inject(DestroyRef);
+
+  // Source actuellement examinée.
+  readonly selectedSource = signal<AdminSource | null>(null);
 
   // Déclenche la recherche après un court délai.
   private readonly searchSubject = new Subject<string>();
@@ -181,5 +194,15 @@ export class AdminSources implements OnInit {
     return this.dateFormatter.format(
       new Date(year, month - 1, day),
     );
+  }
+
+  // Ouvre le détail d'une source.
+  openSourceDetails(source: AdminSource): void {
+    this.selectedSource.set(source);
+  }
+
+  // Ferme le détail d'une source.
+  closeSourceDetails(): void {
+    this.selectedSource.set(null);
   }
 }

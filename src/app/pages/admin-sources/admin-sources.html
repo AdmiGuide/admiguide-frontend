@@ -25,43 +25,52 @@
         <div class="flex h-12 w-full items-center gap-3
              rounded-xl border border-sage/60
              bg-white px-4 sm:max-w-96">
-            <svg lucideSearch class="size-5 shrink-0 text-anthracite/65" aria-hidden="true"></svg>
+
+            <svg lucideSearch class="size-5 shrink-0 text-anthracite/65" aria-hidden="true">
+            </svg>
 
             <input type="search" [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()"
                 placeholder="Rechercher une source..." class="w-full bg-transparent
-               text-sm text-anthracite
-               outline-none
-               placeholder:text-anthracite/50" aria-label="Rechercher une source">
+                       text-sm text-anthracite
+                       outline-none
+                       placeholder:text-anthracite/50" aria-label="Rechercher une source">
+
         </div>
 
 
         <!-- ================= FILTRES ================= -->
-        <div class="mt-3 inline-flex items-center
+        <div class="mt-3 inline-flex flex-wrap items-center
              rounded-2xl bg-linen/40 p-1">
 
             <button type="button" (click)="selectStatus('tous')" [class.bg-white]="selectedStatus === 'tous'"
                 [class.text-anthracite]="selectedStatus === 'tous'" class="cursor-pointer rounded-xl
-               px-4 py-2 text-xs
-               text-anthracite/60 transition">
+                       px-4 py-2 text-xs
+                       text-anthracite/60 transition">
                 Tous
             </button>
-
 
             <button type="button" (click)="selectStatus('DISPONIBLE')"
                 [class.bg-white]="selectedStatus === 'DISPONIBLE'"
                 [class.text-anthracite]="selectedStatus === 'DISPONIBLE'" class="cursor-pointer rounded-xl
-               px-4 py-2 text-xs
-               text-anthracite/60 transition">
+                       px-4 py-2 text-xs
+                       text-anthracite/60 transition">
                 Disponible
             </button>
-
 
             <button type="button" (click)="selectStatus('A_VERIFIER')"
                 [class.bg-white]="selectedStatus === 'A_VERIFIER'"
                 [class.text-anthracite]="selectedStatus === 'A_VERIFIER'" class="cursor-pointer rounded-xl
-               px-4 py-2 text-xs
-               text-anthracite/60 transition">
+                       px-4 py-2 text-xs
+                       text-anthracite/60 transition">
                 À vérifier
+            </button>
+
+            <button type="button" (click)="selectStatus('INDISPONIBLE')"
+                [class.bg-white]="selectedStatus === 'INDISPONIBLE'"
+                [class.text-anthracite]="selectedStatus === 'INDISPONIBLE'" class="cursor-pointer rounded-xl
+                       px-4 py-2 text-xs
+                       text-anthracite/60 transition">
+                Indisponible
             </button>
 
         </div>
@@ -110,10 +119,12 @@
                border-b border-linen
                px-5 py-4
                text-xs text-anthracite/60">
+
             <span>Source</span>
             <span>Type</span>
             <span>Statut</span>
             <span>Action</span>
+
         </div>
 
 
@@ -128,6 +139,7 @@
 
             <!-- Source -->
             <div class="min-w-0">
+
                 <p class="truncate font-bold
                      text-anthracite">
                     {{ source.titre }}
@@ -137,6 +149,7 @@
                      text-anthracite/60">
                     {{ formatDate(source.date_consultation) }}
                 </p>
+
             </div>
 
 
@@ -182,13 +195,15 @@
 
 
             <!-- Action -->
-            <button type="button" class="inline-flex h-12 items-center
-                   justify-center rounded-xl
-                   border border-linen bg-white
-                   text-sm font-bold
-                   text-anthracite transition
-                   hover:bg-linen/40">
+            <button type="button" (click)="openSourceDetails(source)" class="inline-flex h-12 items-center
+                       justify-center rounded-xl
+                       border border-linen bg-white
+                       text-sm font-bold
+                       text-anthracite transition
+                       hover:bg-linen/40">
+
                 Examiner
+
             </button>
 
         </div>
@@ -217,6 +232,7 @@
 
             <!-- Source -->
             <div>
+
                 <h2 class="font-bold text-anthracite">
                     {{ source.titre }}
                 </h2>
@@ -225,6 +241,7 @@
                      text-anthracite/60">
                     {{ source.type_label }}
                 </p>
+
             </div>
 
 
@@ -234,10 +251,10 @@
             <!-- Statut -->
             <div class="flex items-center
                    justify-between gap-4">
+
                 <span class="text-xs text-anthracite/60">
                     Statut
                 </span>
-
 
                 @if (source.statut === 'DISPONIBLE') {
 
@@ -274,6 +291,7 @@
             <!-- Dernier contrôle -->
             <div class="mt-5 flex items-center
                    justify-between gap-4">
+
                 <span class="text-xs text-anthracite/60">
                     Dernier contrôle
                 </span>
@@ -281,20 +299,25 @@
                 <span class="text-xs text-anthracite/80">
                     {{ formatDate(source.date_consultation) }}
                 </span>
+
             </div>
 
 
             <!-- Action -->
             <div class="mt-7 flex justify-end">
-                <button type="button" class="inline-flex h-12 min-w-32
-                     items-center justify-center
-                     rounded-xl border border-linen
-                     bg-white px-5
-                     text-sm font-bold
-                     text-anthracite transition
-                     hover:bg-linen/40">
+
+                <button type="button" (click)="openSourceDetails(source)" class="inline-flex h-12 min-w-32
+                           items-center justify-center
+                           rounded-xl border border-linen
+                           bg-white px-5
+                           text-sm font-bold
+                           text-anthracite transition
+                           hover:bg-linen/40">
+
                     Examiner
+
                 </button>
+
             </div>
 
         </article>
@@ -320,32 +343,182 @@
                justify-center gap-4" aria-label="Pagination des sources">
 
         <button type="button" (click)="previousPage()" [disabled]="!hasPreviousPage()" class="rounded-xl border border-linen
-                 bg-white px-4 py-2
-                 text-sm text-anthracite
-                 transition hover:bg-linen/40
-                 disabled:cursor-not-allowed
-                 disabled:opacity-40">
-            Précédent
-        </button>
+                   bg-white px-4 py-2
+                   text-sm text-anthracite
+                   transition hover:bg-linen/40
+                   disabled:cursor-not-allowed
+                   disabled:opacity-40">
 
+            Précédent
+
+        </button>
 
         <span class="text-sm text-anthracite/70">
             Page {{ currentPage }} sur {{ totalPages }}
         </span>
 
-
         <button type="button" (click)="nextPage()" [disabled]="!hasNextPage()" class="rounded-xl border border-linen
-                 bg-white px-4 py-2
-                 text-sm text-anthracite
-                 transition hover:bg-linen/40
-                 disabled:cursor-not-allowed
-                 disabled:opacity-40">
+                   bg-white px-4 py-2
+                   text-sm text-anthracite
+                   transition hover:bg-linen/40
+                   disabled:cursor-not-allowed
+                   disabled:opacity-40">
+
             Suivant
+
         </button>
 
     </nav>
 
     }
+
+    }
+
+    <!-- ================= MODALE EXAMINER ================= -->
+    @if (selectedSource(); as source) {
+
+    <div class="fixed inset-0 z-50 flex items-center
+           justify-center bg-anthracite/30
+           px-4 py-6" (click)="closeSourceDetails()">
+
+        <div class="w-full max-w-[500px]
+               rounded-[20px]
+               border border-linen
+               bg-white
+               px-7 py-7
+               shadow-[0_16px_40px_rgba(0,0,0,0.08)]" (click)="$event.stopPropagation()">
+
+            <!-- ================= EN-TÊTE ================= -->
+            <div class="flex items-start justify-between gap-4">
+
+                <h2 class="text-[24px] font-bold
+                       leading-[1.2] text-anthracite">
+                    Examiner la source
+                </h2>
+
+                <button type="button" (click)="closeSourceDetails()" class="flex size-10 shrink-0
+                       items-center justify-center
+                       rounded-[10px]
+                       border border-linen
+                       bg-white
+                       text-anthracite/75
+                       transition
+                       hover:bg-linen/30" aria-label="Fermer">
+
+                    <svg lucideX class="size-[18px]" aria-hidden="true">
+                    </svg>
+
+                </button>
+
+            </div>
+
+
+            <!-- ================= SOURCE ================= -->
+            <div class="mt-6 border-b border-linen pb-4">
+
+                <p class="text-[11px] font-normal
+                      text-anthracite/55">
+                    Source
+                </p>
+
+                <p class="mt-1 text-[13px] font-medium
+                      leading-5 text-anthracite">
+                    {{ source.titre }}
+                </p>
+
+            </div>
+
+
+            <!-- ================= TYPE ================= -->
+            <div class="border-b border-linen py-4">
+
+                <p class="text-[11px] font-normal
+                      text-anthracite/55">
+                    Type
+                </p>
+
+                <p class="mt-1 text-[13px] font-medium
+                      leading-5 text-anthracite">
+                    {{ source.type_label }}
+                </p>
+
+            </div>
+
+
+            <!-- ================= STATUT ================= -->
+            <div class="border-b border-linen py-4">
+
+                <p class="text-[11px] font-normal
+                      text-anthracite/55">
+                    Statut
+                </p>
+
+                <p class="mt-1 text-[13px] font-medium
+                      leading-5 text-anthracite">
+                    {{ source.statut_label }}
+                </p>
+
+            </div>
+
+
+            <!-- ================= DERNIER CONTRÔLE ================= -->
+            <div class="border-b border-linen py-4">
+
+                <p class="text-[11px] font-normal
+                      text-anthracite/55">
+                    Dernier contrôle
+                </p>
+
+                <p class="mt-1 text-[13px] font-medium
+                      leading-5 text-anthracite">
+                    {{ formatDate(source.date_consultation) }}
+                </p>
+
+            </div>
+
+
+            <!-- ================= LIEN OFFICIEL ================= -->
+            <a [href]="source.url" target="_blank" rel="noopener noreferrer" class="flex items-center justify-between
+                   gap-4
+                   py-4
+                   text-[13px] font-bold
+                   text-anthracite
+                   transition
+                   hover:text-terracotta">
+
+                <span>
+                    Ouvrir la source officielle
+                </span>
+
+                <svg lucideExternalLink class="size-[18px] shrink-0
+                       text-terracotta" aria-hidden="true">
+                </svg>
+
+            </a>
+
+
+            <!-- ================= RETOUR ================= -->
+            <div class="mt-5">
+
+                <button type="button" (click)="closeSourceDetails()" class="inline-flex h-10
+                       items-center justify-center
+                       rounded-[10px]
+                       border border-linen
+                       bg-white px-5
+                       text-[13px] font-medium
+                       text-anthracite
+                       transition
+                       hover:bg-linen/30">
+
+                    Retour
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
 
     }
 
