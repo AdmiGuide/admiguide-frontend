@@ -1,0 +1,15 @@
+# Dépendances locales.
+node_modules/
+
+# Build Angular local.
+dist/
+
+# Git.
+.git
+.gitignore
+
+# Fichiers de l'éditeur.
+.vscode/
+
+# Logs.
+*.log

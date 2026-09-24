@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
 
-  // URL de l'API en production.
-  apiUrl: '',
+  // L'API Django est accessible via le proxy Nginx.
+  apiUrl: '/api',
 };
