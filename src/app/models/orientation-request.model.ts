@@ -8,6 +8,7 @@ export type OrientationStatus =
 // Données envoyées lors de la création d'une situation.
 export interface CreateSituationRequest {
   description_initiale: string;
+  pays_residence?: string;
 }
 
 
@@ -27,6 +28,7 @@ export interface CreateSituationResponse {
   id: number;
   public_id: string;
   description_initiale: string;
+  pays_residence: string | null;
   pays_application: string | null;
   date_creation: string;
   analyse: OrientationAnalysis;
@@ -56,6 +58,7 @@ export interface ComplementaryAnswer {
 
 // Corps envoyé à Django.
 export interface SubmitAnswersRequest {
+  pays_residence: string;
   reponses: ComplementaryAnswer[];
 }
 

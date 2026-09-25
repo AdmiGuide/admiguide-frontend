@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 import {
   LucideArrowLeft,
@@ -10,9 +11,12 @@ import {
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
-import { Subscription } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
+
 import { OrientationLoading } from '../../components/orientation-loading/orientation-loading';
 import { OrientationError } from '../../components/orientation-error/orientation-error';
+
+
 @Component({
   selector: 'app-orientation',
 
@@ -31,6 +35,10 @@ import { OrientationError } from '../../components/orientation-error/orientation
 })
 export class Orientation {
 
+  // Permet de savoir si l'utilisateur est connecté.
+  private readonly authService =
+    inject(AuthService);
+
   // Service métier de l'orientation.
   private readonly orientationService =
     inject(OrientationService);
@@ -43,8 +51,10 @@ export class Orientation {
   // Requête d'analyse en cours.
   private analysisSubscription?: Subscription;
 
-  readonly hasTechnicalError = signal(false);
-  
+  readonly hasTechnicalError =
+    signal(false);
+
+
   // ================= LIMITES =================
 
   readonly maxLength = 1500;
@@ -55,13 +65,16 @@ export class Orientation {
   // ================= ÉTATS =================
 
   // Description saisie par l'utilisateur.
-  readonly situation = signal('');
+  readonly situation =
+    signal('');
 
   // Message d'erreur affiché sous le champ.
-  readonly errorMessage = signal('');
+  readonly errorMessage =
+    signal('');
 
   // Indique que l'analyse est en cours.
-  readonly isLoading = signal(false);
+  readonly isLoading =
+    signal(false);
 
 
   // ================= SAISIE =================
@@ -76,7 +89,6 @@ export class Orientation {
     this.situation.set(
       textarea.value,
     );
-
 
     if (this.errorMessage()) {
       this.errorMessage.set('');
@@ -146,7 +158,8 @@ export class Orientation {
     this.analysisSubscription =
       this.orientationService
         .createSituation({
-          description_initiale: description,
+          description_initiale:
+            description,
         })
         .subscribe({
 
@@ -169,6 +182,23 @@ export class Orientation {
               'ORIENTATION'
             ) {
 
+              // Un visiteur doit d'abord renseigner
+              // son pays de résidence.
+              if (
+                !this.authService.isAuthenticated()
+              ) {
+
+                this.router.navigate([
+                  '/orientation/precisions',
+                  response.public_id,
+                ]);
+
+                return;
+              }
+
+
+              // L'utilisateur connecté possède déjà
+              // un pays de résidence dans son profil.
               this.router.navigate([
                 '/orientation/resultat',
                 response.public_id,
@@ -209,8 +239,7 @@ export class Orientation {
 
 
             // Statut inattendu :
-            // on considère que l'analyse
-            // n'a pas pu aboutir correctement.
+            // l'analyse n'a pas pu aboutir correctement.
             this.hasTechnicalError.set(true);
           },
 
@@ -230,8 +259,7 @@ export class Orientation {
 
 
             // ================= ERREUR DE VALIDATION =================
-            // Une erreur 400 peut venir
-            // des données envoyées.
+
             if (error.status === 400) {
 
               this.errorMessage.set(
@@ -250,6 +278,7 @@ export class Orientation {
         });
   }
 
+
   // Relance la même analyse
   // avec la description conservée.
   retryAnalysis(): void {
@@ -258,6 +287,7 @@ export class Orientation {
 
     this.submitSituation();
   }
+
 
   // Annule l'appel HTTP en cours
   // et revient au formulaire conservé.

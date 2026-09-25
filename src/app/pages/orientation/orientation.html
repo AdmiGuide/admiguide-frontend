@@ -140,7 +140,6 @@
                         les prochaines étapes.
                     </p>
 
-
                     <form class="mt-8" (submit)="$event.preventDefault(); submitSituation()">
 
                         <!-- Situation -->
@@ -151,24 +150,22 @@
                                 Votre situation
                             </label>
 
-
                             <textarea id="situation" name="situation" rows="7" [maxLength]="maxLength"
                                 [value]="situation()" (input)="onSituationInput($event)"
                                 [attr.aria-invalid]="errorMessage() ? 'true' : null"
                                 aria-describedby="situation-help situation-error"
                                 placeholder="Par exemple : j'ai perdu mon passeport sénégalais et je ne sais pas comment le remplacer."
                                 class="min-h-[190px] w-full resize-none
-                         rounded-xl border border-sage
-                         bg-white/85
-                         px-4 py-3
-                         text-base leading-6
-                         text-anthracite
-                         outline-none transition
-                         placeholder:text-anthracite/45
-                         focus:border-terracotta
-                         focus:ring-1
-                         focus:ring-terracotta"></textarea>
-
+                                rounded-xl border border-sage
+                                bg-white/85
+                                px-4 py-3
+                                text-base leading-6
+                                text-anthracite
+                                outline-none transition
+                                placeholder:text-anthracite/45
+                                focus:border-terracotta
+                                focus:ring-1
+                                focus:ring-terracotta"></textarea>
 
                             <!-- Aide + compteur -->
                             <div class="mt-2 flex items-center
