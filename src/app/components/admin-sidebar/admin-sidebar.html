@@ -2,15 +2,17 @@
 
 <!-- Navigation administrateur mobile -->
 <nav class="grid grid-cols-2 gap-2" aria-label="Navigation administration">
+
     <!-- Vue d'ensemble -->
     <a routerLink="/admin" [routerLinkActive]="[
-        'bg-linen',
+        '!bg-linen',
         'text-anthracite',
         'font-semibold'
       ]" [routerLinkActiveOptions]="{ exact: true }" class="flex min-h-11 items-center gap-3
-             rounded-xl bg-white px-3
-             text-xs text-anthracite/80
-             transition hover:bg-linen/50">
+              rounded-xl bg-white px-3
+              text-xs text-anthracite/80
+              transition hover:bg-linen/50">
+
         <svg lucideLayoutDashboard class="size-4 shrink-0" aria-hidden="true"></svg>
 
         <span>Vue d'ensemble</span>
@@ -18,13 +20,14 @@
 
     <!-- Utilisateurs -->
     <a routerLink="/admin/utilisateurs" [routerLinkActive]="[
-        'bg-linen',
+        '!bg-linen',
         'text-anthracite',
         'font-semibold'
       ]" class="flex min-h-11 items-center gap-3
-             rounded-xl bg-white px-3
-             text-xs text-anthracite/80
-             transition hover:bg-linen/50">
+              rounded-xl bg-white px-3
+              text-xs text-anthracite/80
+              transition hover:bg-linen/50">
+
         <svg lucideUsers class="size-4 shrink-0" aria-hidden="true"></svg>
 
         <span>Utilisateurs</span>
@@ -32,13 +35,14 @@
 
     <!-- Sources -->
     <a routerLink="/admin/sources" [routerLinkActive]="[
-        'bg-linen',
+        '!bg-linen',
         'text-anthracite',
         'font-semibold'
       ]" class="flex min-h-11 items-center gap-3
-             rounded-xl bg-white px-3
-             text-xs text-anthracite/80
-             transition hover:bg-linen/50">
+              rounded-xl bg-white px-3
+              text-xs text-anthracite/80
+              transition hover:bg-linen/50">
+
         <svg lucideGlobe class="size-4 shrink-0" aria-hidden="true"></svg>
 
         <span>Sources</span>
@@ -46,17 +50,19 @@
 
     <!-- Signalements -->
     <a routerLink="/admin/signalements" [routerLinkActive]="[
-        'bg-linen',
+        '!bg-linen',
         'text-anthracite',
         'font-semibold'
       ]" class="flex min-h-11 items-center gap-3
-             rounded-xl bg-white px-3
-             text-xs text-anthracite/80
-             transition hover:bg-linen/50">
+              rounded-xl bg-white px-3
+              text-xs text-anthracite/80
+              transition hover:bg-linen/50">
+
         <svg lucideFlag class="size-4 shrink-0" aria-hidden="true"></svg>
 
         <span>Signalements</span>
     </a>
+
 </nav>
 
 } @else {
@@ -80,7 +86,7 @@
                transition hover:bg-linen/50">
             <svg lucideLayoutDashboard class="size-5 shrink-0" aria-hidden="true"></svg>
 
-            <span>Vue d’ensemble</span>
+            <span>Vue d'ensemble</span>
         </a>
 
         <!-- Utilisateurs -->

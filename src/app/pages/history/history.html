@@ -216,21 +216,22 @@
            sm:flex-row sm:items-center
            md:ml-0">
 
-                        <!-- Suivre ma démarche -->
+                        <!-- Voir le suivi -->
                         <a [routerLink]="[
-        '/orientation/suivi',
-        situation.public_id
-      ]" class="flex w-fit
-             cursor-pointer items-center
-             justify-center
-             rounded-xl
-             bg-terracotta
-             px-5 py-3.5
-             text-sm font-semibold
-             text-white
-             transition
-             hover:opacity-90">
-                            Suivre ma démarche
+                            '/orientation/suivi',
+                            situation.public_id
+                        ]" class="flex w-fit
+                            cursor-pointer items-center
+                            justify-center
+                            whitespace-nowrap
+                            rounded-xl
+                            bg-terracotta
+                            px-5 py-3.5
+                            text-sm font-semibold
+                            text-white
+                            transition
+                            hover:opacity-90">
+                                                Voir le suivi
                         </a>
 
 
@@ -240,6 +241,7 @@
                             situation.public_id
                             ]" class="flex w-fit
                                 cursor-pointer items-center
+                                whitespace-nowrap
                                 gap-3 rounded-xl
                                 border border-linen
                                 bg-white px-5 py-3.5
