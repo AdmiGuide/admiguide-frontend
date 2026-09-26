@@ -65,8 +65,12 @@ export class Orientation {
   // ================= ÉTATS =================
 
   // Description saisie par l'utilisateur.
+  // Récupère aussi l'exemple choisi depuis la page d'accueil.
   readonly situation =
-    signal('');
+    signal(
+      this.router.currentNavigation()
+        ?.extras.state?.['situation'] ?? '',
+    );
 
   // Message d'erreur affiché sous le champ.
   readonly errorMessage =
