@@ -307,7 +307,7 @@
         <p class="mt-7 max-w-sm
            text-sm leading-6
            text-anthracite/75">
-            Choisissez le statut à afficher dans ce parcours de démonstration.
+            
         </p>
 
         }
@@ -353,7 +353,7 @@
 
             @if (signalement.statut !== 'TRAITE') {
 
-            <button type="button" (click)="completeTreatment()" [disabled]="actionLoading()" class="h-12 w-full
+            <button type="button" (click)="markAsTreated()" [disabled]="actionLoading()" class="h-12 w-full
                        rounded-xl bg-terracotta
                        px-5 text-left
                        text-sm font-bold

@@ -11,7 +11,6 @@
         </div>
         }
 
-
         <!-- Erreur -->
         @if (!isLoading() && errorMessage()) {
         <section class="mx-auto max-w-2xl rounded-3xl
@@ -73,21 +72,16 @@
                        hover:border-terracotta
                        hover:text-terracotta
                        md:flex">
-
                 Nouvelle situation
-
                 <svg lucidePlus class="size-5" aria-hidden="true">
                 </svg>
-
             </a>
-
         </section>
 
 
         <!-- ================= GRILLE ================= -->
         <div class="mt-10 grid gap-7
                     lg:grid-cols-[minmax(0,1fr)_320px]">
-
 
             <!-- ================= COLONNE GAUCHE ================= -->
             <div class="space-y-7">
@@ -117,7 +111,6 @@
                     </p>
 
                 </section>
-
 
                 <!-- Étapes -->
                 <section class="rounded-3xl border
@@ -178,7 +171,6 @@
                     </div>
 
                 </section>
-
 
                 <!-- Informations à préparer -->
                 <section class="rounded-3xl border
@@ -328,21 +320,6 @@
                     <h2 class="text-2xl font-bold text-anthracite">En résumé</h2>
 
                     <dl class="mt-7">
-                        @if (data.pays_residence; as country) {
-
-                        <div class="border-b border-linen pb-5">
-
-                            <dt class="text-xs text-anthracite/55">
-                                Votre pays de résidence
-                            </dt>
-
-                            <dd class="mt-2 text-sm text-anthracite">
-                                {{ formatCountry(country) }}
-                            </dd>
-
-                        </div>
-
-                        }
                         @if (mainService(); as service) {
 
                         <div class="border-b border-linen py-5">
@@ -446,14 +423,14 @@
                 </section>
 
                 }
-
+                @if (authService.isAuthenticated()) {
 
                 <!-- Signalement -->
                 <button type="button" (click)="openReport()" class="flex cursor-pointer
-                           items-center gap-3
-                           text-sm font-semibold
-                           text-terracotta
-                           transition hover:underline">
+                            items-center gap-3
+                            text-sm font-semibold
+                            text-terracotta
+                            transition hover:underline">
 
                     <svg lucideFlag class="size-5" aria-hidden="true">
                     </svg>
@@ -461,6 +438,8 @@
                     Signaler une information
 
                 </button>
+
+                }
 
             </aside>
 
@@ -472,24 +451,20 @@
 
 </main>
 
-
-<!-- ================================================= -->
 <!-- =============== MODALE SIGNALEMENT ============== -->
-<!-- ================================================= -->
 
-@if (reportOpen()) {
+@if (authService.isAuthenticated() && reportOpen()) {
 
 <div class="fixed inset-0 z-50
-            flex items-center justify-center
-            bg-anthracite/35
-            p-4 backdrop-blur-[2px]">
+                flex items-center justify-center
+                bg-anthracite/35
+                p-4 backdrop-blur-[2px]">
 
     <section class="relative w-full max-w-[520px]
-                    rounded-[24px] bg-cream
-                    px-6 py-7
-                    shadow-xl
-                    md:px-7 md:py-7" role="dialog" aria-modal="true" aria-labelledby="report-title">
-
+                        rounded-[24px] bg-cream
+                        px-6 py-7
+                        shadow-xl
+                        md:px-7 md:py-7" role="dialog" aria-modal="true" aria-labelledby="report-title">
 
         <!-- ================= CONFIRMATION ================= -->
         @if (reportSuccess()) {
@@ -507,15 +482,11 @@
 
             </button>
 
-
             <!-- Titre -->
             <h2 id="report-title" class="pr-10 text-2xl font-bold
                        leading-tight text-anthracite">
-
                 Merci pour votre signalement.
-
             </h2>
-
 
             <!-- Icône confirmation -->
             <div class="mt-9 flex justify-center">
@@ -588,7 +559,6 @@
             <h2 id="report-title" class="max-w-sm pr-10
                        text-2xl font-bold
                        leading-tight text-anthracite">
-
                 Signaler une information
 
             </h2>
@@ -597,9 +567,7 @@
             <!-- Introduction -->
             <p class="mt-5 text-sm leading-6
                       text-anthracite/70">
-
                 Que faudrait-il vérifier dans cette orientation ?
-
             </p>
 
 
@@ -608,9 +576,7 @@
 
                 <span class="text-sm font-bold
                              text-anthracite">
-
                     Nature du problème
-
                 </span>
 
 
@@ -708,9 +674,7 @@
                        text-terracotta
                        transition hover:underline
                        disabled:opacity-50">
-
                 Annuler
-
             </button>
 
         </div>

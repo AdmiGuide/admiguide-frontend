@@ -161,46 +161,6 @@
                         }
                     </div>
 
-
-                    <!-- ================= PAYS ================= -->
-                    <div>
-                        <label for="pays-residence" class="mb-2 block text-sm font-semibold
-                     text-anthracite">
-                            Pays de résidence
-                        </label>
-
-                        <!--
-              Le select limite les saisies incohérentes
-              et normalise les valeurs envoyées au backend.
-            -->
-                        <select id="pays-residence" formControlName="pays_residence" autocomplete="country-name" class="w-full rounded-xl border border-sage
-                     bg-white/90 px-4 py-3 text-base
-                     text-anthracite outline-none transition
-                     focus:border-terracotta
-                     focus:ring-1 focus:ring-terracotta">
-                            <option value="" disabled>
-                                Sélectionnez votre pays
-                            </option>
-
-                            <!-- Génère une option pour chaque pays. -->
-                            @for (country of countries; track country) {
-                            <option [value]="country">
-                                {{ country }}
-                            </option>
-                            }
-                        </select>
-
-                        @if (
-                        registerForm.controls.pays_residence.touched &&
-                        registerForm.controls.pays_residence.hasError('required')
-                        ) {
-                        <p class="mt-2 text-xs text-terracotta">
-                            Sélectionnez votre pays de résidence.
-                        </p>
-                        }
-                    </div>
-
-
                     <!-- ================= MOT DE PASSE ================= -->
                     <div>
                         <label for="password" class="mb-2 block text-sm font-semibold

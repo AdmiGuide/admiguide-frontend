@@ -175,46 +175,6 @@
             <!-- ==================== FORMULAIRE ==================== -->
             <form class="mt-6" (submit)="$event.preventDefault(); submitAnswers()">
 
-                <!-- ==================== PAYS DE RÉSIDENCE ==================== -->
-                <div class="mt-7 first:mt-0">
-
-                    <label for="pays-residence" class="mb-3 block
-                   text-sm font-bold
-                   text-anthracite">
-                        Quel est votre pays de résidence ?
-                    </label>
-
-                    <select id="pays-residence" name="pays-residence" [value]="paysResidence()"
-                        (change)="onCountryChange($event)" class="w-full rounded-xl
-                   border border-sage
-                   bg-white/85
-                   px-4 py-3
-                   text-base text-anthracite
-                   outline-none transition
-                   focus:border-terracotta
-                   focus:ring-1
-                   focus:ring-terracotta">
-
-                        <option value="" disabled>
-                            Sélectionnez votre pays
-                        </option>
-
-                        @for (
-                        country of countries;
-                        track country
-                        ) {
-
-                        <option [value]="country">
-                            {{ country }}
-                        </option>
-
-                        }
-
-                    </select>
-
-                </div>
-
-
                 <!-- ==================== QUESTIONS COMPLÉMENTAIRES ==================== -->
                 @for (
                 question of questions();

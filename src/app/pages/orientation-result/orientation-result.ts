@@ -19,7 +19,6 @@ import {
   LucideExternalLink,
   LucideFileText,
   LucideFlag,
-  LucideGlobe,
   LucidePlus,
   LucideX,
 } from '@lucide/angular';
@@ -42,7 +41,6 @@ import { SignalementType } from '../../models/signalement.model';
   LucideExternalLink,
   LucideFileText,
   LucideFlag,
-  LucideGlobe,
   LucidePlus,
   LucideX,
 ],
@@ -194,40 +192,14 @@ export class OrientationResult implements OnInit {
   }
 
 
-  // Transforme les codes pays renvoyés par Django
-  // en noms lisibles dans l'interface.
-  formatCountry(
-    country?: string | null,
-  ): string {
-
-    if (!country) {
-      return '';
-    }
-
-
-    const normalizedCountry =
-      country
-        .trim()
-        .toUpperCase();
-
-
-    if (normalizedCountry === 'SN') {
-      return 'Sénégal';
-    }
-
-
-    if (normalizedCountry === 'FR') {
-      return 'France';
-    }
-
-
-    return country;
-  }
-
-
   // ================= SIGNALEMENT =================
 
   openReport(): void {
+    
+    if (!this.authService.isAuthenticated()) {
+      return;
+    }
+
     this.reportType = 'INFORMATION_INCORRECTE';
     this.reportComment = '';
     this.reportError.set('');

@@ -221,58 +221,6 @@
                         </div>
 
 
-                        <!-- ================= PAYS DE RÉSIDENCE ================= -->
-                        <div>
-                            <label for="pays-residence" class="mb-2 block
-                       text-sm font-semibold
-                       text-anthracite">
-                                Pays de résidence
-                            </label>
-
-                            <!--
-                La liste est générée depuis COUNTRIES
-                dans profile.ts.
-              -->
-                            <select id="pays-residence" formControlName="pays_residence" autocomplete="country-name"
-                                class="w-full rounded-xl
-                       border border-sage
-                       bg-white/90
-                       px-4 py-3
-                       text-base text-anthracite
-                       outline-none transition
-                       focus:border-terracotta
-                       focus:ring-1
-                       focus:ring-terracotta">
-                                @for (country of countries; track country) {
-                                <option [value]="country">
-                                    {{ country }}
-                                </option>
-                                }
-                            </select>
-
-                            <!-- Pays obligatoire. -->
-                            @if (
-                            profileForm.controls.pays_residence.touched &&
-                            profileForm.controls.pays_residence.hasError('required')
-                            ) {
-                            <p class="mt-2 text-xs text-terracotta">
-                                Sélectionnez votre pays de résidence.
-                            </p>
-                            }
-                        </div>
-
-
-                        <!-- ================= INFORMATION ================= -->
-                        <div class="rounded-xl
-                     bg-sage/10
-                     px-5 py-4
-                     text-sm leading-6
-                     text-anthracite/70">
-                            Ces informations peuvent aider à contextualiser
-                            vos prochaines situations.
-                        </div>
-
-
                         <!-- ================= ACTIONS ================= -->
                         <div class="flex flex-col gap-4 pt-3
                      md:flex-row

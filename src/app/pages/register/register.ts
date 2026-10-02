@@ -14,7 +14,6 @@ import {
 } from '@lucide/angular';
 
 import { AuthService } from '../../services/auth.service';
-import { COUNTRIES } from '../../data/countries';
 
 @Component({
   selector: 'app-register',
@@ -43,9 +42,6 @@ export class Register {
   readonly isLoading = signal(false);
   readonly errorMessage = signal('');
 
-  // Liste utilisée par le champ pays de résidence.
-  readonly countries = COUNTRIES;
-
   // Autorise les lettres, espaces, apostrophes et tirets.
   private readonly namePattern =
     /^[\p{L}]+(?:[ '\u2019-][\p{L}]+)*$/u;
@@ -72,14 +68,6 @@ export class Register {
         Validators.required,
         Validators.email,
         Validators.maxLength(254),
-      ],
-    ],
-
-    pays_residence: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(100),
       ],
     ],
 
@@ -114,7 +102,6 @@ export class Register {
     const {
       nom_complet,
       email,
-      pays_residence,
       password,
     } = this.registerForm.getRawValue();
 
@@ -123,7 +110,6 @@ export class Register {
       .register({
         nom_complet: nom_complet.trim(),
         email: email.trim(),
-        pays_residence,
         password,
       })
       .subscribe({
@@ -177,12 +163,6 @@ export class Register {
       return Array.isArray(errors.nom_complet)
         ? errors.nom_complet[0]
         : errors.nom_complet;
-    }
-
-    if (errors?.pays_residence) {
-      return Array.isArray(errors.pays_residence)
-        ? errors.pays_residence[0]
-        : errors.pays_residence;
     }
 
     return 'Vérifiez les informations saisies.';

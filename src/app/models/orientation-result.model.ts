@@ -57,12 +57,6 @@ export interface OrientationResultData {
 
   description_initiale: string;
 
-  // Pays dans lequel la démarche doit être effectuée.
-  pays_application: string | null;
-
-  // Pays enregistré dans le profil de l'utilisateur.
-  pays_residence: string | null;
-
   date_creation: string;
 
   orientation_disponible: boolean;

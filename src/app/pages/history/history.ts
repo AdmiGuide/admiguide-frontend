@@ -23,10 +23,6 @@ import { SituationHistory } from '../../models/situation-history.model';
 import { UserSidebar } from '../../components/user-sidebar/user-sidebar';
 
 
-// Filtres disponibles sur l'écran Historique.
-type HistoryFilter = 'all' | 'senegal' | 'abroad';
-
-
 @Component({
   selector: 'app-history',
 
@@ -70,10 +66,6 @@ export class History implements OnInit {
   // Texte saisi dans le champ de recherche.
   readonly searchTerm = signal('');
 
-  // Filtre actuellement sélectionné.
-  readonly selectedFilter = signal<HistoryFilter>('all');
-
-
   // ================= DONNÉES CALCULÉES =================
 
   // Récupère uniquement le prénom de l'utilisateur connecté.
@@ -90,70 +82,21 @@ export class History implements OnInit {
       .split(/\s+/)[0];
   });
 
-
   // Retourne les situations après application
-  // de la recherche et du filtre géographique.
+  // de la recherche.
   readonly filteredSituations = computed(() => {
 
     const search = this.searchTerm()
       .trim()
       .toLocaleLowerCase('fr');
 
-    const filter = this.selectedFilter();
-
-
     return this.situations().filter((situation) => {
 
-      // Vérifie si le titre correspond
-      // au texte recherché.
-      const matchesSearch =
+      return (
         !search ||
         situation.titre
           .toLocaleLowerCase('fr')
-          .includes(search);
-
-
-      // Aucun filtre géographique.
-      if (filter === 'all') {
-        return matchesSearch;
-      }
-
-
-      /*
-       * Le filtre utilise pays_application
-       * et non pays_residence.
-       *
-       * pays_residence :
-       * pays où habite l'utilisateur.
-       *
-       * pays_application :
-       * pays où la démarche doit être effectuée.
-       */
-      const country =
-        situation.pays_application
-          ?.trim()
-          .toLocaleLowerCase('fr');
-
-
-      // Reconnaît le Sénégal même si l'API
-      // renvoie un code pays ou un libellé.
-      const isSenegal =
-        country === 'sn' ||
-        country === 'sénégal' ||
-        country === 'senegal';
-
-
-      // Démarches à effectuer au Sénégal.
-      if (filter === 'senegal') {
-        return matchesSearch && isSenegal;
-      }
-
-
-      // Démarches à effectuer à l'étranger.
-      return (
-        matchesSearch &&
-        !!country &&
-        !isSenegal
+          .includes(search)
       );
     });
   });
@@ -216,50 +159,6 @@ export class History implements OnInit {
       event.target as HTMLInputElement;
 
     this.searchTerm.set(input.value);
-  }
-
-
-  // ================= FILTRAGE =================
-
-  // Active le filtre sélectionné.
-  setFilter(filter: HistoryFilter): void {
-
-    this.selectedFilter.set(filter);
-  }
-
-
-  // ================= FORMATAGE =================
-
-  // Transforme les codes pays utilisés par l'API
-  // en libellés lisibles dans l'interface.
-  formatApplicationCountry(
-    country: string | null,
-  ): string {
-
-    if (!country) {
-      return '';
-    }
-
-
-    const normalizedCountry =
-      country
-        .trim()
-        .toUpperCase();
-
-
-    if (normalizedCountry === 'SN') {
-      return 'Sénégal';
-    }
-
-
-    if (normalizedCountry === 'FR') {
-      return 'France';
-    }
-
-
-    // Si le backend renvoie déjà un nom de pays,
-    // on l'affiche tel quel.
-    return country;
   }
 
 

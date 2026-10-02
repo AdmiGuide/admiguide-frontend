@@ -159,8 +159,8 @@ export class AdminSignalements implements OnInit {
     this.updateStatus('EN_COURS');
   }
 
-  // Termine le traitement du signalement.
-  completeTreatment(): void {
+  // Marque le signalement comme traité.
+  markAsTreated(): void {
     this.updateStatus('TRAITE');
   }
 

@@ -142,7 +142,7 @@ export class AdminService {
     );
   }
 
-  // Met à jour le statut ou le traitement d'un signalement.
+  // Met à jour le statut d'un signalement.
   updateSignalement(
     signalementId: number,
     payload: AdminSignalementUpdate,

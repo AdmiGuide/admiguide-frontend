@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
 
 import { AuthService } from '../../services/auth.service';
 import { UserSidebar } from '../../components/user-sidebar/user-sidebar';
-import { COUNTRIES } from '../../data/countries';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -41,9 +40,6 @@ export class Profile implements OnInit {
   readonly isSaving = signal(false);
   readonly errorMessage = signal('');
   readonly successMessage = signal('');
-
-  // Liste utilisée dans le select du pays.
-  readonly countries = COUNTRIES;
 
   // Autorise les lettres, espaces, apostrophes et tirets.
   private readonly namePattern =
@@ -81,14 +77,6 @@ export class Profile implements OnInit {
     ],
 
     email: [''],
-
-    pays_residence: [
-      '',
-      [
-        Validators.required,
-        Validators.maxLength(100),
-      ],
-    ],
   });
 
   ngOnInit(): void {
@@ -129,13 +117,11 @@ export class Profile implements OnInit {
 
     const {
       nom_complet,
-      pays_residence,
     } = this.profileForm.getRawValue();
 
     this.authService
       .updateProfile({
         nom_complet: nom_complet.trim(),
-        pays_residence,
       })
       .subscribe({
         next: (user) => {
@@ -181,7 +167,6 @@ export class Profile implements OnInit {
     this.profileForm.patchValue({
       nom_complet: user.nom_complet,
       email: user.email,
-      pays_residence: user.pays_residence,
     });
   }
 
@@ -197,12 +182,6 @@ export class Profile implements OnInit {
         : errors.nom_complet;
     }
 
-    if (errors?.pays_residence) {
-      return Array.isArray(errors.pays_residence)
-        ? errors.pays_residence[0]
-        : errors.pays_residence;
-    }
-
-    return 'Impossible d’enregistrer les modifications.';
+    return "Impossible d'enregistrer les modifications.";
   }
 }

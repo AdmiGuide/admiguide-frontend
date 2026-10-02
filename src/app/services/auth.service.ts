@@ -29,7 +29,6 @@ interface LoginCredentials {
 interface RegisterCredentials {
   nom_complet: string;
   email: string;
-  pays_residence: string;
   password: string;
 }
 
@@ -48,7 +47,6 @@ interface RefreshResponse {
 // Champs que l'utilisateur peut modifier depuis son profil.
 interface UpdateProfileData {
   nom_complet: string;
-  pays_residence: string;
 }
 
 @Service()

@@ -19,9 +19,7 @@ import {
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
-import { AuthService } from '../../services/auth.service';
 import { OrientationQuestion } from '../../models/orientation-request.model';
-import { COUNTRIES } from '../../data/countries';
 import { Subscription } from 'rxjs';
 import { OrientationLoading } from '../../components/orientation-loading/orientation-loading';
 
@@ -49,20 +47,7 @@ export class OrientationPrecisions implements OnInit {
   private readonly orientationService =
     inject(OrientationService);
 
-  private readonly authService =
-    inject(AuthService);
-
   private analysisSubscription?: Subscription;
-
-  // Liste des pays déjà utilisée ailleurs dans AdmiGuide.
-  readonly countries = COUNTRIES;
-
-  // Pays de résidence associé à la situation.
-  readonly paysResidence = signal('');
-
-  // Identifiant d'une éventuelle question IA sur le pays.
-  private readonly countryQuestionId =
-    signal<number | null>(null);
 
   // Identifiant public de la situation.
   private publicId = '';
@@ -99,7 +84,6 @@ export class OrientationPrecisions implements OnInit {
         'publicId',
       );
 
-
     if (!publicId) {
 
       this.errorMessage.set(
@@ -111,9 +95,7 @@ export class OrientationPrecisions implements OnInit {
       return;
     }
 
-
     this.publicId = publicId;
-
 
     // Récupère la description conservée
     // après la première étape.
@@ -126,14 +108,6 @@ export class OrientationPrecisions implements OnInit {
       savedDescription ?? '',
     );
 
-    // Préremplit le pays avec celui du profil
-    // lorsque l'utilisateur est connecté.
-    const residence =
-      this.authService.currentUser()?.pays_residence;
-
-    if (residence) {
-      this.paysResidence.set(residence);
-    }
     this.loadQuestions();
   }
 
@@ -144,36 +118,18 @@ export class OrientationPrecisions implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
-
     this.orientationService
       .getQuestions(this.publicId)
       .subscribe({
 
         next: (questions) => {
-          const countryQuestion =
-            questions.find(
-              (question) =>
-                this.isCountryQuestion(question),
-            );
-
-          this.countryQuestionId.set(
-            countryQuestion?.id ?? null,
-          );
-          
-          const otherQuestions =
-            questions.filter(
-              (question) =>
-                !this.isCountryQuestion(question),
-            );
-
           this.questions.set(
-            [...otherQuestions].sort(
+            [...questions].sort(
               (a, b) => a.ordre - b.ordre,
             ),
           );
           this.isLoading.set(false);
         },
-
 
         error: (
           error: HttpErrorResponse,
@@ -193,43 +149,6 @@ export class OrientationPrecisions implements OnInit {
       });
   }
 
-
-  // Identifie une éventuelle question IA sur le pays
-  // pour éviter de l'afficher en double.
-  isCountryQuestion(
-    question: OrientationQuestion,
-  ): boolean {
-
-    const texte =
-      question.texte
-        .trim()
-        .toLocaleLowerCase('fr');
-
-    return (
-      texte.includes('pays') &&
-      (
-        texte.includes('résid') ||
-        texte.includes('resid')
-      )
-    );
-  }
-
-  // Enregistre le pays de résidence sélectionné.
-  onCountryChange(event: Event): void {
-
-    const select =
-      event.target as HTMLSelectElement;
-
-    this.paysResidence.set(
-      select.value,
-    );
-
-    if (this.errorMessage()) {
-      this.errorMessage.set('');
-    }
-  }
-
-
   // Retourne la réponse actuelle.
   answerFor(
     questionId: number,
@@ -239,7 +158,6 @@ export class OrientationPrecisions implements OnInit {
       this.answers()[questionId] ?? ''
     );
   }
-
 
   // Enregistre localement une réponse.
   setAnswer(
@@ -302,15 +220,6 @@ export class OrientationPrecisions implements OnInit {
       return;
     }
 
-      // Le pays de résidence est obligatoire.
-    if (!this.paysResidence().trim()) {
-
-      this.errorMessage.set(
-        'Sélectionnez votre pays de résidence.',
-      );
-
-      return;
-    }
     const unanswered =
       this.questions().some(
         (question) =>
@@ -342,38 +251,23 @@ export class OrientationPrecisions implements OnInit {
         }),
       );
 
-      const countryQuestionId =
-        this.countryQuestionId();
-
-      if (countryQuestionId !== null) {
-        reponses.unshift({
-          question_id: countryQuestionId,
-          contenu: this.paysResidence().trim(),
-        });
-      }
-
 
     this.isSubmitting.set(true);
     this.errorMessage.set('');
 
-
     this.analysisSubscription =
       this.orientationService
-        .submitAnswers(
-          this.publicId,
-          {
-            pays_residence:
-              this.paysResidence().trim(),
-
-            reponses,
-          },
-        )
+      .submitAnswers(
+        this.publicId,
+        {
+          reponses,
+        },
+      )
         .subscribe({
 
           next: (response) => {
 
             this.isSubmitting.set(false);
-
 
             // Orientation obtenue.
             if (
@@ -388,7 +282,6 @@ export class OrientationPrecisions implements OnInit {
 
               return;
             }
-
 
             // L'IA peut demander une autre précision.
             if (
