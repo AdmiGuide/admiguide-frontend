@@ -11,7 +11,6 @@ import {
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
-import { AuthService } from '../../services/auth.service';
 
 import { OrientationLoading } from '../../components/orientation-loading/orientation-loading';
 import { OrientationError } from '../../components/orientation-error/orientation-error';
@@ -34,10 +33,6 @@ import { OrientationError } from '../../components/orientation-error/orientation
   styleUrl: './orientation.css',
 })
 export class Orientation {
-
-  // Permet de savoir si l'utilisateur est connecté.
-  private readonly authService =
-    inject(AuthService);
 
   // Service métier de l'orientation.
   private readonly orientationService =
@@ -104,7 +99,7 @@ export class Orientation {
   useExample(): void {
 
     this.situation.set(
-      'Je vis en France et mon enfant vient de naître.',
+      "J'ai perdu mon passeport sénégalais et je souhaite savoir comment le remplacer.",
     );
 
     this.errorMessage.set('');
@@ -186,23 +181,6 @@ export class Orientation {
               'ORIENTATION'
             ) {
 
-              // Un visiteur doit d'abord renseigner
-              // son pays de résidence.
-              if (
-                !this.authService.isAuthenticated()
-              ) {
-
-                this.router.navigate([
-                  '/orientation/precisions',
-                  response.public_id,
-                ]);
-
-                return;
-              }
-
-
-              // L'utilisateur connecté possède déjà
-              // un pays de résidence dans son profil.
               this.router.navigate([
                 '/orientation/resultat',
                 response.public_id,
