@@ -21,6 +21,7 @@ import {
   LucideFlag,
   LucidePlus,
   LucideX,
+  LucideGlobe
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
@@ -43,6 +44,7 @@ import { SignalementType } from '../../models/signalement.model';
   LucideFlag,
   LucidePlus,
   LucideX,
+  LucideGlobe
 ],
   templateUrl: './orientation-result.html',
   styleUrl: './orientation-result.css',
