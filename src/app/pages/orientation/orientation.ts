@@ -8,6 +8,7 @@ import {
   LucideArrowRight,
   LucideFileText,
   LucideInfo,
+  LucideMic,
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
@@ -25,6 +26,7 @@ import { OrientationError } from '../../components/orientation-error/orientation
     LucideArrowRight,
     LucideFileText,
     LucideInfo,
+    LucideMic,
     OrientationLoading,
     OrientationError,
   ],
@@ -75,7 +77,147 @@ export class Orientation {
   readonly isLoading =
     signal(false);
 
+    // ================= SAISIE VOCALE =================
 
+  // Indique si le microphone est actuellement en écoute.
+  readonly isRecording = signal(false);
+
+  // Message affiché à l'utilisateur pendant la dictée.
+  readonly voiceMessage = signal('');
+
+  // Enregistreur audio du navigateur.
+  private mediaRecorder?: MediaRecorder;
+
+  // Flux provenant du microphone.
+  private microphoneStream?: MediaStream;
+
+  // Morceaux audio reçus pendant l'enregistrement.
+  private audioChunks: Blob[] = [];
+
+  async toggleVoiceRecording(): Promise<void> {
+
+    // Si un enregistrement est déjà en cours,
+    // un nouveau clic permet de l'arrêter.
+    if (this.isRecording()) {
+      this.stopVoiceRecording();
+      return;
+    }
+
+    await this.startVoiceRecording();
+  }
+
+  private async startVoiceRecording(): Promise<void> {
+
+  try {
+
+    this.voiceMessage.set('');
+
+    // Demande l'accès au microphone.
+    // Ces options activent les traitements audio
+    // proposés par le navigateur.
+    const stream =
+      await navigator.mediaDevices.getUserMedia({
+        audio: {
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: 1,
+        },
+      });
+
+    this.microphoneStream = stream;
+
+    // Réinitialise l'ancien enregistrement.
+    this.audioChunks = [];
+
+    // Crée l'enregistreur audio.
+    this.mediaRecorder =
+      new MediaRecorder(stream);
+
+    // Chaque morceau audio reçu est conservé.
+    this.mediaRecorder.ondataavailable =
+      (event: BlobEvent) => {
+
+        if (event.data.size > 0) {
+          this.audioChunks.push(event.data);
+        }
+      };
+
+    // Lorsque l'enregistrement est arrêté.
+    this.mediaRecorder.onstop = () => {
+
+      const audioBlob = new Blob(
+        this.audioChunks,
+        {
+          type:
+            this.mediaRecorder?.mimeType ||
+            'audio/webm',
+        },
+      );
+
+      console.log(
+        'Audio enregistré :',
+        audioBlob,
+      );
+
+      console.log(
+        'Taille :',
+        audioBlob.size,
+        'octets',
+      );
+
+      this.releaseMicrophone();
+    };
+
+    this.mediaRecorder.start();
+
+    this.isRecording.set(true);
+
+    this.voiceMessage.set(
+      'Écoute en cours… Cliquez à nouveau pour arrêter.',
+    );
+
+  } catch (error) {
+
+    console.error(
+      'Erreur microphone :',
+      error,
+    );
+
+    this.voiceMessage.set(
+      "Impossible d'accéder au microphone. Vérifiez les autorisations du navigateur.",
+    );
+  }
+  }
+
+  private stopVoiceRecording(): void {
+
+    if (
+      !this.mediaRecorder ||
+      this.mediaRecorder.state === 'inactive'
+    ) {
+      return;
+    }
+
+    this.mediaRecorder.stop();
+
+    this.isRecording.set(false);
+
+    this.voiceMessage.set(
+      'Enregistrement terminé.',
+    );
+  }
+
+  private releaseMicrophone(): void {
+
+    this.microphoneStream
+      ?.getTracks()
+      .forEach((track) => track.stop());
+
+    this.microphoneStream = undefined;
+  }
+
+  
   // ================= SAISIE =================
 
   onSituationInput(

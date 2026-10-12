@@ -172,7 +172,7 @@
                          justify-between gap-3">
 
                                 <p id="situation-help" class="text-xs text-anthracite/55">
-                                    Évitez les numéros de pièces d’identité.
+                                    Évitez les numéros de pièces d'identité.
                                 </p>
 
                                 <p class="shrink-0 text-xs
@@ -195,24 +195,43 @@
 
                         </div>
 
+                        <!-- ================= SAISIE VOCALE ================= -->
+                        <div class="mt-5 flex items-center gap-3">
 
-                        <!-- Information -->
-                        <div class="mt-5 flex items-start gap-3
-                       rounded-xl
-                       bg-cream/80
-                       px-5 py-4">
+                            <!-- Bouton microphone -->
+                            <button type="button" (click)="toggleVoiceRecording()" [attr.aria-pressed]="isRecording()"
+                                class="inline-flex size-11 shrink-0
+                                cursor-pointer items-center justify-center
+                                rounded-full bg-terracotta
+                                text-white transition
+                                hover:opacity-90" aria-label="Dicter ma situation">
 
-                            <svg lucideInfo class="mt-0.5 size-5 shrink-0
-                         text-anthracite/65" aria-hidden="true"></svg>
+                                <svg lucideMic class="size-5" aria-hidden="true">
+                                </svg>
 
-                            <p class="text-sm leading-6
-                         text-anthracite/70">
-                                Aucun compte n'est nécessaire pour obtenir une orientation.
-                            </p>
+                            </button>
+
+
+                            <!-- Texte à droite du bouton -->
+                            <div>
+
+                                <span class="text-sm font-bold text-terracotta">
+                                    Dicter ma situation
+                                </span>
+
+                                @if (voiceMessage()) {
+
+                                <p class="mt-1 text-xs text-anthracite/60" aria-live="polite">
+
+                                    {{ voiceMessage() }}
+
+                                </p>
+
+                                }
+
+                            </div>
 
                         </div>
-
-
                         <!-- Actions -->
                         <div class="mt-9 flex items-center
                        justify-between gap-4">
