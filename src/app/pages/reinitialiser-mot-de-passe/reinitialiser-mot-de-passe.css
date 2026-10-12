@@ -1,0 +1,14 @@
+/* Background mobile de la zone d'authentification. */
+.auth-background {
+  background-image: url('/images/background-admiguide-mobile.png');
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+/* Background desktop. */
+@media (min-width: 768px) {
+  .auth-background {
+    background-image: url('/images/background-admiguide.png');
+  }
+}

@@ -79,6 +79,33 @@ export class AuthService {
     );
   }
 
+  // Demande l'envoi d'un lien de réinitialisation du mot de passe.
+  requestPasswordReset(
+    email: string,
+  ): Observable<{ detail: string }> {
+    return this.http.post<{ detail: string }>(
+      `${environment.apiUrl}/auth/password-reset/`,
+      {
+        email,
+      },
+    );
+  }
+
+  // Confirme la réinitialisation avec le lien reçu par e-mail.
+  confirmPasswordReset(
+    uid: string,
+    token: string,
+    newPassword: string,
+    confirmPassword: string,
+  ): Observable<{ detail: string }> {
+    return this.http.post<{ detail: string }>(
+      `${environment.apiUrl}/auth/password-reset-confirm/${uid}/${token}/`,
+      {
+        new_password: newPassword,
+        confirm_password: confirmPassword,
+      },
+    );
+  }
 
   // Connecte l'utilisateur puis récupère son profil.
   login(credentials: LoginCredentials): Observable<User> {

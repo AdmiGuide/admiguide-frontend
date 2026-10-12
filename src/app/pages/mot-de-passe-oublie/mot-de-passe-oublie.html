@@ -1,0 +1,159 @@
+<main class="px-4 pb-8 md:px-8 lg:px-12">
+    <section class="auth-background relative mx-auto max-w-5xl overflow-hidden
+               rounded-3xl p-3 md:p-4">
+
+        <!-- Carte principale en glassmorphisme. -->
+        <div class="relative grid gap-12 rounded-3xl border border-white/90
+                   bg-white/60 px-6 py-8
+                   shadow-[0_16px_36px_rgba(38,43,39,0.08)]
+                   backdrop-blur-[18px]
+                   md:grid-cols-2 md:gap-16 md:px-10 md:py-12">
+
+            <!-- ==================== PRÉSENTATION ==================== -->
+            <section class="order-2 flex flex-col justify-center md:order-1">
+
+                <!-- Badge de présentation. -->
+                <span class="mb-6 w-fit rounded-full bg-white/80
+                           px-4 py-2 text-xs text-anthracite/70">
+                    Un espace pour vous
+                </span>
+
+                <!-- Titre de présentation. -->
+                <h2 class="text-3xl font-bold leading-tight text-anthracite
+                           md:text-4xl">
+                    Vos orientations,
+
+                    <span class="block text-terracotta">
+                        à portée de main.
+                    </span>
+                </h2>
+
+                <!-- Texte explicatif. -->
+                <p class="mt-8 max-w-md text-sm leading-6 text-anthracite/70
+                           md:text-base">
+                    Retrouvez vos situations et les informations utiles,
+                    au même endroit.
+                </p>
+
+                <!-- Avantages visibles uniquement sur desktop. -->
+                <ul class="mt-10 hidden space-y-6 text-sm
+                        text-anthracite/70 md:block">
+
+                    <li class="flex items-center gap-4">
+                        <svg lucideHistory class="size-5 text-anthracite/60" aria-hidden="true">
+                        </svg>
+
+                        Votre historique de consultations
+                    </li>
+
+                    <li class="flex items-center gap-4">
+                        <svg lucideFileText class="size-5 text-anthracite/60" aria-hidden="true">
+                        </svg>
+
+                        Vos orientations consultables
+                    </li>
+
+                    <li class="flex items-center gap-4">
+                        <svg lucideUserRound class="size-5 text-anthracite/60" aria-hidden="true">
+                        </svg>
+
+                        Votre profil à jour
+                    </li>
+
+                </ul>
+            </section>
+
+            <!-- ==================== RÉCUPÉRATION ==================== -->
+            <section class="order-1 md:order-2">
+
+                <!-- Titre du formulaire. -->
+                <h1 class="text-3xl font-bold leading-tight text-anthracite">
+                    Récupérer votre mot de passe
+                </h1>
+
+                <!-- Instructions. -->
+                <p class="mt-6 text-sm leading-6 text-anthracite/60">
+                    Saisissez l'adresse e-mail associée à votre compte pour recevoir un lien de réinitialisation.
+                </p>
+
+                <!-- Message de succès retourné par l'API. -->
+                @if (successMessage()) {
+                <p class="mt-5 rounded-xl border border-sage/40
+                               bg-white/60 px-4 py-3
+                               text-sm text-anthracite" role="status">
+
+                    {{ successMessage() }}
+                </p>
+                }
+
+                <!-- Message d'erreur retourné par l'API. -->
+                @if (errorMessage()) {
+                <p class="mt-5 rounded-xl border border-terracotta/30
+                               bg-white/60 px-4 py-3
+                               text-sm text-terracotta" role="alert">
+
+                    {{ errorMessage() }}
+                </p>
+                }
+
+                <!-- Formulaire de récupération du mot de passe. -->
+                <form class="mt-7 space-y-5" [formGroup]="resetForm" (ngSubmit)="requestReset()">
+
+                    <!-- Adresse e-mail. -->
+                    <div>
+                        <label for="email" class="mb-2 block text-sm font-semibold
+                                   text-anthracite">
+                            Adresse e-mail
+                        </label>
+
+                        <input id="email" type="email" formControlName="email" placeholder="vous@exemple.test"
+                            autocomplete="email" class="w-full rounded-xl border border-sage
+                                   bg-white/90 px-4 py-3 text-base
+                                   text-anthracite outline-none transition
+                                   focus:border-terracotta focus:ring-1
+                                   focus:ring-terracotta">
+
+                        <!-- Erreur de validation de l'adresse e-mail. -->
+                        @if (
+                        resetForm.controls.email.touched &&
+                        resetForm.controls.email.invalid
+                        ) {
+                        <p class="mt-2 text-xs text-terracotta">
+                            Saisissez une adresse e-mail valide.
+                        </p>
+                        }
+                    </div>
+
+                    <!-- Bouton d'envoi. -->
+                    <button type="submit" [disabled]="isLoading()" class="flex w-full items-center justify-center
+                               rounded-xl bg-terracotta px-5 py-4
+                               text-sm font-semibold text-white
+                               transition hover:opacity-90
+                               disabled:cursor-not-allowed
+                               disabled:opacity-60">
+
+                        {{
+                        isLoading()
+                        ? 'Envoi en cours...'
+                        : 'Envoyer le lien de réinitialisation'
+                        }}
+                    </button>
+                </form>
+
+                <!-- Retour à la page de connexion. -->
+                <div class="mt-7 border-t border-linen pt-6">
+                    <a routerLink="/connexion" class="inline-flex items-center gap-2
+                               text-sm font-medium text-terracotta
+                               hover:underline">
+
+                        <svg lucideArrowLeft class="size-4" aria-hidden="true">
+                        </svg>
+
+                        Retour à la connexion
+                    </a>
+                </div>
+
+            </section>
+        </div>
+    </section>
+</main>

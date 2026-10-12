@@ -20,6 +20,8 @@ import { adminGuard } from './guards/admin-guard';
 import { AdminUsers } from './pages/admin-users/admin-users';
 import { AdminSources } from './pages/admin-sources/admin-sources';
 import { AdminSignalements } from './pages/admin-signalements/admin-signalements';
+import { MotDePasseOublie } from './pages/mot-de-passe-oublie/mot-de-passe-oublie';
+import { ReinitialiserMotDePasse } from './pages/reinitialiser-mot-de-passe/reinitialiser-mot-de-passe';
 
 export const routes: Routes = [
   {
@@ -37,6 +39,16 @@ export const routes: Routes = [
       {
         path: 'connexion',
         component: Login,
+      },
+
+      {
+        path: 'mot-de-passe-oublie',
+        component: MotDePasseOublie,
+      },
+
+      {
+        path: 'reinitialiser-mot-de-passe/:uid/:token',
+        component: ReinitialiserMotDePasse,
       },
       {
         path: 'inscription',
