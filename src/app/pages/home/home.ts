@@ -28,15 +28,15 @@ export class Home {
   // le champ de description d'une situation.
   readonly examples = {
     passeport:
-      "J'ai perdu mon passeport sénégalais. Je voudrais savoir par où commencer pour le remplacer.",
+      "J'ai perdu mon passeport et je souhaite savoir comment le remplacer.",
 
-    retour:
-      "Je vis à l'étranger et je prépare mon retour définitif au Sénégal avec mes effets personnels.",
+    bail:
+      "J'occupe un terrain et je souhaite obtenir un bail.",
 
-    naissance:
-      "Mon enfant est né à l'étranger. Je souhaite enregistrer sa naissance auprès des autorités sénégalaises.",
+    acquisition:
+      "Je souhaite acheter un terrain.",
 
     deces:
-      'Un membre de ma famille, fonctionnaire, est décédé. Je souhaite connaître les démarches pour les ayants droit.',
+      "Un membre de ma famille est décédé et je souhaite connaître les démarches pour les ayants droit.",
   };
 }
