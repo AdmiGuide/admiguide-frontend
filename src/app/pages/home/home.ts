@@ -4,7 +4,7 @@ import {
   LucideArrowRight,
   LucideBriefcase,
   LucideFileText,
-  LucideHeart,
+  LucideHouse,
   LucideShieldCheck,
 } from '@lucide/angular';
 
@@ -15,7 +15,7 @@ import {
     LucideArrowRight,
     LucideBriefcase,
     LucideFileText,
-    LucideHeart,
+    LucideHouse,
     LucideShieldCheck,
   ],
   templateUrl: './home.html',
