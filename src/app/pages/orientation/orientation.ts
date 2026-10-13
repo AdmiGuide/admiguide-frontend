@@ -7,7 +7,6 @@ import {
   LucideArrowLeft,
   LucideArrowRight,
   LucideFileText,
-  LucideInfo,
   LucideMic,
 } from '@lucide/angular';
 
@@ -25,7 +24,6 @@ import { OrientationError } from '../../components/orientation-error/orientation
     LucideArrowLeft,
     LucideArrowRight,
     LucideFileText,
-    LucideInfo,
     LucideMic,
     OrientationLoading,
     OrientationError,
@@ -35,6 +33,9 @@ import { OrientationError } from '../../components/orientation-error/orientation
   styleUrl: './orientation.css',
 })
 export class Orientation {
+  // Indique que l'audio est en cours
+  // de nettoyage et de transcription.
+  readonly isTranscribing = signal(false);
 
   // Service métier de l'orientation.
   private readonly orientationService =
@@ -96,8 +97,13 @@ export class Orientation {
 
   async toggleVoiceRecording(): Promise<void> {
 
-    // Si un enregistrement est déjà en cours,
-    // un nouveau clic permet de l'arrêter.
+    // Empêche de lancer un nouvel enregistrement
+    // pendant la transcription du précédent.
+    if (this.isTranscribing()) {
+      return;
+    }
+
+    // Un deuxième clic arrête l'enregistrement.
     if (this.isRecording()) {
       this.stopVoiceRecording();
       return;
@@ -112,9 +118,8 @@ export class Orientation {
 
     this.voiceMessage.set('');
 
-    // Demande l'accès au microphone.
-    // Ces options activent les traitements audio
-    // proposés par le navigateur.
+    // Demande l'accès au microphone avec
+    // les traitements audio proposés par le navigateur.
     const stream =
       await navigator.mediaDevices.getUserMedia({
         audio: {
@@ -127,14 +132,15 @@ export class Orientation {
 
     this.microphoneStream = stream;
 
-    // Réinitialise l'ancien enregistrement.
+    // Réinitialise les morceaux d'un ancien enregistrement.
     this.audioChunks = [];
 
-    // Crée l'enregistreur audio.
+    // Crée l'enregistreur à partir du flux du microphone.
     this.mediaRecorder =
       new MediaRecorder(stream);
 
-    // Chaque morceau audio reçu est conservé.
+    // Conserve les morceaux audio reçus
+    // pendant l'enregistrement.
     this.mediaRecorder.ondataavailable =
       (event: BlobEvent) => {
 
@@ -143,9 +149,11 @@ export class Orientation {
         }
       };
 
-    // Lorsque l'enregistrement est arrêté.
+    // Lorsque l'utilisateur arrête l'enregistrement.
     this.mediaRecorder.onstop = () => {
 
+      // Regroupe tous les morceaux dans
+      // un seul fichier audio.
       const audioBlob = new Blob(
         this.audioChunks,
         {
@@ -155,20 +163,72 @@ export class Orientation {
         },
       );
 
-      console.log(
-        'Audio enregistré :',
-        audioBlob,
-      );
-
-      console.log(
-        'Taille :',
-        audioBlob.size,
-        'octets',
-      );
-
+      // Libère le microphone.
       this.releaseMicrophone();
+
+      // Vérifie que l'enregistrement contient
+      // réellement des données.
+      if (audioBlob.size === 0) {
+
+        this.voiceMessage.set(
+          "Aucun son n'a été enregistré. Veuillez réessayer.",
+        );
+
+        return;
+      }
+
+      this.isTranscribing.set(true);
+
+      this.voiceMessage.set(
+        'Préparation et transcription de votre enregistrement…',
+      );
+
+      // Envoie l'enregistrement à Django.
+      // Django le transmet ensuite au microservice IA
+      // pour le nettoyage et la transcription.
+      this.orientationService
+        .transcribeAudio(audioBlob)
+        .subscribe({
+
+          next: (response) => {
+
+            this.isTranscribing.set(false);
+
+            // Insère automatiquement le texte transcrit
+            // dans le champ "Votre situation".
+            this.situation.set(
+              response.transcription.slice(
+                0,
+                this.maxLength,
+              ),
+            );
+
+            this.errorMessage.set('');
+
+            this.voiceMessage.set(
+              'Texte prêt. Vous pouvez le modifier.',
+            );
+          },
+
+          error: (
+            error: HttpErrorResponse,
+          ) => {
+
+            console.error(
+              'Erreur transcription audio :',
+              error,
+            );
+
+            this.isTranscribing.set(false);
+
+            this.voiceMessage.set(
+              'La transcription a échoué. Veuillez réessayer.',
+            );
+          },
+        });
     };
 
+    // Démarre réellement l'enregistrement.
     this.mediaRecorder.start();
 
     this.isRecording.set(true);
@@ -184,11 +244,13 @@ export class Orientation {
       error,
     );
 
+    this.isRecording.set(false);
+
     this.voiceMessage.set(
       "Impossible d'accéder au microphone. Vérifiez les autorisations du navigateur.",
     );
   }
-  }
+}
 
   private stopVoiceRecording(): void {
 
@@ -217,7 +279,7 @@ export class Orientation {
     this.microphoneStream = undefined;
   }
 
-  
+
   // ================= SAISIE =================
 
   onSituationInput(

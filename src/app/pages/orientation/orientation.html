@@ -199,24 +199,38 @@
                         <div class="mt-5 flex items-center gap-3">
 
                             <!-- Bouton microphone -->
-                            <button type="button" (click)="toggleVoiceRecording()" [attr.aria-pressed]="isRecording()"
-                                class="inline-flex size-11 shrink-0
-                                cursor-pointer items-center justify-center
-                                rounded-full bg-terracotta
-                                text-white transition
-                                hover:opacity-90" aria-label="Dicter ma situation">
+                            <button type="button" (click)="toggleVoiceRecording()" [disabled]="isTranscribing()"
+                                [attr.aria-pressed]="isRecording()" [attr.aria-label]="
+                                    isRecording()
+                                        ? 'Arrêter la dictée'
+                                        : 'Dicter ma situation'
+                                " [class.scale-105]="isRecording()" [class.outline]="isRecording()"
+                                [class.outline-2]="isRecording()" [class.outline-offset-2]="isRecording()" class="inline-flex size-11 shrink-0
+                                    items-center justify-center
+                                    rounded-full bg-terracotta
+                                    text-white transition
+                                    hover:opacity-90
+                                    disabled:cursor-not-allowed
+                                    disabled:opacity-50">
 
                                 <svg lucideMic class="size-5" aria-hidden="true">
                                 </svg>
 
                             </button>
 
-
                             <!-- Texte à droite du bouton -->
                             <div>
 
                                 <span class="text-sm font-bold text-terracotta">
+
+                                    @if (isRecording()) {
+                                    Arrêter la dictée
+                                    } @else if (isTranscribing()) {
+                                    Transcription en cours…
+                                    } @else {
                                     Dicter ma situation
+                                    }
+
                                 </span>
 
                                 @if (voiceMessage()) {
@@ -254,18 +268,23 @@
 
 
                             <!-- Continuer -->
-                            <button type="submit" class="inline-flex cursor-pointer
-                         items-center gap-8
-                         rounded-xl
-                         bg-terracotta
-                         px-5 py-4
-                         text-sm font-bold
-                         text-white
-                         transition
-                         hover:opacity-90">
+                            <button type="submit" [disabled]="isRecording() || isTranscribing()" class="inline-flex cursor-pointer
+                                    items-center gap-8
+                                    rounded-xl
+                                    bg-terracotta
+                                    px-5 py-4
+                                    text-sm font-bold
+                                    text-white
+                                    transition
+                                    hover:opacity-90
+                                    disabled:cursor-not-allowed
+                                    disabled:opacity-50">
+
                                 Continuer
 
-                                <svg lucideArrowRight class="size-4" aria-hidden="true"></svg>
+                                <svg lucideArrowRight class="size-4" aria-hidden="true">
+                                </svg>
+
                             </button>
 
                         </div>
@@ -284,18 +303,15 @@
 
                     <svg lucideFileText class="size-6 text-sage" aria-hidden="true"></svg>
 
-
                     <h2 class="mt-4 text-base font-bold
                      text-anthracite">
                         Les détails utiles
                     </h2>
 
-
                     <p class="mt-4 text-sm leading-6
                      text-anthracite/70">
                         Quelques précisions peuvent nous aider à mieux comprendre :
                     </p>
-
 
                     <ul class="mt-3 list-disc space-y-1
                      pl-5 text-sm leading-5
@@ -304,7 +320,6 @@
                         <li>Le pays où vous résidez</li>
                         <li>Ce que vous avez déjà fait</li>
                     </ul>
-
 
                     <!-- Exemple desktop -->
                     <div class="mt-7 hidden
@@ -316,12 +331,10 @@
                             Par exemple
                         </p>
 
-
                         <p class="mt-4 text-sm leading-6
                        text-anthracite/70">
                             « J'ai perdu mon passeport. Par où commencer ? »
                         </p>
-
 
                         <button type="button" (click)="useExample()" class="mt-7 cursor-pointer
                        text-left text-xs font-bold

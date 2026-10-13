@@ -14,6 +14,10 @@ import {
 
 import { CreateSituationRequest, CreateSituationResponse, OrientationQuestion, SubmitAnswersRequest, SubmitAnswersResponse } from '../models/orientation-request.model';
 
+export interface AudioTranscriptionResponse {
+  message: string;
+  transcription: string;
+}
 
 @Service()
 export class OrientationService {
@@ -73,16 +77,38 @@ export class OrientationService {
   }
 
   // Coche ou décoche une étape
-// de la feuille de route.
-updateStep(
-  publicId: string,
-  etapeId: number,
-  data: UpdateStepRequest,
-): Observable<UpdateStepResponse> {
+  // de la feuille de route.
+  updateStep(
+    publicId: string,
+    etapeId: number,
+    data: UpdateStepRequest,
+  ): Observable<UpdateStepResponse> {
 
-  return this.http.patch<UpdateStepResponse>(
-    `${environment.apiUrl}/orientations/situations/${publicId}/etapes/${etapeId}/`,
-    data,
-  );
-}
+    return this.http.patch<UpdateStepResponse>(
+      `${environment.apiUrl}/orientations/situations/${publicId}/etapes/${etapeId}/`,
+      data,
+    );
+  }
+
+  // Envoie un enregistrement vocal à Django
+  // et récupère le texte transcrit.
+  transcribeAudio(
+    audio: Blob,
+  ): Observable<AudioTranscriptionResponse> {
+
+    const formData = new FormData();
+
+    // Le nom "audio" doit correspondre au champ
+    // attendu par l'endpoint Django.
+    formData.append(
+      'audio',
+      audio,
+      'recording.webm',
+    );
+
+    return this.http.post<AudioTranscriptionResponse>(
+      `${environment.apiUrl}/orientations/transcribe/`,
+      formData,
+    );
+  }
 }
