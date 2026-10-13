@@ -1,4 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
@@ -32,7 +37,7 @@ import { OrientationError } from '../../components/orientation-error/orientation
   templateUrl: './orientation.html',
   styleUrl: './orientation.css',
 })
-export class Orientation {
+export class Orientation implements OnDestroy {
   // Indique que l'audio est en cours
   // de nettoyage et de transcription.
   readonly isTranscribing = signal(false);
@@ -59,6 +64,7 @@ export class Orientation {
 
   readonly minLength = 20;
 
+  readonly maxRecordingSeconds = 120;
 
   // ================= ÉTATS =================
 
@@ -85,6 +91,12 @@ export class Orientation {
 
   // Message affiché à l'utilisateur pendant la dictée.
   readonly voiceMessage = signal('');
+
+  // Durée de l'enregistrement vocal en secondes.
+  readonly recordingSeconds = signal(0);
+
+  // Timer utilisé pendant l'enregistrement.
+  private recordingTimer?: ReturnType<typeof setInterval>;
 
   // Enregistreur audio du navigateur.
   private mediaRecorder?: MediaRecorder;
@@ -151,6 +163,10 @@ export class Orientation {
 
     // Lorsque l'utilisateur arrête l'enregistrement.
     this.mediaRecorder.onstop = () => {
+
+      // Arrête le minuteur même si MediaRecorder
+      // s'est arrêté autrement que par un clic.
+      this.stopRecordingTimer();
 
       // Regroupe tous les morceaux dans
       // un seul fichier audio.
@@ -233,6 +249,8 @@ export class Orientation {
 
     this.isRecording.set(true);
 
+    this.startRecordingTimer();
+
     this.voiceMessage.set(
       'Écoute en cours… Cliquez à nouveau pour arrêter.',
     );
@@ -263,6 +281,8 @@ export class Orientation {
 
     this.mediaRecorder.stop();
 
+    this.stopRecordingTimer();
+
     this.isRecording.set(false);
 
     this.voiceMessage.set(
@@ -279,6 +299,54 @@ export class Orientation {
     this.microphoneStream = undefined;
   }
 
+
+  private startRecordingTimer(): void {
+
+    // Chaque nouvelle dictée recommence à 00:00.
+    this.recordingSeconds.set(0);
+
+    this.recordingTimer = setInterval(() => {
+
+      this.recordingSeconds.update(
+        (seconds) => seconds + 1,
+      );
+
+      // Arrête automatiquement la dictée à 2 minutes.
+      if (
+        this.recordingSeconds() >=
+        this.maxRecordingSeconds
+      ) {
+        this.stopVoiceRecording();
+      }
+
+    }, 1000);
+  }
+
+
+  private stopRecordingTimer(): void {
+
+    if (this.recordingTimer) {
+      clearInterval(this.recordingTimer);
+      this.recordingTimer = undefined;
+    }
+  }
+
+
+  formatRecordingTime(
+    totalSeconds: number = this.recordingSeconds(),
+  ): string {
+
+      const minutes =
+        Math.floor(totalSeconds / 60);
+
+      const seconds =
+        totalSeconds % 60;
+
+      return (
+        `${minutes.toString().padStart(2, '0')}:` +
+        `${seconds.toString().padStart(2, '0')}`
+      );
+  }
 
   // ================= SAISIE =================
 
@@ -483,4 +551,28 @@ export class Orientation {
 
     this.isLoading.set(false);
   }
+
+  ngOnDestroy(): void {
+
+    // Annule une éventuelle analyse HTTP en cours.
+    this.analysisSubscription?.unsubscribe();
+
+    // Arrête le minuteur de la dictée.
+    this.stopRecordingTimer();
+
+    // Si l'utilisateur quitte la page pendant
+    // l'enregistrement, on évite de déclencher
+    // la transcription automatiquement.
+    if (
+      this.mediaRecorder &&
+      this.mediaRecorder.state !== 'inactive'
+    ) {
+      this.mediaRecorder.onstop = null;
+      this.mediaRecorder.stop();
+    }
+
+    // Libère l'accès au microphone.
+    this.releaseMicrophone();
+  }
 }
+

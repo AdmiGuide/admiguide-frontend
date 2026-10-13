@@ -221,17 +221,33 @@
                             <!-- Texte à droite du bouton -->
                             <div>
 
-                                <span class="text-sm font-bold text-terracotta">
+                                <div class="flex items-center gap-3">
+
+                                    <span class="text-sm font-bold text-terracotta">
+
+                                        @if (isRecording()) {
+                                        Arrêter la dictée
+                                        } @else if (isTranscribing()) {
+                                        Transcription en cours…
+                                        } @else {
+                                        Dicter ma situation
+                                        }
+
+                                    </span>
 
                                     @if (isRecording()) {
-                                    Arrêter la dictée
-                                    } @else if (isTranscribing()) {
-                                    Transcription en cours…
-                                    } @else {
-                                    Dicter ma situation
+
+                                    <span class="font-mono text-xs font-semibold
+                                            tabular-nums text-anthracite/65" aria-live="polite">
+
+                                        {{ formatRecordingTime() }} /
+                                        {{ formatRecordingTime(maxRecordingSeconds) }}
+
+                                    </span>
+
                                     }
 
-                                </span>
+                                </div>
 
                                 @if (voiceMessage()) {
 
