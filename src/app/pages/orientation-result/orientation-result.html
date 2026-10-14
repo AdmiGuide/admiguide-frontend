@@ -272,6 +272,12 @@
                                            text-anthracite">
                                     {{ source.titre }}
                                 </h3>
+                                @if (source.description_courte) {
+                                    <p class="mt-1 text-xs leading-5
+                                            text-anthracite/55">
+                                        {{ source.description_courte }}
+                                    </p>
+                                }
 
                             </div>
 

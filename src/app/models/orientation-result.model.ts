@@ -46,6 +46,7 @@ export interface OrientationServiceCompetent {
 // Source officielle liée à la démarche.
 export interface OrientationSource {
   titre: string;
+  description_courte: string;
   url: string;
 }
 
