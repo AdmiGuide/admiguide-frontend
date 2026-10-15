@@ -35,12 +35,19 @@
                 </h1>
 
 
-                <p class="mt-7 max-w-2xl
-                 text-base leading-7
-                 text-anthracite/70">
-                    Vous pouvez préciser votre situation ou reformuler votre demande.
-                    Nous ne présentons pas une réponse incertaine comme une information
-                    confirmée.
+                <p class="mt-7 max-w-2xl text-base leading-7 text-anthracite/70">
+
+                @if (message()) {
+
+                    {{ message() }}
+
+                } @else {
+
+                    Nous ne disposons pas encore des informations
+                    nécessaires pour vous orienter avec certitude.
+
+                }
+
                 </p>
 
             </div>

@@ -479,17 +479,25 @@ export class Orientation implements OnDestroy {
 
             // ================= SOURCES INSUFFISANTES =================
             if (
-              response.analyse.statut ===
-              'SOURCES_INSUFFISANTES'
-            ) {
+                response.analyse.statut ===
+                'SOURCES_INSUFFISANTES'
+              ) {
 
-              this.router.navigate([
-                '/orientation/sources-insuffisantes',
-                response.public_id,
-              ]);
+                // Conserve le message métier retourné
+                // par l'analyse afin de l'afficher
+                // sur la page suivante.
+                sessionStorage.setItem(
+                  `admiguide_insuffisant_${response.public_id}`,
+                  response.analyse.message ?? '',
+                );
 
-              return;
-            }
+                this.router.navigate([
+                  '/orientation/sources-insuffisantes',
+                  response.public_id,
+                ]);
+
+                return;
+              }
 
 
             // Statut inattendu :

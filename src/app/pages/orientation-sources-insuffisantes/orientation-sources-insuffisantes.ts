@@ -1,8 +1,12 @@
 import {
   Component,
+  inject,
+  OnInit,
+  signal,
 } from '@angular/core';
 
 import {
+  ActivatedRoute,
   RouterLink,
 } from '@angular/router';
 
@@ -27,4 +31,32 @@ import {
   styleUrl:
     './orientation-sources-insuffisantes.css',
 })
-export class OrientationSourcesInsuffisantes {}
+export class OrientationSourcesInsuffisantes
+  implements OnInit {
+
+  private readonly route =
+    inject(ActivatedRoute);
+
+  // Message métier renvoyé par l'analyse.
+  readonly message = signal('');
+
+  ngOnInit(): void {
+
+    const publicId =
+      this.route.snapshot.paramMap.get(
+        'publicId',
+      );
+
+    if (!publicId) {
+      return;
+    }
+
+    const message = sessionStorage.getItem(
+      `admiguide_insuffisant_${publicId}`,
+    );
+
+    this.message.set(
+      message?.trim() ?? '',
+    );
+  }
+}
