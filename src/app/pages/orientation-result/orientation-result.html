@@ -105,6 +105,18 @@
               text-anthracite/65">
                         {{ data.description_initiale }}
                     </p>
+                    <!-- Avertissement lié à l'orientation -->
+                    @if (data.avertissement) {
+
+                    <p class="mt-5 border-l-2 border-terracotta
+                            pl-4 text-sm leading-6
+                            text-anthracite/75">
+
+                        {{ data.avertissement }}
+
+                    </p>
+
+                    }
 
                 </section>
 
