@@ -31,12 +31,12 @@ export class Home {
       "J'ai perdu mon passeport et je souhaite savoir comment le remplacer.",
 
     bail:
-      "J'occupe un terrain et je souhaite obtenir un bail.",
+      "J'occupe un terrain au Sénégal et je voudrais obtenir des papiers pour ce terrain. Comment faire ?",
 
     acquisition:
-      "Je souhaite acheter un terrain.",
+      "J'ai acheté une maison, mais les papiers officiels sont encore au nom de l'ancien propriétaire. Je veux les mettre à mon nom",
 
     deces:
-      "Un membre de ma famille est décédé et je souhaite connaître les démarches pour les ayants droit.",
+      "Un membre de ma famille est décédé et je voudrais savoir comment récupérer sa pension.",
   };
 }
