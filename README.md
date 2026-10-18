@@ -1,416 +1,252 @@
 # AdmiGuide Frontend
 
-Interface web de **AdmiGuide**, une application intelligente d’orientation administrative destinée à accompagner les usagers dans l’identification et le suivi de démarches administratives sénégalaises.
+Interface web d’**AdmiGuide**, une application d’orientation administrative destinée à aider les usagers à identifier les démarches adaptées à leur situation et à en suivre les étapes. Le projet s’intéresse aux démarches administratives sénégalaises couvertes par son référentiel.
 
-Ce projet constitue la partie frontend de l’application. Il permet à l’usager de décrire sa situation, répondre aux éventuelles questions complémentaires, consulter son orientation et suivre les étapes de sa démarche. Il fournit également un espace personnel et une interface d’administration.
+Ce dépôt contient le **frontend Angular**. Il gère l’expérience utilisateur, les formulaires, l’affichage des orientations et les espaces usager et administrateur. L’analyse des situations et la gestion des données sont assurées par les services Django et FastAPI associés : le frontend ne réalise pas les démarches administratives à la place de l’usager.
 
-## Fonctionnalités principales
+## Fonctionnalités
 
-### Espace usager
+### Orientation administrative
 
-- Consultation de la page d’accueil
-- Création d’un compte
-- Connexion et déconnexion
-- Gestion du profil utilisateur
-- Description libre d’une situation administrative
-- Saisie du pays de résidence
-- Réponse aux questions complémentaires
-- Affichage du résultat de l’orientation
-- Affichage des étapes, pièces, service compétent, coûts et délais disponibles
-- Consultation des sources officielles
-- Gestion du cas où les sources sont insuffisantes
-- Signalement d’un problème lié à une orientation
-- Consultation de l’historique des orientations
-- Suivi de la progression d’une démarche
-- Possibilité de cocher ou décocher les étapes réalisées
+- Description libre d’une situation administrative, sans obligation de créer un compte pour lancer une orientation.
+- **Saisie vocale** de la situation depuis le navigateur : autorisation du microphone, enregistrement, minuteur, arrêt manuel ou automatique après **2 minutes**, puis insertion du texte transcrit dans le formulaire. Le texte reste modifiable avant l’envoi.
+- Vérification de la longueur de la description (**20 à 1 500 caractères**).
+- Envoi de la situation à Django et affichage des questions complémentaires lorsque des informations manquent.
+- Prise en charge des questions ouvertes ou à choix unique, avec transmission des réponses pour poursuivre l’analyse.
+- Affichage du résultat : démarche proposée, résumé, avertissement éventuel, étapes, pièces à préparer, service compétent, coûts et délais lorsqu’ils sont disponibles, et liens vers les sources officielles.
+- Affichage d’une explication lorsqu’aucune démarche fiable ne peut être proposée parmi les parcours pris en charge, ainsi que d’un écran distinct en cas d’erreur technique.
+- Signalement d’un problème concernant une orientation par un utilisateur connecté.
 
-### Espace administrateur
+### Espace personnel
 
-- Tableau de bord d’administration
-- Consultation des utilisateurs
-- Recherche et filtrage des utilisateurs
-- Suspension et réactivation d’un compte
-- Consultation des sources administratives
-- Recherche et filtrage des sources
-- Examen et mise à jour du statut d’une source
-- Consultation des signalements
-- Recherche et filtrage des signalements
-- Mise à jour du traitement d’un signalement
+- Création de compte, connexion, déconnexion et consultation ou modification du profil.
+- Demande de réinitialisation du mot de passe, puis choix d’un nouveau mot de passe à partir du lien reçu.
+- Historique des situations enregistrées pour le compte connecté, avec recherche.
+- Consultation du suivi d’une démarche et mise à jour des étapes réalisées, avec recalcul de la progression.
 
-## Technologies utilisées
+### Espace d’administration
 
-- Angular 22
-- TypeScript
-- RxJS
-- Angular Router
-- Angular HttpClient
-- Tailwind CSS 4
-- Lucide Angular
-- Inter
-- Vitest
-- Nginx
-- Docker
+- Vue d’ensemble présentant notamment des indicateurs sur les utilisateurs, les sources et les signalements.
+- Consultation, recherche, filtrage et pagination des utilisateurs, avec suspension et réactivation des comptes.
+- Consultation, recherche, filtrage et pagination des sources administratives ; examen et mise à jour de leur statut.
+- Consultation, recherche, filtrage et pagination des signalements ; mise à jour de leur statut de traitement.
 
-## Architecture
+## Technologies
 
-Le frontend Angular communique avec le backend Django par API REST.
+| Domaine | Technologies |
+| --- | --- |
+| Interface | Angular 22, TypeScript 6, Angular Router |
+| Communication et réactivité | Angular HttpClient, RxJS 7, Signals Angular |
+| Styles et composants visuels | Tailwind CSS 4, Lucide Angular, police Inter |
+| Formulaires | Angular Forms (dont formulaires réactifs pour l’authentification) |
+| Tests unitaires | Vitest, infrastructure de test Angular |
+| Construction et hébergement | Node.js 24, Docker, Nginx |
+
+Les versions exactes installées sont définies dans `package.json` et `package-lock.json`.
+
+## Architecture et responsabilités
 
 ```text
-Utilisateur
-     |
-     v
-Angular 22
-     |
-     | API REST / JSON
-     v
-Django REST Framework
-     |
-     +------> MySQL
-     |
-     v
-AdmiGuide AI
-FastAPI + RAG + LLM
+Navigateur / utilisateur
+        |
+        v
+Frontend Angular (ce dépôt)
+        |
+        | Requêtes HTTP / API REST
+        v
+Backend Django REST Framework (admiguide-backend)
+        |                    |
+        |                    +--> Base de données MySQL
+        v
+Microservice FastAPI (admiguide-ai)
+        |
+        +--> Recherche documentaire RAG et modèle de langage
+        +--> Transcription audio
 ```
 
-Angular n’appelle pas directement le microservice d’intelligence artificielle.
+**Angular communique avec Django, et non directement avec FastAPI.** Django transmet au microservice IA les demandes d’analyse ou de transcription, puis renvoie les réponses au frontend. Les détails du traitement RAG et des règles d’orientation sont documentés dans `admiguide-ai`.
 
-Toutes les demandes liées à l’orientation passent d’abord par le backend Django, qui communique ensuite avec `admiguide-ai`.
-
-## Parcours d’orientation
-
-Le parcours principal fonctionne de la manière suivante :
+### Parcours d’orientation
 
 ```text
-Description de la situation
-          |
-          v
+Description écrite ou dictée
+           |
+           v
 Analyse de la situation
-          |
-          +----------------------------+
-          |                            |
-          v                            v
-Précisions requises              Sources insuffisantes
-          |
-          v
-Réponses complémentaires
-          |
-          v
-Orientation obtenue
-          |
-          v
-Résultat de la démarche
-          |
-          v
-Suivi des étapes
+           |
+           +--> Précisions requises --> Réponses --> Nouvelle analyse
+           |
+           +--> Orientation disponible --> Résultat --> Suivi des étapes
+           |
+           +--> Aucune orientation fiable --> Explication du motif
 ```
 
-Le résultat peut notamment contenir :
+Les trois statuts d’analyse utilisés par le frontend sont `ORIENTATION`, `PRECISIONS_REQUISES` et `SOURCES_INSUFFISANTES`.
 
-- le nom de la démarche ;
-- un résumé de la situation ;
-- les étapes à suivre ;
-- les pièces nécessaires ;
-- le service compétent ;
-- les coûts et délais lorsqu’ils sont disponibles ;
-- les sources officielles correspondantes.
+L’enregistrement vocal repose sur l’API navigateur `MediaRecorder`. Le frontend transmet le fichier audio à l’endpoint Django de transcription, puis remplit le champ de description avec la réponse textuelle. La permission d’accès au microphone et la disponibilité des fonctionnalités audio dépendent du navigateur et de son contexte de sécurité.
 
-## Authentification
+## Démarches représentées dans le référentiel actuel
 
-L’authentification repose sur des tokens JWT fournis par le backend Django.
+Le frontend ne contient pas lui-même les règles de sélection des démarches : il affiche celles reconnues par les services backend et IA. Le périmètre actuellement développé comprend notamment :
 
-Après connexion, Angular conserve :
+- **Passeport sénégalais** : première demande, renouvellement, perte ou vol.
+- **Pensions après décès** : démarches concernant un fonctionnaire décédé en activité ou après son départ à la retraite.
+- **Foncier** : régularisation par voie de bail, acquisition et mutation d’un bien déjà sous titre foncier, transformation d’un bail en titre foncier, et parcours relatif à une autorisation d’occupation.
 
-```text
-Access token
-Refresh token
-```
+Une orientation est indicative : les administrations compétentes restent chargées de vérifier les conditions officielles et de traiter les dossiers. Les procédures disponibles peuvent évoluer avec le référentiel Django et les sources indexées par le microservice IA.
 
-Un interceptor HTTP ajoute automatiquement l’access token aux requêtes qui nécessitent une authentification.
+## Pages et organisation des routes
 
-Lorsque l’access token expire, l’application peut utiliser le refresh token pour obtenir un nouveau token puis rejouer la requête initiale.
+Les principales routes définies dans `src/app/app.routes.ts` sont :
 
-Deux guards protègent les espaces privés :
+| Route | Page |
+| --- | --- |
+| `/` | Accueil |
+| `/orientation` | Description et dictée d’une situation |
+| `/orientation/precisions/:publicId` | Questions complémentaires |
+| `/orientation/resultat/:publicId` | Résultat de l’orientation |
+| `/orientation/sources-insuffisantes/:publicId` | Absence d’orientation fiable |
+| `/orientation/suivi/:publicId` | Étapes et progression |
+| `/connexion`, `/inscription` | Authentification |
+| `/mot-de-passe-oublie` | Demande de réinitialisation |
+| `/reinitialiser-mot-de-passe/:uid/:token` | Nouveau mot de passe |
+| `/espace/historique`, `/espace/profil` | Espace personnel protégé |
+| `/admin`, `/admin/utilisateurs`, `/admin/sources`, `/admin/signalements` | Espace administrateur protégé |
 
-```text
-authGuard
-```
+Les routes utilisent deux dispositions principales : `UserLayout` pour la partie usager et `AdminLayout` pour l’administration.
 
-Il protège l’espace personnel des utilisateurs.
+## Services et composants principaux
 
-```text
-adminGuard
-```
+- **`AuthService`** : inscription, connexion, profil, restauration de session, déconnexion, rafraîchissement JWT et réinitialisation de mot de passe.
+- **`OrientationService`** : création de situations, questions et réponses complémentaires, résultats, historique, progression et transcription vocale.
+- **`SignalementService`** : création d’un signalement lié à une situation.
+- **`AdminService`** : API de gestion des utilisateurs, sources et signalements, avec recherche, filtres et pagination.
+- **`authInterceptor`** : ajout du token d’accès aux requêtes concernées ; en cas d’erreur HTTP `401`, tentative de rafraîchissement puis nouvelle exécution de la requête.
+- **`authGuard` et `adminGuard`** : contrôle d’accès aux pages personnelles et administratives selon la session et le rôle.
 
-Il réserve l’espace d’administration aux comptes administrateurs.
+Les tokens d’accès et de rafraîchissement sont actuellement conservés dans le **`localStorage`** du navigateur, comme l’implémente `AuthService`. Le frontend ne remplace pas les vérifications d’authentification et de permissions effectuées côté Django.
 
-## Structure principale
+## Structure du projet
 
 ```text
 admiguide-frontend/
-|
-|-- public/                    # Ressources statiques
-|
-|-- src/
-|   |
-|   |-- app/
-|   |   |
-|   |   |-- components/       # Composants réutilisables
-|   |   |-- data/             # Données statiques de l'application
-|   |   |-- guards/           # Protection des routes
-|   |   |-- interceptors/     # Gestion automatique des requêtes JWT
-|   |   |-- layouts/          # Layout utilisateur et administrateur
-|   |   |-- models/           # Interfaces et modèles TypeScript
-|   |   |-- pages/            # Pages de l'application
-|   |   |-- services/         # Communication avec l'API Django
-|   |   |
-|   |   |-- app.config.ts
-|   |   `-- app.routes.ts
-|   |
-|   |-- environments/
-|   |-- styles.css
-|   `-- main.ts
-|
-|-- Dockerfile
-|-- nginx.conf
-|-- angular.json
-|-- package.json
-|-- package-lock.json
-`-- README.md
+├── public/                     # Images et autres ressources publiques
+├── src/
+│   ├── app/
+│   │   ├── components/         # En-tête, pied de page, barres latérales, états UI
+│   │   ├── data/               # Données statiques
+│   │   ├── guards/             # Contrôle d’accès aux routes
+│   │   ├── interceptors/       # Intercepteur HTTP JWT
+│   │   ├── layouts/            # Espaces usager et administrateur
+│   │   ├── models/             # Interfaces TypeScript des données API
+│   │   ├── pages/              # Pages d’orientation, auth, suivi et admin
+│   │   ├── services/           # Communication avec le backend Django
+│   │   ├── app.config.ts
+│   │   └── app.routes.ts
+│   ├── environments/           # URLs API par environnement
+│   ├── styles.css              # Tailwind et design system
+│   └── main.ts
+├── Dockerfile
+├── nginx.conf
+├── angular.json
+├── package.json
+├── package-lock.json
+└── README.md
 ```
 
-## Pages principales
+## Installation en local
 
-L’application contient notamment les pages suivantes :
+### Prérequis
 
-```text
-Accueil
-Connexion
-Inscription
-Orientation
-Précisions complémentaires
-Sources insuffisantes
-Résultat de l'orientation
-Suivi de la démarche
-Historique
-Profil
+- Node.js compatible avec Angular 22 (le `Dockerfile` utilise **Node.js 24**).
+- npm (la version déclarée dans `package.json` est **11.17.0**).
+- Backend `admiguide-backend` accessible pour les requêtes API ; le microservice `admiguide-ai` est nécessaire pour les parcours d’analyse et la transcription.
 
-Administration
-├── Vue d'ensemble
-├── Utilisateurs
-├── Sources
-└── Signalements
-```
-
-## Services Angular
-
-La communication avec Django est organisée autour de plusieurs services.
-
-### AuthService
-
-Gère notamment :
-
-- l’inscription ;
-- la connexion ;
-- les tokens JWT ;
-- le rafraîchissement du token ;
-- la restauration de session ;
-- le profil ;
-- la déconnexion.
-
-### OrientationService
-
-Gère :
-
-- la création d’une situation ;
-- les questions complémentaires ;
-- l’envoi des réponses ;
-- le résultat de l’orientation ;
-- l’historique ;
-- le suivi et la progression des étapes.
-
-### AdminService
-
-Gère :
-
-- les utilisateurs ;
-- les sources administratives ;
-- les signalements ;
-- la recherche, les filtres et la pagination associés.
-
-### SignalementService
-
-Permet à un usager de créer un signalement associé à une orientation.
-
-## Design
-
-L’interface utilise **Tailwind CSS** ainsi que le design system AdmiGuide.
-
-La police principale est :
-
-```text
-Inter
-```
-
-Les couleurs principales sont :
-
-```text
-Terracotta  #995349
-Sauge       #9EA287
-Lin         #D2CDBA
-Crème       #F5F5F0
-Anthracite  #262B27
-```
-
-Les icônes sont fournies par :
-
-```text
-Lucide Angular
-```
-
-L’interface est conçue pour s’adapter aux écrans desktop et mobiles.
-
-## Installation
-
-### 1. Cloner le projet
+### Récupérer le code et installer les dépendances
 
 ```bash
 git clone https://github.com/AdmiGuide/admiguide-frontend.git
 cd admiguide-frontend
+npm ci
 ```
 
-### 2. Installer les dépendances
+Pour développer à partir d’une branche autre que `main`, sélectionnez-la avec `git switch <nom-de-branche>` avant l’installation si nécessaire.
 
-```bash
-npm install
-```
+### Configuration API
 
-## Configuration
+Deux fichiers définissent l’URL de l’API Django :
 
-En développement, l’application utilise :
+- `src/environments/environment.development.ts` : `http://127.0.0.1:8000/api`.
+- `src/environments/environment.ts` : `/api` en production.
 
-```text
-http://127.0.0.1:8000/api
-```
+L’application n’envoie pas directement ses requêtes à FastAPI. L’URL Django de développement doit correspondre au port sur lequel vous avez lancé le backend.
 
-comme URL de l’API Django.
+### Démarrer l’application
 
-Cette configuration se trouve dans :
-
-```text
-src/environments/environment.development.ts
-```
-
-La configuration de production utilise :
-
-```text
-/api
-```
-
-Les requêtes sont alors transmises au backend Django par Nginx.
-
-## Lancement en développement
-
-Démarrer le backend Django avant le frontend.
-
-Puis lancer Angular :
+Après avoir démarré les services backend nécessaires :
 
 ```bash
 npm start
 ```
 
-ou :
+Équivalent :
 
 ```bash
-ng serve
+npx ng serve
 ```
 
-L’application est disponible sur :
+Le frontend est ensuite accessible à l’adresse `http://localhost:4200/`. Le serveur de développement recompile les changements Angular pendant le travail.
 
-```text
-http://localhost:4200/
-```
-
-Les modifications du code sont automatiquement prises en compte pendant le développement.
-
-## Build de production
-
-Pour générer une version de production :
+## Tests et compilation
 
 ```bash
+# Lance les tests unitaires Angular/Vitest.
+npm test
+
+# Génère une version optimisée pour la production.
 npm run build
 ```
 
-Les fichiers compilés sont générés dans le dossier :
+Le dépôt contient une première base de tests unitaires (`src/app/app.spec.ts`) ; cette commande ne constitue pas, à elle seule, une validation complète de tous les parcours fonctionnels. Les parcours d’orientation nécessitent également des tests avec Django, FastAPI et leurs données de référence.
 
-```text
-dist/
-```
+La sortie de production est générée sous `dist/admiguide-frontend/browser/` selon la configuration actuelle du projet.
 
-## Tests
+## Déploiement avec Docker et Nginx
 
-Pour lancer les tests Angular :
+Le `Dockerfile` utilise deux étapes :
 
-```bash
-npm test
-```
+1. **Construction** avec `node:24-alpine` et `npm ci`, puis `npm run build`.
+2. **Service des fichiers statiques** avec `nginx:alpine` sur le port interne `80`.
 
-Le projet utilise Vitest pour les tests unitaires.
+Le fichier `nginx.conf` assure le repli vers `index.html` pour les routes Angular et relaie les requêtes `/api/` vers `http://backend:8000/api/`. Le nom d’hôte `backend` doit donc être résolu par le réseau Docker utilisé au déploiement.
 
-## Docker
+Le dépôt contient le `Dockerfile` du frontend. L’orchestration des différents services dépend de la configuration Docker Compose du projet de déploiement AdmiGuide.
 
-Le frontend dispose d’un `Dockerfile` multi-stage.
+## Design system
 
-La première étape utilise Node.js pour construire l’application Angular :
+Le thème de l’application est défini dans `src/styles.css`, avec **Tailwind CSS 4** et la police **Inter**.
 
-```text
-node:24-alpine
-```
+| Couleur | Code |
+| --- | --- |
+| Terracotta | `#995349` |
+| Sauge | `#9EA287` |
+| Lin | `#D2CDBA` |
+| Crème | `#F5F5F0` |
+| Anthracite | `#262B27` |
 
-La deuxième étape utilise Nginx pour servir les fichiers générés :
+Les icônes sont fournies par Lucide Angular. Les pages sont conçues avec des mises en page adaptatives pour ordinateur et mobile.
 
-```text
-nginx:alpine
-```
+## Limites du frontend
 
-En environnement Docker, Nginx transmet les appels :
+AdmiGuide est un outil **d’orientation**, et non un service qui dépose des dossiers, prend des rendez-vous ou réalise des formalités pour l’utilisateur. Les réponses dépendent des démarches et des sources officiellement intégrées aux services métier et IA.
 
-```text
-/api/
-```
+Le **chatbot contextuel d’aide administrative** est une évolution envisagée ; il ne fait pas partie des fonctionnalités présentes dans cette version du frontend.
 
-vers le service Django :
+## Dépôts associés
 
-```text
-backend:8000
-```
-
-Cette configuration permet au frontend et au backend de fonctionner ensemble dans l’environnement conteneurisé d’AdmiGuide.
-
-## Scénarios couverts par le MVP
-
-L’interface permet actuellement de traiter les quatre situations administratives du MVP :
-
-- remplacement d’un passeport sénégalais perdu ;
-- retour définitif au Sénégal avec des effets personnels ;
-- transcription d’une naissance survenue à l’étranger ;
-- réversion de pension et capital-décès d’un fonctionnaire décédé en activité.
-
-## Projets associés
-
-Le frontend fonctionne avec deux autres services AdmiGuide :
-
-```text
-admiguide-backend
-```
-
-API métier développée avec Django REST Framework.
-
-```text
-admiguide-ai
-```
-
-Microservice FastAPI chargé de l’analyse intelligente des situations avec une architecture RAG.
+- [admiguide-backend](https://github.com/AdmiGuide/admiguide-backend) : API Django REST Framework, authentification et logique métier.
+- [admiguide-ai](https://github.com/AdmiGuide/admiguide-ai) : microservice FastAPI, recherche documentaire RAG et fonctions d’intelligence artificielle.
 
 ## Développeuse
 
-**Dado Watt**
+Dado Watt
