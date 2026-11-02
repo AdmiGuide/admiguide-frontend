@@ -30,7 +30,7 @@ import { SignalementService } from '../../services/signalement.service';
 
 import { OrientationResultData } from '../../models/orientation-result.model';
 import { SignalementType } from '../../models/signalement.model';
-
+import { ContextualChatbot } from '../../components/contextual-chatbot/contextual-chatbot';
 
 @Component({
   selector: 'app-orientation-result',
@@ -44,7 +44,8 @@ import { SignalementType } from '../../models/signalement.model';
   LucideFlag,
   LucidePlus,
   LucideX,
-  LucideGlobe
+  LucideGlobe,
+  ContextualChatbot
 ],
   templateUrl: './orientation-result.html',
   styleUrl: './orientation-result.css',

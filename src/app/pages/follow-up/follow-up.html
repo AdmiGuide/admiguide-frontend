@@ -319,3 +319,11 @@
 </main>
 
 }
+
+<!-- Chatbot contextuel du suivi -->
+@if (!isLoading() && result(); as followUp) {
+  <app-contextual-chatbot
+    [publicId]="followUp.public_id"
+    page="SUIVI"
+  />
+}

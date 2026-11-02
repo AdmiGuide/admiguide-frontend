@@ -465,6 +465,14 @@
 
 </main>
 
+<!-- Chatbot contextuel de la page Votre orientation -->
+@if (!isLoading() && !reportOpen() && result(); as data) {
+  <app-contextual-chatbot
+    [publicId]="data.public_id"
+    page="RESULTAT"
+  />
+}
+
 <!-- =============== MODALE SIGNALEMENT ============== -->
 
 @if (authService.isAuthenticated() && reportOpen()) {

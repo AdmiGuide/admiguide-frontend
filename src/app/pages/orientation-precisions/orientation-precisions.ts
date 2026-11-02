@@ -3,6 +3,7 @@ import {
   inject,
   OnInit,
   signal,
+  ViewChild,
 } from '@angular/core';
 
 import {
@@ -16,13 +17,14 @@ import { HttpErrorResponse } from '@angular/common/http';
 import {
   LucideArrowLeft,
   LucideArrowRight,
+  LucideCircleHelp 
 } from '@lucide/angular';
 
 import { OrientationService } from '../../services/orientation.service';
 import { OrientationQuestion } from '../../models/orientation-request.model';
 import { Subscription } from 'rxjs';
 import { OrientationLoading } from '../../components/orientation-loading/orientation-loading';
-
+import { ContextualChatbot } from '../../components/contextual-chatbot/contextual-chatbot';
 @Component({
   selector: 'app-orientation-precisions',
 
@@ -30,7 +32,9 @@ import { OrientationLoading } from '../../components/orientation-loading/orienta
     RouterLink,
     LucideArrowLeft,
     LucideArrowRight,
+    LucideCircleHelp,
     OrientationLoading,
+    ContextualChatbot,
   ],
 
   templateUrl: './orientation-precisions.html',
@@ -49,9 +53,11 @@ export class OrientationPrecisions implements OnInit {
 
   private analysisSubscription?: Subscription;
 
-  // Identifiant public de la situation.
-  private publicId = '';
+  // Identifiant public transmis au chatbot.
+  publicId = '';
 
+  // Question actuellement associée au chatbot.
+  readonly activeQuestionId = signal<number | undefined>(undefined);
 
   // Description initiale.
   readonly description = signal('');
@@ -76,7 +82,89 @@ export class OrientationPrecisions implements OnInit {
   readonly errorMessage =
     signal('');
 
+  
+  // Permet d'ouvrir le chatbot depuis les icônes d'aide.
+  @ViewChild(ContextualChatbot)
+  private chatbot?: ContextualChatbot;
 
+  // Expressions administratives nécessitant une aide.
+  // Nous pourrons enrichir cette liste progressivement.
+  private readonly motifTermesComplexes =
+    /(?<!\p{L})(?:autorisation d['’]occupation|état des droits réels|droits réels|titre foncier|jugement d['’]hérédité|certificat de non-opposition|capital[-‑ ]décès|ayant droit|réversion|usufruit|mutation|régularisation|cadastre|bail)(?!\p{L})/giu;
+
+  // Découpe une question pour identifier les termes
+  // à côté desquels afficher l'icône d'aide.
+  segmentsAide(
+    texte: string,
+  ): { texte: string; terme?: string }[] {
+
+    const segments: {
+      texte: string;
+      terme?: string;
+    }[] = [];
+
+    let position = 0;
+
+    for (
+      const correspondance of texte.matchAll(
+        this.motifTermesComplexes,
+      )
+    ) {
+      const debut = correspondance.index;
+      const terme = correspondance[0];
+
+      // Conserve le texte avant le terme complexe.
+      if (debut > position) {
+        segments.push({
+          texte: texte.slice(position, debut),
+        });
+      }
+
+      // Identifie le terme nécessitant une aide.
+      segments.push({
+        texte: terme,
+        terme,
+      });
+
+      position = debut + terme.length;
+    }
+
+    // Conserve le texte restant.
+    if (position < texte.length) {
+      segments.push({
+        texte: texte.slice(position),
+      });
+    }
+
+    return segments.length
+      ? segments
+      : [{ texte }];
+  }
+
+  // Recherche un terme complexe dans une option.
+  termeComplexe(option: string): string | null {
+    return option.match(
+      this.motifTermesComplexes,
+    )?.[0] ?? null;
+  }
+
+  // Ouvre le chatbot sur le terme choisi.
+  ouvrirAideTerme(
+    questionId: number,
+    terme: string,
+  ): void {
+
+    // Associe l'aide à la bonne question Django.
+    this.activeQuestionId.set(questionId);
+
+    // Ouvre le chatbot et demande une explication.
+    this.chatbot?.ouvrirPourTerme(
+      terme,
+      questionId,
+    );
+  }
+
+  
   ngOnInit(): void {
 
     const publicId =
@@ -118,16 +206,28 @@ export class OrientationPrecisions implements OnInit {
     this.isLoading.set(true);
     this.errorMessage.set('');
 
+    // Réinitialise la question associée au chatbot.
+    this.activeQuestionId.set(undefined);
+
     this.orientationService
       .getQuestions(this.publicId)
       .subscribe({
 
         next: (questions) => {
-          this.questions.set(
-            [...questions].sort(
-              (a, b) => a.ordre - b.ordre,
-            ),
+
+          // Trie les questions selon leur ordre.
+          const questionsTriees = [...questions].sort(
+            (a, b) => a.ordre - b.ordre,
           );
+
+          // Enregistre les questions dans le signal.
+          this.questions.set(questionsTriees);
+
+          // Associe le chatbot à la première question.
+          this.activeQuestionId.set(
+            questionsTriees[0]?.id,
+          );
+
           this.isLoading.set(false);
         },
 
@@ -171,6 +271,9 @@ export class OrientationPrecisions implements OnInit {
         [questionId]: value,
       }),
     );
+
+    // Associe le chatbot à la question utilisée.
+    this.activeQuestionId.set(questionId);
 
     if (this.errorMessage()) {
       this.errorMessage.set('');

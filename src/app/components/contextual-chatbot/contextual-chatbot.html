@@ -1,0 +1,246 @@
+<!-- Chatbot AdmiGuide : Tailwind CSS 4 et icônes @lucide/angular. -->
+<section
+  class="fixed right-4 bottom-5 z-[1000] size-12 sm:right-7 sm:bottom-7"
+  aria-label="Assistant AdmiGuide"
+>
+  <!-- Fenêtre fermée par défaut, affichée avec une animation CSS. -->
+  <div
+    id="admiguide-chat-panel"
+    class="chatbot-panel absolute right-0 bottom-[calc(100%+16px)] flex h-[min(610px,calc(100dvh-115px))] w-[min(390px,calc(100vw-40px))] flex-col overflow-hidden rounded-[22px] border border-[#D2CDBA]/70 bg-white shadow-[0_18px_48px_rgba(38,43,39,0.14)]"
+    [class.is-open]="ouvert()"
+    [attr.aria-hidden]="!ouvert()"
+    [attr.inert]="ouvert() ? null : ''"
+    role="dialog"
+    aria-label="Aide administrative AdmiGuide"
+  >
+    <!-- En-tête -->
+    <header class="flex shrink-0 items-center justify-between bg-white px-5 py-4">
+      <div class="flex items-center gap-3">
+        <span
+          class="flex size-11 shrink-0 items-center justify-center rounded-full bg-[#9EA287]/20 text-terracotta"
+          aria-hidden="true"
+        >
+          <svg lucideMessageCircleMore class="size-5" aria-hidden="true"></svg>
+        </span>
+        <div class="flex flex-col gap-0.5">
+          <strong class="text-[18px] leading-tight font-bold text-anthracite"> AdmiGuide </strong>
+          <span class="text-xs text-anthracite/65">Votre aide administrative</span>
+        </div>
+      </div>
+      <button
+        type="button"
+        class="flex size-9 items-center justify-center rounded-lg text-anthracite/70 transition-all duration-200 hover:rotate-90 hover:bg-[#F5F5F0] hover:text-anthracite focus-visible:outline-2 focus-visible:outline-terracotta"
+        aria-label="Fermer le chatbot"
+        (click)="fermer()"
+      >
+        <svg lucideX class="size-5" aria-hidden="true"></svg>
+      </button>
+    </header>
+
+    <!-- Contexte de la page -->
+    <div
+      class="flex shrink-0 items-center gap-2.5 bg-[#9EA287]/20 px-5 py-3.5 text-[13px] font-semibold text-anthracite/80"
+    >
+      <svg lucideFileText class="size-4 shrink-0" aria-hidden="true"></svg>
+      <span>{{ titres[page] }}</span>
+    </div>
+
+    <!-- Conversation -->
+    <div
+      #zoneMessages
+      class="chatbot-scroll flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto overscroll-contain px-[18px] py-5"
+      role="log"
+      aria-live="polite"
+      aria-relevant="additions"
+    >
+      <!-- Accueil : uniquement avant le premier échange. -->
+      @if (messages().length === 0 && !attendTerme()) {
+        <div
+          class="chatbot-message-in max-w-[94%] self-start rounded-2xl bg-[#D2CDBA]/35 px-4 py-3.5 text-[13px] leading-relaxed text-anthracite"
+        >
+          Bonjour ! Je peux vous aider à comprendre votre démarche administrative.
+        </div>
+      }
+
+      <!-- La première suggestion pose une question locale (sans appel Groq). -->
+      @if (attendTerme()) {
+        <div
+          class="chatbot-message-in max-w-[94%] self-start rounded-2xl bg-[#D2CDBA]/35 px-4 py-3.5 text-[13px] leading-relaxed text-anthracite"
+        >
+          Quel terme souhaitez-vous que je vous explique ?
+        </div>
+      }
+
+      <div class="flex flex-col gap-3">
+        @for (message of messages(); track $index) {
+          <div
+            class="chatbot-message-in flex max-w-[94%] flex-col gap-2"
+            [class.self-end]="message.role === 'user'"
+            [class.self-start]="message.role === 'assistant'"
+          >
+            @if (message.role === 'user') {
+              <div
+                class="rounded-2xl rounded-br-md bg-[#995349]/10 px-4 py-3 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-terracotta"
+              >
+                {{ message.content }}
+              </div>
+            } @else {
+              <div
+                class="rounded-2xl rounded-bl-md bg-[#D2CDBA]/35 px-4 py-3 text-[13px] leading-relaxed whitespace-pre-wrap break-words text-anthracite"
+              >
+                {{ message.content }}
+              </div>
+            }
+
+            @if (message.sources?.length) {
+              <div class="flex flex-col gap-2 px-1">
+                <span class="text-[11px] font-semibold text-anthracite/65">
+                  Sources à consulter
+                </span>
+                @for (source of message.sources ?? []; track $index) {
+                  <a
+                    [href]="source.url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="flex items-center justify-between gap-2 rounded-lg border border-[#D2CDBA]/70 bg-white px-3 py-2.5 text-xs text-terracotta transition-colors duration-200 hover:border-terracotta hover:bg-[#F5F5F0] focus-visible:outline-2 focus-visible:outline-terracotta"
+                  >
+                    <span class="min-w-0 break-words">{{ source.titre }}</span>
+                    <svg lucideExternalLink class="size-4 shrink-0" aria-hidden="true"></svg>
+                  </a>
+                }
+              </div>
+            }
+          </div>
+        }
+      </div>
+
+      @if (envoiEnCours()) {
+        <div
+          class="chatbot-typing flex w-fit items-center gap-1.5 self-start rounded-2xl bg-[#D2CDBA]/35 px-4 py-3.5"
+          role="status"
+          aria-label="AdmiGuide prépare une réponse"
+        >
+          <span class="size-2 rounded-full bg-terracotta"></span>
+          <span class="size-2 rounded-full bg-terracotta"></span>
+          <span class="size-2 rounded-full bg-terracotta"></span>
+        </div>
+      }
+
+      @if (erreur()) {
+        <p
+          class="rounded-xl border border-terracotta/30 bg-terracotta/10 px-3.5 py-3 text-xs leading-relaxed text-terracotta"
+          role="alert"
+        >
+          {{ erreur() }}
+        </p>
+      }
+
+      <!-- Les suggestions disparaissent dès le début de la discussion. -->
+      @if (messages().length === 0 && !attendTerme()) {
+        <div class="flex flex-col gap-2">
+          <p class="mb-0.5 text-[10px] font-bold tracking-wide text-anthracite/70">
+            POUR CONTINUER
+          </p>
+          @for (suggestion of suggestions[page]; track suggestion.label) {
+            <button
+              type="button"
+              class="flex min-h-9 w-full items-center justify-between gap-3 rounded-[10px] border border-[#D2CDBA]/70 bg-white px-3 py-2 text-left text-xs text-anthracite transition-all duration-200 hover:translate-x-0.5 hover:border-[#9EA287] hover:bg-[#F5F5F0] focus-visible:outline-2 focus-visible:outline-terracotta disabled:cursor-not-allowed disabled:opacity-50"
+              [disabled]="envoiEnCours()"
+              (click)="choisirSuggestion(suggestion)"
+            >
+              <span>{{ suggestion.label }}</span>
+              <svg
+                lucideChevronRight
+                class="size-4 shrink-0 text-anthracite/65"
+                aria-hidden="true"
+              ></svg>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Saisie -->
+    <footer class="shrink-0 bg-white px-[18px] pt-3 pb-4">
+      <div
+        class="flex items-end gap-2 rounded-[13px] border border-[#D2CDBA]/70 bg-white p-1 pl-3 transition-all duration-200 focus-within:border-terracotta focus-within:ring-[3px] focus-within:ring-terracotta/10"
+      >
+        <textarea
+          #champQuestion
+          rows="1"
+          maxlength="600"
+          [placeholder]="
+            attendTerme() ? 'Ex. : titre foncier, bail...' : 'Écrivez votre question...'
+          "
+          aria-label="Votre question pour AdmiGuide"
+          class="min-h-[38px] max-h-28 min-w-0 flex-1 resize-none border-0 bg-transparent py-2.5 text-[13px] leading-relaxed text-anthracite outline-none placeholder:text-anthracite/45 disabled:cursor-not-allowed"
+          [value]="saisie()"
+          [disabled]="envoiEnCours()"
+          (input)="actualiserSaisie($event)"
+          (keydown)="gererTouche($event)"
+        ></textarea>
+        <button
+          type="button"
+          class="flex size-10 shrink-0 items-center justify-center rounded-full bg-terracotta text-white transition-all duration-200 hover:scale-105 hover:brightness-90 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-terracotta disabled:cursor-not-allowed disabled:opacity-50"
+          aria-label="Envoyer la question"
+          [disabled]="!saisie().trim() || envoiEnCours()"
+          (click)="envoyerQuestion(saisie())"
+        >
+          <svg lucideSend class="size-5" aria-hidden="true"></svg>
+        </button>
+      </div>
+    </footer>
+  </div>
+
+  <!-- BOUTON FLOTTANT ANIMÉ -->
+  <button
+    type="button"
+    class="chatbot-launcher relative flex size-12 items-center justify-center rounded-full text-white transition-transform duration-300 hover:-translate-y-1 hover:scale-105 active:scale-95 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-terracotta"
+    [class.is-active]="ouvert()"
+    [class.bg-terracotta]="ouvert()"
+    [attr.aria-expanded]="ouvert()"
+    aria-controls="admiguide-chat-panel"
+    [attr.aria-label]="ouvert() ? 'Fermer le chatbot' : 'Ouvrir le chatbot AdmiGuide'"
+    (click)="basculer()"
+  >
+    @if (ouvert()) {
+      <!-- Icône de fermeture Lucide -->
+      <svg lucideX class="size-5" aria-hidden="true"></svg>
+    } @else {
+      <!-- Bouton Figma sans ombre intégrée -->
+      <svg
+        viewBox="0 0 80 80"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        class="chatbot-figma-icon pointer-events-none size-[69px] max-w-none shrink-0"
+        aria-hidden="true"
+      >
+        <!-- Cercle terracotta -->
+        <rect x="12" y="8" width="56" height="56" rx="28" fill="#995349" />
+
+        <!-- Bulle de conversation -->
+        <path
+          d="M35.9 44C37.8086 44.979 40.0041 45.2442
+           42.0909 44.7478C44.1777 44.2513 46.0186
+           43.0258 47.2818 41.2922C48.545 39.5585
+           49.1474 37.4307 48.9806 35.2921C48.8137
+           33.1536 47.8886 31.145 46.3718 29.6282
+           C44.855 28.1114 42.8464 27.1862 40.7078
+           27.0194C38.5693 26.8526 36.4415 27.455
+           34.7078 28.7182C32.9742 29.9814 31.7487
+           31.8223 31.2522 33.9091C30.7558 35.9959
+           31.0209 38.1914 32 40.1L30 46L35.9 44Z"
+          stroke="white"
+          stroke-width="1.7"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+
+        <!-- Trois points blancs -->
+        <circle cx="36" cy="36" r="1" fill="white" />
+        <circle cx="40" cy="36" r="1" fill="white" />
+        <circle cx="44" cy="36" r="1" fill="white" />
+      </svg>
+    }
+  </button>
+</section>

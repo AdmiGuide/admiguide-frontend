@@ -13,11 +13,10 @@ import {
   ActivatedRoute,
   RouterLink,
 } from '@angular/router';
-
+import { ContextualChatbot } from '../../components/contextual-chatbot/contextual-chatbot';
 import {
   LucideArrowLeft,
   LucideCheck,
-  LucideHistory,
   LucideListChecks,
 } from '@lucide/angular';
 
@@ -27,7 +26,6 @@ import {
 
 import {
   OrientationResultData,
-  OrientationProgression,
 } from '../../models/orientation-result.model';
 
 
@@ -38,8 +36,8 @@ import {
   RouterLink,
   LucideArrowLeft,
   LucideCheck,
-  LucideHistory,
   LucideListChecks,
+  ContextualChatbot
 ],
 
   templateUrl: './follow-up.html',

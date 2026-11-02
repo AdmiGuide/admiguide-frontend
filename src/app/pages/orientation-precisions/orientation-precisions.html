@@ -191,9 +191,23 @@
 
                 <fieldset class="mt-7">
 
-                    <legend class="text-sm font-bold
-               text-anthracite">
-                        {{ question.texte }}
+                    <!-- Les icônes ? apparaissent uniquement près des termes complexes. -->
+                    <legend class="text-sm font-bold text-anthracite">
+                        @for (segment of segmentsAide(question.texte); track $index) {
+                            <span>{{ segment.texte }}</span>
+                            @if (segment.terme; as terme) {
+                                <button
+                                    type="button"
+                                    class="ml-1 inline-flex size-5 align-middle items-center
+                                           justify-center rounded-full text-terracotta
+                                           transition hover:bg-terracotta/10
+                                           focus-visible:outline-2 focus-visible:outline-terracotta"
+                                    [attr.aria-label]="'Expliquer : ' + terme"
+                                    (click)="ouvrirAideTerme(question.id, terme)">
+                                    <svg lucideCircleHelp class="size-4" aria-hidden="true"></svg>
+                                </button>
+                            }
+                        }
                     </legend>
 
 
@@ -204,32 +218,39 @@
                         track option
                         ) {
 
-                        <label [class]="
-                  'flex cursor-pointer items-center gap-3 ' +
-                  'rounded-xl border px-4 py-4 transition ' +
-                  choiceClasses(
-                    question.id,
-                    option
-                  )
-                ">
+                        <!-- L'aide est hors du label pour ne pas sélectionner
+                             automatiquement la réponse lors du clic sur ?. -->
+                        <div [class]="
+                            'flex items-center gap-3 rounded-xl border px-4 py-4 transition ' +
+                            choiceClasses(question.id, option)
+                        ">
+                            <label
+                                class="flex min-w-0 flex-1 cursor-pointer items-center gap-3"
+                                [for]="'question-' + question.id + '-' + $index">
+                                <input
+                                    type="radio"
+                                    class="size-4 shrink-0 accent-terracotta"
+                                    [id]="'question-' + question.id + '-' + $index"
+                                    [name]="'question-' + question.id"
+                                    [value]="option"
+                                    [checked]="answerFor(question.id) === option"
+                                    (change)="setAnswer(question.id, option)" />
+                                <span class="text-sm text-anthracite/75">{{ option }}</span>
+                            </label>
 
-                            <input type="radio" [name]="'question-' + question.id" [value]="option" [checked]="
-                      answerFor(question.id) === option
-                    " (change)="
-                      setAnswer(
-                        question.id,
-                        option
-                      )
-                    " class="size-4
-                           accent-terracotta" />
-
-
-                            <span class="text-sm
-                     text-anthracite/75">
-                                {{ option }}
-                            </span>
-
-                        </label>
+                            @if (termeComplexe(option); as terme) {
+                                <button
+                                    type="button"
+                                    class="flex size-7 shrink-0 items-center justify-center
+                                           rounded-full text-terracotta transition
+                                           hover:bg-terracotta/10
+                                           focus-visible:outline-2 focus-visible:outline-terracotta"
+                                    [attr.aria-label]="'Expliquer : ' + terme"
+                                    (click)="ouvrirAideTerme(question.id, terme)">
+                                    <svg lucideCircleHelp class="size-4" aria-hidden="true"></svg>
+                                </button>
+                            }
+                        </div>
 
                         }
 
@@ -247,11 +268,28 @@
 
                 <div class="mt-7">
 
-                    <label [for]="'question-' + question.id" class="mb-3 block
-                   text-sm font-bold
-                   text-anthracite">
+                    <!-- Le label reste accessible à l'input. -->
+                    <label [for]="'question-' + question.id" class="sr-only">
                         {{ question.texte }}
                     </label>
+
+                    <div class="mb-3 text-sm font-bold text-anthracite">
+                        @for (segment of segmentsAide(question.texte); track $index) {
+                            <span>{{ segment.texte }}</span>
+                            @if (segment.terme; as terme) {
+                                <button
+                                    type="button"
+                                    class="ml-1 inline-flex size-5 align-middle items-center
+                                           justify-center rounded-full text-terracotta
+                                           transition hover:bg-terracotta/10
+                                           focus-visible:outline-2 focus-visible:outline-terracotta"
+                                    [attr.aria-label]="'Expliquer : ' + terme"
+                                    (click)="ouvrirAideTerme(question.id, terme)">
+                                    <svg lucideCircleHelp class="size-4" aria-hidden="true"></svg>
+                                </button>
+                            }
+                        }
+                    </div>
 
 
                     <input type="text" [id]="'question-' + question.id" [name]="'question-' + question.id"
@@ -343,5 +381,13 @@
     </section>
 
 </main>
+
+<!-- Bouton flottant : visible uniquement lorsque des questions sont disponibles. -->
+@if (!isLoading() && activeQuestionId() !== undefined) {
+    <app-contextual-chatbot
+        [publicId]="publicId"
+        page="PRECISIONS"
+        [questionId]="activeQuestionId()" />
+}
 
 }
